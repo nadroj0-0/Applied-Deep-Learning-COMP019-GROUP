@@ -4,6 +4,8 @@ This is your own branch, use it however you like.
 
 When something is ready and finished, you can do a Pull Request from this branch into `main`.
 
+Note : It needs approval by 1 other person before it can acc merge
+
 ## Quick reminder
 
 - `main` is for putting our finished work togther.
