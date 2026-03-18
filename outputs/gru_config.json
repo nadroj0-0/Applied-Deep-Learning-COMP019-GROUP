@@ -1,0 +1,18 @@
+{
+    "data_dir": "./data",
+    "model": "gru",
+    "use_batches": true,
+    "store_id": "CA_3",
+    "seq_len": 28,
+    "horizon": 28,
+    "batch_size": 256,
+    "epochs": 3,
+    "lr": 0.001,
+    "hidden": 128,
+    "layers": 2,
+    "dropout": 0.2,
+    "max_series": "50",
+    "num_workers": 0,
+    "seed": 42,
+    "out_dir": "outputs"
+}

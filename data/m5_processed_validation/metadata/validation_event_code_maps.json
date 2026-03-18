@@ -1,0 +1,54 @@
+{
+  "event_name_1": {
+    "None": 0,
+    "SuperBowl": 1,
+    "ValentinesDay": 2,
+    "PresidentsDay": 3,
+    "LentStart": 4,
+    "LentWeek2": 5,
+    "StPatricksDay": 6,
+    "Purim End": 7,
+    "OrthodoxEaster": 8,
+    "Pesach End": 9,
+    "Cinco De Mayo": 10,
+    "Mother's day": 11,
+    "MemorialDay": 12,
+    "NBAFinalsStart": 13,
+    "NBAFinalsEnd": 14,
+    "Father's day": 15,
+    "IndependenceDay": 16,
+    "Ramadan starts": 17,
+    "Eid al-Fitr": 18,
+    "LaborDay": 19,
+    "ColumbusDay": 20,
+    "Halloween": 21,
+    "EidAlAdha": 22,
+    "VeteransDay": 23,
+    "Thanksgiving": 24,
+    "Christmas": 25,
+    "Chanukah End": 26,
+    "NewYear": 27,
+    "OrthodoxChristmas": 28,
+    "MartinLutherKingDay": 29,
+    "Easter": 30
+  },
+  "event_type_1": {
+    "None": 0,
+    "Sporting": 1,
+    "Cultural": 2,
+    "National": 3,
+    "Religious": 4
+  },
+  "event_name_2": {
+    "None": 0,
+    "Easter": 1,
+    "Cinco De Mayo": 2,
+    "OrthodoxEaster": 3,
+    "Father's day": 4
+  },
+  "event_type_2": {
+    "None": 0,
+    "Cultural": 1,
+    "Religious": 2
+  }
+}
