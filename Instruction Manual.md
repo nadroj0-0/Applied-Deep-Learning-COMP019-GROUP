@@ -15,7 +15,7 @@ The key design principle is that **you should never need to touch the infrastruc
 
 ```
 Group/
-├── train.py                      ← entry point — the only file you edit
+├── train.py                      ← entry point
 ├── utils/
 │   ├── data.py                   ← data loading and preprocessing pipelines
 │   ├── network.py                ← model classes + builder functions
@@ -28,16 +28,16 @@ Group/
 └── models/                       ← all training outputs saved here
     ├── gru_deterministic/
     ├── lstm_deterministic/
-    └── gru_probabilistic/        ← (once added)
+    └── gru_probabilistic/        
 ```
 
 ---
 
 ## File Descriptions
 
-**`train.py`** — The only file you touch. Defines `TRAIN_CONFIG`, search spaces, the `experiments` dict, and runs everything.
+**`train.py`**. Defines `TRAIN_CONFIG`, search spaces, the `experiments` dict, and runs everything.
 
-**`utils/data.py`** — Two data pipelines. The batched pipeline (`build_dataloaders_from_batches`) loads Sherwin's preprocessed pickle files, filters to CA_3, applies rolling temporal split, log1p normalises, and returns DataLoaders. The raw CSV pipeline is a legacy fallback.
+**`utils/data.py`** — Two data pipelines. The batched pipeline (`build_dataloaders_from_batches`) loads preprocessed pickle files, filters to CA_3, applies rolling temporal split, log1p normalises, and returns DataLoaders. The raw CSV pipeline is a legacy fallback.
 
 **`utils/network.py`** — Model class definitions (`SalesGRU`, `SalesLSTM`) and their builder functions (`build_gru`, `build_lstm`). Add new model classes and builder functions here.
 
