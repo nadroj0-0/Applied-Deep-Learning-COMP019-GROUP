@@ -665,13 +665,16 @@ def _make_batch_dataset(df: pd.DataFrame, seq_len: int, horizon: int) -> Dataset
             features = series_df[BATCH_FEATURE_COLS].values.astype(np.float32)
             targets = series_df["sales"].values.astype(np.float32)
             n = max(0, len(series_df) - seq_len - horizon + 1)
-            # pre-compute all windows once at construction time
-            self.x = torch.tensor(
-                np.stack([features[i: i + seq_len] for i in range(n)])
-            )
-            self.y = torch.tensor(
-                np.stack([targets[i + seq_len: i + seq_len + horizon] for i in range(n)])
-            )
+            if n == 0:
+                self.x = torch.zeros((0, seq_len, len(BATCH_FEATURE_COLS)), dtype=torch.float32)
+                self.y = torch.zeros((0, horizon), dtype=torch.float32)
+            else:
+                self.x = torch.tensor(
+                    np.stack([features[i: i + seq_len] for i in range(n)])
+                )
+                self.y = torch.tensor(
+                    np.stack([targets[i + seq_len: i + seq_len + horizon] for i in range(n)])
+                )
 
         def __len__(self):
             return len(self.x)
