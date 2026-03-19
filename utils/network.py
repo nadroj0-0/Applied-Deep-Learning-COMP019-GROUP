@@ -96,7 +96,9 @@ def build_gru(cfg):
     Returns (model, criterion, optimiser, training_kwargs).
     """
     from utils.data import N_BATCH_FEATURES
-    from utils.common import device, rmse, mae
+    from utils.common import device, rmse, mae, mape, r2
+    cfg["layers"] = int(cfg["layers"])
+    cfg["hidden"] = int(cfg["hidden"])
     model = SalesGRU(
         input_size=N_BATCH_FEATURES,
         hidden_size=int(cfg["hidden"]),
@@ -111,7 +113,7 @@ def build_gru(cfg):
             optimiser, patience=5, factor=0.5
         ),
         "clip_grad_norm": 1.0,
-        "extra_metrics": {"val_rmse": rmse, "val_mae": mae},
+        "extra_metrics": {"val_rmse": rmse, "val_mae": mae, "val_mape": mape, "val_r2": r2},
     }
     return model, criterion, optimiser, training_kwargs
 
@@ -122,7 +124,9 @@ def build_lstm(cfg):
     Returns (model, criterion, optimiser, training_kwargs).
     """
     from utils.data import N_BATCH_FEATURES
-    from utils.common import device, rmse, mae
+    from utils.common import device, rmse, mae, mape, r2
+    cfg["layers"] = int(cfg["layers"])
+    cfg["hidden"] = int(cfg["hidden"])
     model = SalesLSTM(
         input_size=N_BATCH_FEATURES,
         hidden_size=int(cfg["hidden"]),
@@ -137,6 +141,6 @@ def build_lstm(cfg):
             optimiser, patience=5, factor=0.5
         ),
         "clip_grad_norm": 1.0,
-        "extra_metrics": {"val_rmse": rmse, "val_mae": mae},
+        "extra_metrics": {"val_rmse": rmse, "val_mae": mae, "val_mape": mape, "val_r2": r2},
     }
     return model, criterion, optimiser, training_kwargs

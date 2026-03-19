@@ -383,3 +383,12 @@ def rmse(preds: torch.Tensor, targets: torch.Tensor) -> float:
 
 def mae(preds: torch.Tensor, targets: torch.Tensor) -> float:
     return torch.mean(torch.abs(preds - targets)).item()
+
+def mape(preds, targets): #Mean Absolute Percentage Error
+    mask = targets > 0  # avoid division by zero on zero-sales days
+    return ((preds[mask] - targets[mask]).abs() / targets[mask]).mean().item() * 100
+
+def r2(preds, targets): #R Squared
+    ss_res = ((targets - preds) ** 2).sum()
+    ss_tot = ((targets - targets.mean()) ** 2).sum()
+    return (1 - ss_res / ss_tot).item()

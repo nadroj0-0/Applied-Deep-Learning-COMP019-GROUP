@@ -41,14 +41,14 @@ SEARCH = True
 GRU_SEARCH_SPACE = {
     "lr":      (1e-4, 1e-2, "log"),
     "hidden":  (64, 256, "uniform"),
-    "layers":  (1, 3, "uniform"),
+    "layers":  (1, 4, "uniform"),
     "dropout": (0.1, 0.4, "uniform"),
 }
 
 LSTM_SEARCH_SPACE = {
     "lr":      (1e-4, 1e-2, "log"),
     "hidden":  (64, 256, "uniform"),
-    "layers":  (1, 3, "uniform"),
+    "layers":  (1, 4, "uniform"),
     "dropout": (0.1, 0.4, "uniform"),
 }
 
