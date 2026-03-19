@@ -30,7 +30,7 @@ TRAIN_CONFIG = {
     "store_id":                 "CA_3",
     "data_dir":                 "./data",
     "max_series":               None,
-    "num_workers":              2,
+    "num_workers":              0,
     "early_stopping_patience":  10,
     "early_stopping_min_delta": 0.001,
     "sigma_reg": 0.01,
