@@ -98,11 +98,11 @@ def build_gru(cfg):
     from utils.data import N_BATCH_FEATURES
     from utils.common import device, rmse, mae
     model = SalesGRU(
-        input_size  = N_BATCH_FEATURES,
-        hidden_size = cfg["hidden"],
-        num_layers  = cfg["layers"],
-        dropout     = cfg["dropout"],
-        horizon     = cfg["horizon"],
+        input_size=N_BATCH_FEATURES,
+        hidden_size=int(cfg["hidden"]),
+        num_layers=int(cfg["layers"]),
+        dropout=cfg["dropout"],
+        horizon=int(cfg["horizon"]),
     ).to(device)
     criterion = nn.MSELoss()
     optimiser = torch.optim.Adam(model.parameters(), lr=cfg["lr"])
@@ -124,11 +124,11 @@ def build_lstm(cfg):
     from utils.data import N_BATCH_FEATURES
     from utils.common import device, rmse, mae
     model = SalesLSTM(
-        input_size  = N_BATCH_FEATURES,
-        hidden_size = cfg["hidden"],
-        num_layers  = cfg["layers"],
-        dropout     = cfg["dropout"],
-        horizon     = cfg["horizon"],
+        input_size=N_BATCH_FEATURES,
+        hidden_size=int(cfg["hidden"]),
+        num_layers=int(cfg["layers"]),
+        dropout=cfg["dropout"],
+        horizon=int(cfg["horizon"]),
     ).to(device)
     criterion = nn.MSELoss()
     optimiser = torch.optim.Adam(model.parameters(), lr=cfg["lr"])
