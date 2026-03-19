@@ -17,7 +17,6 @@ gru_step.valid_train_accuracy = False
 def prob_gru_step(model, inputs, labels, criterion, **kwargs):
     """
     Training step for probabilistic GRU/LSTM.
-    Model outputs (mu, alpha) — criterion is nb_nll_loss.
     """
     # mu, alpha = model(inputs)
     # loss = criterion(mu, alpha, labels)

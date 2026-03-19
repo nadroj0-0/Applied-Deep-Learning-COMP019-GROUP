@@ -6,7 +6,7 @@ class TrainingSession:
         self.optimiser = optimiser
         self.criterion = criterion
         self.config = config  # full experiment config
-        self.training_step = training_step  # baseline / mixup / smoothing
+        self.training_step = training_step
         self.training_kwargs = training_kwargs or {}
         self.history = history or {"epoch_metrics": [], "batch_losses": [], "early_stopping": None}
         self.epoch = epoch

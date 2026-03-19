@@ -2,10 +2,6 @@
 Hyperparameter search utilities.
 
 Implements staged random search with progressive pruning.
-
-The script does NOT implement training itself. Instead it expects
-a training function to be passed in that trains for a given number
-of epochs and returns validation metrics.
 """
 
 import random
@@ -102,7 +98,7 @@ def staged_search(search_space,train_loader,val_loader, builder, model_dir, base
                                   training_step=training_step, training_kwargs=training_kwargs)
         session.id = f"model_{i}"
         sessions.append((cfg, session))
-    # --- run remaining stages ---
+
     for stage_idx, stage in enumerate(schedule):
         epochs, keep = stage["epochs"], stage["keep"]
         print(f"\nStage {stage_idx}: training {len(sessions)} models for {epochs} epochs")

@@ -103,8 +103,6 @@ class Experiment:
         Load data using data_fn and store as instance attributes.
         data_fn must return (train_loader, val_loader, test_dataset, stats).
         stats can be None for problems without normalisation e.g. CW1.
-        For CW1:   data_fn = load_cifar
-        For group: data_fn = build_dataloaders_from_batches
         """
         self.train_loader, self.val_loader, self.test_dataset, self.stats = data_fn(**data_kwargs)
 

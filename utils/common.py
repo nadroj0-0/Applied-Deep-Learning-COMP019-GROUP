@@ -393,7 +393,7 @@ def mae(preds: torch.Tensor, targets: torch.Tensor) -> float:
     return torch.mean(torch.abs(preds - targets)).item()
 
 def mape(preds, targets): #Mean Absolute Percentage Error
-    mask = targets > 0  # avoid division by zero on zero-sales days
+    mask = targets > 0  # avoid division by zero on zero sales days
     return ((preds[mask] - targets[mask]).abs() / targets[mask]).mean().item() * 100
 
 def r2(preds, targets): #R Squared
@@ -404,9 +404,9 @@ def r2(preds, targets): #R Squared
 def nb_nll_loss(mu, alpha, targets):
     """
     Negative Binomial NLL loss.
-    mu    : predicted mean  (batch, horizon) — must be > 0
-    alpha : dispersion      (batch, horizon) — must be > 0
-    targets: actual sales   (batch, horizon)
+    mu    : predicted mean   — must be > 0
+    alpha : dispersion     — must be > 0
+    targets: actual sales
     """
     eps = 1e-8
     r = 1.0 / (alpha + eps)
@@ -423,14 +423,11 @@ def nb_nll_loss(mu, alpha, targets):
 def gaussian_nll_loss(mu, sigma, targets, sigma_reg=0.0):
     """
     Gaussian NLL loss in log1p space.
-    Mathematically correct for log-transformed count data.
-    Equivalent to assuming Log-Normal distribution in count space.
-    Industry standard — used by DeepAR, N-BEATS etc.
 
-    mu      : predicted mean in log1p space  (batch, horizon)
-    sigma   : predicted std  in log1p space  (batch, horizon) — must be > 0
-    targets : log1p transformed sales        (batch, horizon)
-    sigma_reg: penalty on mean sigma to discourage variance collapse.
+    mu      : predicted mean in log1p space
+    sigma   : predicted std  in log1p space
+    targets : log1p transformed sales
+    sigma_reg: penalty on mean sigma to discourage variance collapse. — must be > 0
     """
     sigma = sigma.clamp(min=1e-6, max=10.0)
     dist  = torch.distributions.Normal(mu, sigma)

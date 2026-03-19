@@ -24,14 +24,14 @@ class SalesGRU(nn.Module):
             input_size=input_size,
             hidden_size=hidden_size,
             num_layers=num_layers,
-            batch_first=True,           # input shape: (batch, seq_len, features)
+            batch_first=True,   # input shape: (batch, seq_len, features)
             dropout=dropout if num_layers > 1 else 0.0
         )
         self.head = nn.Sequential(
             nn.Linear(hidden_size, 64),
             nn.ReLU(),
             nn.Dropout(dropout),
-            nn.Linear(64, horizon)            # single scalar output
+            nn.Linear(64, horizon) # single scalar output
         )
 
     def forward(self, x):
@@ -75,8 +75,6 @@ def build_gru(cfg):
 class SalesLSTM(nn.Module):
     """
     Multi-layer LSTM for deterministic multi-step sales forecasting.
-
-    Identical interface to SalesGRU — swap in/out as a drop-in baseline.
 
     Input  : (batch, seq_len, N_FEATURES)
     Output : (batch, horizon)

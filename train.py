@@ -2,8 +2,7 @@
 # train.py  —  Deterministic GRU / LSTM baselines for M5 sales forecasting
 # COMP0197 Applied Deep Learning
 # =============================================================================
-# GenAI Note: Scaffolded with Claude (Anthropic). Verified by authors.
-# =============================================================================
+
 
 import sys
 import math
@@ -56,7 +55,7 @@ LSTM_SEARCH_SPACE = {
 PROB_SEARCH_SPACE = {
     "lr":        (1e-4, 1e-2, "log"),
     "hidden":    (64, 256, "uniform"),
-    "layers":    (1, 3, "uniform"),   # cap at 3 — deeper models more prone to variance collapse
+    "layers":    (1, 3, "uniform"),
     "dropout":   (0.1, 0.4, "uniform"),
     "sigma_reg": (0.0, 0.05, "uniform"),
 }
