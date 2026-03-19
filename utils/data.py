@@ -662,40 +662,40 @@ def _make_batch_dataset(df: pd.DataFrame, seq_len: int, horizon: int) -> Dataset
 
     class BatchSeriesDataset(Dataset):
         def __init__(self, series_df):
-            self.seq_len = seq_len
-            self.horizon = horizon
-            self.features = series_df[BATCH_FEATURE_COLS].values.astype(np.float32)
-            self.targets = series_df["sales"].values.astype(np.float32)
-            self.n = max(0, len(series_df) - seq_len - horizon + 1)
+            features = series_df[BATCH_FEATURE_COLS].values.astype(np.float32)
+            targets = series_df["sales"].values.astype(np.float32)
+            n = max(0, len(series_df) - seq_len - horizon + 1)
+            # pre-compute all windows once at construction time
+            self.x = torch.tensor(
+                np.stack([features[i: i + seq_len] for i in range(n)])
+            )
+            self.y = torch.tensor(
+                np.stack([targets[i + seq_len: i + seq_len + horizon] for i in range(n)])
+            )
 
         def __len__(self):
-            return self.n
+            return len(self.x)
 
         def __getitem__(self, idx):
-            x = self.features[idx: idx + self.seq_len]
-            y = self.targets[idx + self.seq_len: idx + self.seq_len + self.horizon]
-            return torch.tensor(x), torch.tensor(y)
+            return self.x[idx], self.y[idx]
 
     class BatchDataset(Dataset):
         def __init__(self):
-            self.datasets = []
+            all_x, all_y = [], []
             for sid in df["id"].unique():
                 sub = df[df["id"] == sid].sort_values("d_num").reset_index(drop=True)
                 ds = BatchSeriesDataset(sub)
                 if len(ds) > 0:
-                    self.datasets.append(ds)
-            self.index = [
-                (d_i, s_i)
-                for d_i, ds in enumerate(self.datasets)
-                for s_i in range(len(ds))
-            ]
-            print(f"[data] {len(self.datasets)} series -> {len(self.index):,} windows")
+                    all_x.append(ds.x)
+                    all_y.append(ds.y)
+            self.x = torch.cat(all_x, dim=0)
+            self.y = torch.cat(all_y, dim=0)
+            print(f"[data] {len(all_x)} series -> {len(self.x):,} windows")
 
         def __len__(self):
-            return len(self.index)
+            return len(self.x)
 
         def __getitem__(self, idx):
-            d_i, s_i = self.index[idx]
-            return self.datasets[d_i][s_i]
+            return self.x[idx], self.y[idx]
 
     return BatchDataset()
