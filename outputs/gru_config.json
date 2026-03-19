@@ -6,13 +6,15 @@
     "seq_len": 28,
     "horizon": 28,
     "batch_size": 256,
-    "epochs": 3,
+    "epochs": 2,
     "lr": 0.001,
     "hidden": 128,
     "layers": 2,
     "dropout": 0.2,
-    "max_series": "50",
+    "max_series": "10",
     "num_workers": 0,
     "seed": 42,
-    "out_dir": "outputs"
+    "out_dir": "outputs",
+    "early_stopping_patience": 10,
+    "early_stopping_min_delta": 0.001
 }

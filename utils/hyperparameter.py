@@ -78,8 +78,8 @@ def select_best(sessions):
     return best
 
 
-def staged_search(search_space,images,labels,train_loader,val_loader,method, model_dir, base_config=None,
-                  dropout_prob=0.0, training_step=baseline_step, save_outputs=False, schedule=None,
+def staged_search(search_space,train_loader,val_loader, builder, model_dir, base_config=None,
+                  training_step=gru_step, save_outputs=False, schedule=None,
                   initial_models=10, search_name="hyperparameter_search",**kwargs):
     """
     Generic successive-halving hyperparameter search.
@@ -95,8 +95,11 @@ def staged_search(search_space,images,labels,train_loader,val_loader,method, mod
     # --- initialise configs ---
     for i in range(initial_models):
         cfg = sample_config(base_config, search_space)
-        session = create_training_session(images, labels, method, cfg.get("reg_dropout", dropout_prob), cfg,
-                                          training_step, **cfg)
+        # session = create_training_session(images, labels, method, cfg.get("reg_dropout", dropout_prob), cfg,
+        #                                   training_step, **cfg)
+        model, criterion, optimiser, training_kwargs = builder(cfg)
+        session = TrainingSession(model=model, optimiser=optimiser, criterion=criterion, config=cfg,
+                                  training_step=training_step, training_kwargs=training_kwargs)
         session.id = f"model_{i}"
         sessions.append((cfg, session))
     # --- run remaining stages ---
@@ -104,9 +107,12 @@ def staged_search(search_space,images,labels,train_loader,val_loader,method, mod
         epochs, keep = stage["epochs"], stage["keep"]
         print(f"\nStage {stage_idx}: training {len(sessions)} models for {epochs} epochs")
         for i, (cfg, session) in enumerate(sessions):
-            full_train(name=f"search_stage{stage_idx}_{i}", images=images, labels=labels, train_loader=train_loader,
-                       val_loader=val_loader, method=method, epochs=epochs, model_dir=model_dir, config=cfg,
-                       dropout_prob=cfg.get("reg_dropout", dropout_prob), training_step=training_step,
+            # full_train(name=f"search_stage{stage_idx}_{i}", images=images, labels=labels, train_loader=train_loader,
+            #            val_loader=val_loader, method=method, epochs=epochs, model_dir=model_dir, config=cfg,
+            #            dropout_prob=cfg.get("reg_dropout", dropout_prob), training_step=training_step,
+            #            save_outputs=False, session=session)
+            full_train(name=f"search_stage{stage_idx}_{i}", builder=builder, cfg=cfg, train_loader=train_loader,
+                       val_loader=val_loader, epochs=epochs, model_dir=model_dir, training_step=training_step,
                        save_outputs=False, session=session)
             if session.id not in run_records:
                 run_records[session.id] = {
@@ -129,8 +135,7 @@ def staged_search(search_space,images,labels,train_loader,val_loader,method, mod
         "schedule": schedule,
         "search_space": search_space,
         "best_config": best_cfg,
-        "best_validation_loss": best_metrics["validation_loss"],
-        "best_validation_accuracy": best_metrics["validation_accuracy"],
+        "best_epoch_metrics": best_metrics,
         "runs": list(run_records.values())
     }
     model_dir.mkdir(parents=True, exist_ok=True)

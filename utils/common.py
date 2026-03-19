@@ -28,6 +28,31 @@ def init_model(images, dropout_prob=0.0):
     print('Model output shape:', outputs.shape)
     return model, outputs
 
+def init_loss(model, train_loader, loss_fn=None):
+    """
+    Initialise any loss function and test on one batch.
+
+    Args:
+        model        : Instantiated model (already on device).
+        train_loader : DataLoader to pull one test batch from.
+        loss_fn      : Any nn.Module loss. Defaults to nn.MSELoss().
+                       Pass any loss e.g. nn.CrossEntropyLoss(),
+                       nn.BCEWithLogitsLoss(), or a custom NLL loss.
+
+    Returns:
+        criterion : The loss function.
+        loss      : Initial loss value on one batch (for sanity checking).
+    """
+    print('\nCreating loss function...')
+    criterion = loss_fn if loss_fn is not None else nn.MSELoss()
+    x, y = next(iter(train_loader))
+    x, y = x.to(device), y.to(device)
+    with torch.no_grad():
+        preds = model(x)
+    loss = criterion(preds, y)
+    print(f'Initial loss: {loss.item():.4f}')
+    return criterion, loss
+
 
 def init_optimiser(model, method, **kwargs):
     import inspect
@@ -57,6 +82,8 @@ def evaluate_model(data_loader, model, criterion):
     model.eval()
     total_loss = 0.0
     total_samples = 0
+    all_preds = []
+    all_targets = []
     with torch.no_grad():
         for inputs, labels in data_loader:
             inputs = inputs.to(device)
@@ -65,12 +92,17 @@ def evaluate_model(data_loader, model, criterion):
             loss = criterion(outputs, labels)
             total_loss += loss.item() * labels.size(0)
             total_samples += labels.size(0)
+            all_preds.append(outputs)
+            all_targets.append(labels)
     average_loss = total_loss / total_samples
     accuracy = None
-    return average_loss, accuracy
+    all_preds = torch.cat(all_preds)
+    all_targets = torch.cat(all_targets)
+    return average_loss, accuracy, all_preds, all_targets
 
 def train_model(epochs, train_loader, val_loader, model, criterion, optim_method,
-                training_step=gru_step,  early_stopping_patience=None,early_stopping_min_delta=0.0, **kwargs):
+                training_step=gru_step, early_stopping_patience=None, early_stopping_min_delta=0.0,
+                scheduler=None, clip_grad_norm=None, extra_metrics=None, **kwargs):
     # Training
     print('\nStarting training...')
     # num_epochs = 50
@@ -97,6 +129,8 @@ def train_model(epochs, train_loader, val_loader, model, criterion, optim_method
             #loss = criterion(outputs, labels)
             loss, outputs = training_step(model,inputs,labels,criterion,**kwargs)
             loss.backward()
+            if clip_grad_norm is not None:
+                nn.utils.clip_grad_norm_(model.parameters(), max_norm=clip_grad_norm)
             optim_method.step()
             batch_size = labels.size(0)
             loss_value = loss.item()
@@ -117,7 +151,9 @@ def train_model(epochs, train_loader, val_loader, model, criterion, optim_method
         train_loss = epoch_train_loss_sum / epoch_train_samples
         if accuracy_valid:
             train_accuracy = epoch_train_correct / epoch_train_samples
-        val_loss, val_accuracy = evaluate_model(val_loader, model, criterion)
+        val_loss, val_accuracy, val_preds, val_targets = evaluate_model(val_loader, model, criterion)
+        if scheduler is not None:
+            scheduler.step(val_loss)
         epoch_record = {
             'epoch': epoch + 1,
             'train_loss': train_loss,
@@ -126,6 +162,9 @@ def train_model(epochs, train_loader, val_loader, model, criterion, optim_method
         }
         if accuracy_valid:
             epoch_record['train_accuracy'] = train_accuracy
+        if extra_metrics is not None:
+            for name, fn in extra_metrics.items():
+                epoch_record[name] = fn(val_preds, val_targets)
         history['epoch_metrics'].append(epoch_record)
         if early_stopper:
             stop = early_stopper.update(val_loss, model, epoch + 1)
@@ -142,11 +181,16 @@ def train_model(epochs, train_loader, val_loader, model, criterion, optim_method
                 f"val_acc={val_accuracy:.4f}"
             )
         else:
+            extra_str = ""
+            if extra_metrics is not None:
+                extra_str = " | " + " | ".join(
+                    f"{k}={epoch_record[k]:.4f}" for k in extra_metrics
+                )
             print(
                 f"Epoch {epoch + 1:02d} | "
                 f"train_loss={train_loss:.4f} | "
-                f"val_loss={val_loss:.4f} | "
-                f"val_acc={val_accuracy:.4f}"
+                f"val_loss={val_loss:.4f}"
+                + extra_str
             )
         #print(f'Epoch {epoch + 1} average loss: {avg_epoch_loss:.4f}')
     print('Training finished.')
@@ -206,7 +250,7 @@ def save_history(history, name, stage, model, model_dir, config=None):
     print(f'History saved to: {history_path}')
     return history_path
 
-def full_train(name, images, labels, train_loader, val_loader, method, epochs, model_dir,
+def full_train_old(name, images, labels, train_loader, val_loader, method, epochs, model_dir,
                config=None, dropout_prob=0.0, training_step=gru_step, save_outputs=True,
                session=None,**kwargs):
     from utils.training_session import create_training_session
@@ -220,6 +264,43 @@ def full_train(name, images, labels, train_loader, val_loader, method, epochs, m
         history_path = save_history(session.history, name, "train", session.model, model_dir, config=config)
     end_time = time.time()
     elapsed = end_time - start_time
+    print(f"\n{name} training completed in {elapsed:.2f} seconds")
+    return session.model, session.history, model_path, history_path
+
+def full_train(name, builder, cfg, train_loader, val_loader, epochs, model_dir,
+               training_step=gru_step, save_outputs=True, session=None):
+    """
+    General purpose training entry point.
+    Args
+    ----
+    name          : Model name used for saved files.
+    builder       : Function (cfg) -> (model, criterion, optimiser, training_kwargs).
+                    Write one per model — see build_gru, build_lstm in network.py.
+    cfg           : Full config dict passed to builder and saved with history.
+    train_loader  : Training DataLoader.
+    val_loader    : Validation DataLoader.
+    epochs        : Number of epochs to train.
+    model_dir     : Directory to save model and history.
+    training_step : Training step function e.g. gru_step.
+    save_outputs  : Whether to save model weights and history to disk.
+
+    Returns
+    -------
+    (model, history, model_path, history_path)
+    """
+    from utils.training_session import TrainingSession
+    start_time = time.time()
+
+    if session is None:
+        model, criterion, optimiser, training_kwargs = builder(cfg)
+        session = TrainingSession(model=model,optimiser=optimiser,criterion=criterion,config=cfg,
+                                  training_step=training_step,training_kwargs=training_kwargs)
+    session.train(epochs, train_loader, val_loader)
+    model_path, history_path = None, None
+    if save_outputs:
+        model_path   = save_model(session.model, name, model_dir)
+        history_path = save_history(session.history, name, "train", session.model, model_dir, config=cfg)
+    elapsed = time.time() - start_time
     print(f"\n{name} training completed in {elapsed:.2f} seconds")
     return session.model, session.history, model_path, history_path
 
@@ -283,7 +364,7 @@ def evaluate_test_set(model, test_loader):
         dict containing test_loss and test_accuracy
     """
     criterion = nn.MSELoss()
-    test_loss, test_acc = evaluate_model(test_loader, model, criterion)
+    test_loss, test_acc, _, _ = evaluate_model(test_loader, model, criterion)
     print("\nTest performance")
     print(f"test_loss={test_loss:.4f}")
     print(f"test_acc={test_acc:.4f}")
@@ -302,81 +383,3 @@ def rmse(preds: torch.Tensor, targets: torch.Tensor) -> float:
 
 def mae(preds: torch.Tensor, targets: torch.Tensor) -> float:
     return torch.mean(torch.abs(preds - targets)).item()
-
-
-def train_gru(model, train_loader, val_loader, epochs=50, lr=1e-3):
-    """
-    Train the GRU model and return full history.
-
-    Args:
-        model       (SalesGRU):   Instantiated model.
-        train_loader (DataLoader): Training data.
-        val_loader   (DataLoader): Validation data.
-        epochs       (int):        Number of training epochs.
-        lr           (float):      Learning rate.
-
-    Returns:
-        dict: Training history with per-epoch metrics.
-    """
-    criterion = nn.MSELoss()
-    optimiser = torch.optim.Adam(model.parameters(), lr=lr)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimiser, patience=5, factor=0.5)
-
-    history = {"epoch_metrics": []}
-    start = time.time()
-
-    for epoch in range(epochs):
-        # --- train ---
-        model.train()
-        train_loss_sum = 0.0
-        train_samples  = 0
-        for x, y in train_loader:
-            x, y = x.to(device), y.to(device)
-            optimiser.zero_grad()
-            preds = model(x)
-            loss  = criterion(preds, y)
-            loss.backward()
-            nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-            optimiser.step()
-            train_loss_sum += loss.item() * len(y)
-            train_samples  += len(y)
-
-        train_loss = train_loss_sum / train_samples
-
-        # --- validate ---
-        model.eval()
-        val_preds, val_targets = [], []
-        with torch.no_grad():
-            for x, y in val_loader:
-                x, y = x.to(device), y.to(device)
-                val_preds.append(model(x))
-                val_targets.append(y)
-        val_preds   = torch.cat(val_preds)
-        val_targets = torch.cat(val_targets)
-
-        val_loss = criterion(val_preds, val_targets).item()
-        val_rmse = rmse(val_preds, val_targets)
-        val_mae  = mae(val_preds, val_targets)
-
-        scheduler.step(val_loss)
-
-        record = {
-            "epoch":      epoch + 1,
-            "train_loss": train_loss,
-            "val_loss":   val_loss,
-            "val_rmse":   val_rmse,
-            "val_mae":    val_mae,
-        }
-        history["epoch_metrics"].append(record)
-        print(
-            f"Epoch {epoch+1:03d} | "
-            f"train_loss={train_loss:.4f} | "
-            f"val_loss={val_loss:.4f} | "
-            f"val_rmse={val_rmse:.4f} | "
-            f"val_mae={val_mae:.4f}"
-        )
-
-    elapsed = time.time() - start
-    print(f"\nTraining complete in {elapsed:.1f}s")
-    return history

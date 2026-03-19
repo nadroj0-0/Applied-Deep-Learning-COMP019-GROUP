@@ -88,3 +88,55 @@ class SalesLSTM(nn.Module):
         out, _ = self.lstm(x)
         last   = out[:, -1, :]        # (batch, hidden_size)
         return self.head(last)        # (batch, horizon)
+
+
+def build_gru(cfg):
+    """
+    Builder for deterministic GRU baseline.
+    Returns (model, criterion, optimiser, training_kwargs).
+    """
+    from utils.data import N_BATCH_FEATURES
+    from utils.common import device, rmse, mae
+    model = SalesGRU(
+        input_size  = N_BATCH_FEATURES,
+        hidden_size = cfg["hidden"],
+        num_layers  = cfg["layers"],
+        dropout     = cfg["dropout"],
+        horizon     = cfg["horizon"],
+    ).to(device)
+    criterion = nn.MSELoss()
+    optimiser = torch.optim.Adam(model.parameters(), lr=cfg["lr"])
+    training_kwargs = {
+        "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimiser, patience=5, factor=0.5
+        ),
+        "clip_grad_norm": 1.0,
+        "extra_metrics": {"val_rmse": rmse, "val_mae": mae},
+    }
+    return model, criterion, optimiser, training_kwargs
+
+
+def build_lstm(cfg):
+    """
+    Builder for deterministic LSTM baseline.
+    Returns (model, criterion, optimiser, training_kwargs).
+    """
+    from utils.data import N_BATCH_FEATURES
+    from utils.common import device, rmse, mae
+    model = SalesLSTM(
+        input_size  = N_BATCH_FEATURES,
+        hidden_size = cfg["hidden"],
+        num_layers  = cfg["layers"],
+        dropout     = cfg["dropout"],
+        horizon     = cfg["horizon"],
+    ).to(device)
+    criterion = nn.MSELoss()
+    optimiser = torch.optim.Adam(model.parameters(), lr=cfg["lr"])
+    training_kwargs = {
+        "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimiser, patience=5, factor=0.5
+        ),
+        "clip_grad_norm": 1.0,
+        "extra_metrics": {"val_rmse": rmse, "val_mae": mae},
+    }
+    return model, criterion, optimiser, training_kwargs

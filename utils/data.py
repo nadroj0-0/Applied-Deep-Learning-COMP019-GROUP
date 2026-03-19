@@ -230,7 +230,10 @@ def normalise(
 
 def denormalise(preds: np.ndarray, stats: dict, col: str = "sales") -> np.ndarray:
     """Reverse z-score normalisation for `col` (default: 'sales')."""
-    return preds * stats[col]["std"] + stats[col]["mean"]
+    out = preds * stats[col]["std"] + stats[col]["mean"]
+    if stats[col].get("log1p"):
+        out = np.expm1(out)
+    return out
 
 
 # =============================================================================
@@ -413,10 +416,10 @@ def build_dataloaders(
 
 
 # =============================================================================
-# 10. BATCHED PIPELINE — loads from Luke's preprocessed pickle files
+# 10. BATCHED PIPELINE — loads from preprocessed pickle files
 # =============================================================================
 
-# Features available in Luke's batches that are useful for LSTM/GRU
+# Features available in batches that are useful for LSTM/GRU
 # Matches the cookbook section 4.3 (Deterministic LSTM/GRU feature set)
 BATCH_FEATURE_COLS = [
     "sell_price",
@@ -436,7 +439,7 @@ def load_batches(
         max_series: int = None,
 ) -> pd.DataFrame:
     """
-    Load Luke's preprocessed pickle batches and filter to a single store.
+    Load preprocessed pickle batches and filter to a single store.
 
     Because keep_static_in_batches=False, the batch files don't contain
     store_id. We join series_info first to get CA_3 series IDs, then
@@ -499,7 +502,7 @@ def split_data_by_dnum(
     seq_len:   int = 28,
 ) -> tuple:
     """
-    Temporal split using Luke's recommended d_num boundaries.
+    Temporal split using recommended d_num boundaries.
 
     Defaults match validation_recommended_splits.json fold_2:
         Train : d_1   to d_1857
@@ -517,6 +520,36 @@ def split_data_by_dnum(
     print(f"[data] Test  : d_{val_end + 1}+  ({len(test_df):,} rows)")
     return train_df, val_df, test_df
 
+
+def split_data_rolling(
+    df:        pd.DataFrame,
+    train_end: int = 1800,
+    test_start: int = 1886,
+    seq_len:   int = 28,
+    horizon:   int = 28,
+) -> tuple:
+    """
+    Rolling validation split.
+
+    Train : d_1 to d_1800
+    Val   : four rolling 28-day horizons (d_1801-1828, d_1829-1856,
+            d_1857-1884, d_1885-1912) with seq_len days of context prepended
+    Test  : d_1886 to d_1913 — held out, touched only once at final eval
+
+    Returns (train_df, val_df, test_df)
+    """
+    # Val covers d_1801 to d_1885 with seq_len context prepended
+    val_start_ctx = train_end - seq_len + 1
+    val_end       = test_start - 1          # d_1885
+
+    train_df = df[df["d_num"] <= train_end].copy()
+    val_df   = df[(df["d_num"] >= val_start_ctx) & (df["d_num"] <= val_end)].copy()
+    test_df  = df[df["d_num"] >= (test_start - seq_len)].copy()
+
+    print(f"[data] Train : d_1 -> d_{train_end}  ({len(train_df):,} rows)")
+    print(f"[data] Val   : d_{val_start_ctx} -> d_{val_end}  ({len(val_df):,} rows)")
+    print(f"[data] Test  : d_{test_start}+  ({len(test_df):,} rows)")
+    return train_df, val_df, test_df
 
 def normalise_batched(
         train_df: pd.DataFrame,
@@ -537,9 +570,11 @@ def normalise_batched(
     ]
     stats = {}
     for col in continuous:
+        for split in (train_df, val_df, test_df):
+            split[col] = np.log1p(split[col].clip(lower=0))
         mean = float(train_df[col].mean())
         std = float(train_df[col].std()) + 1e-8
-        stats[col] = {"mean": mean, "std": std}
+        stats[col] = {"mean": mean, "std": std, "log1p": True}
         for split in (train_df, val_df, test_df):
             split[col] = (split[col] - mean) / std
 
@@ -559,7 +594,7 @@ def build_dataloaders_from_batches(
     """
     Pickle batches -> normalised PyTorch DataLoaders in one call.
 
-    Loads Luke's preprocessed features from
+    Loads preprocessed features from
     data_dir/m5_processed_validation/, filters to store_id,
     applies the recommended temporal split, normalises, and
     returns DataLoaders ready for the GRU/LSTM.
@@ -586,8 +621,9 @@ def build_dataloaders_from_batches(
     # Load + filter to store
     df = load_batches(processed_dir, store_id=store_id, max_series=max_series)
 
-    # Split using Luke's recommended boundaries
-    train_df, val_df, test_df = split_data_by_dnum(df, seq_len=seq_len)
+    # Split using recommended boundaries
+    #train_df, val_df, test_df = split_data_by_dnum(df, seq_len=seq_len)
+    train_df, val_df, test_df = split_data_rolling(df, seq_len=seq_len, horizon=horizon)
 
     # Normalise (fit on train only)
     train_df, val_df, test_df, stats = normalise_batched(train_df, val_df, test_df)
