@@ -42,6 +42,36 @@ class SalesGRU(nn.Module):
         return self.head(last)  # shape: (batch,)
 
 
+def build_gru(cfg):
+    """
+    Builder for deterministic GRU baseline.
+    Returns (model, criterion, optimiser, training_kwargs).
+    """
+    from utils.data import N_BATCH_FEATURES
+    from utils.common import device, rmse, mae, mape, r2
+    cfg["layers"] = int(cfg["layers"])
+    cfg["hidden"] = int(cfg["hidden"])
+    model = SalesGRU(
+        input_size=N_BATCH_FEATURES,
+        hidden_size=int(cfg["hidden"]),
+        num_layers=int(cfg["layers"]),
+        dropout=cfg["dropout"],
+        horizon=int(cfg["horizon"]),
+    ).to(device)
+    criterion = nn.MSELoss()
+    optimiser = torch.optim.Adam(model.parameters(), lr=cfg["lr"])
+    training_kwargs = {
+        "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimiser, patience=5, factor=0.5
+        ),
+        "clip_grad_norm": 1.0,
+        "extra_metrics": {"val_rmse": rmse, "val_mae": mae, "val_mape": mape, "val_r2": r2},
+    }
+    return model, criterion, optimiser, training_kwargs
+
+
+
+
 class SalesLSTM(nn.Module):
     """
     Multi-layer LSTM for deterministic multi-step sales forecasting.
@@ -90,34 +120,6 @@ class SalesLSTM(nn.Module):
         return self.head(last)        # (batch, horizon)
 
 
-def build_gru(cfg):
-    """
-    Builder for deterministic GRU baseline.
-    Returns (model, criterion, optimiser, training_kwargs).
-    """
-    from utils.data import N_BATCH_FEATURES
-    from utils.common import device, rmse, mae, mape, r2
-    cfg["layers"] = int(cfg["layers"])
-    cfg["hidden"] = int(cfg["hidden"])
-    model = SalesGRU(
-        input_size=N_BATCH_FEATURES,
-        hidden_size=int(cfg["hidden"]),
-        num_layers=int(cfg["layers"]),
-        dropout=cfg["dropout"],
-        horizon=int(cfg["horizon"]),
-    ).to(device)
-    criterion = nn.MSELoss()
-    optimiser = torch.optim.Adam(model.parameters(), lr=cfg["lr"])
-    training_kwargs = {
-        "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(
-            optimiser, patience=5, factor=0.5
-        ),
-        "clip_grad_norm": 1.0,
-        "extra_metrics": {"val_rmse": rmse, "val_mae": mae, "val_mape": mape, "val_r2": r2},
-    }
-    return model, criterion, optimiser, training_kwargs
-
-
 def build_lstm(cfg):
     """
     Builder for deterministic LSTM baseline.
@@ -142,5 +144,104 @@ def build_lstm(cfg):
         ),
         "clip_grad_norm": 1.0,
         "extra_metrics": {"val_rmse": rmse, "val_mae": mae, "val_mape": mape, "val_r2": r2},
+    }
+    return model, criterion, optimiser, training_kwargs
+
+class ProbGRU(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers, dropout, horizon):
+        super().__init__()
+        self.gru = nn.GRU(input_size, hidden_size, num_layers,
+                          batch_first=True,
+                          dropout=dropout if num_layers > 1 else 0.0)
+        self.mu_head = nn.Sequential(
+            nn.Linear(hidden_size, 64),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(64, horizon),
+            # nn.Softplus()  # ensures mu > 0
+        )
+        # self.alpha_head = nn.Sequential(
+        self.sigma_head = nn.Sequential(
+            nn.Linear(hidden_size, 64),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(64, horizon),
+            nn.Softplus()  # ensures alpha > 0
+        )
+
+    def forward(self, x):
+        out, _ = self.gru(x)
+        last = out[:, -1, :]
+        # return self.mu_head(last), self.alpha_head(last)
+        return self.mu_head(last), self.sigma_head(last) + 1e-3
+
+def build_prob_gru(cfg):
+    from utils.data import N_BATCH_FEATURES
+    from utils.common import device, rmse, mae, mape, r2, gaussian_nll_loss #, nb_nll_loss
+    model = ProbGRU(
+        input_size  = N_BATCH_FEATURES,
+        hidden_size = int(cfg["hidden"]),
+        num_layers  = int(cfg["layers"]),
+        dropout     = cfg["dropout"],
+        horizon     = int(cfg["horizon"]),
+    ).to(device)
+    # criterion = nb_nll_loss
+    criterion = gaussian_nll_loss
+    optimiser = torch.optim.Adam(model.parameters(), lr=cfg["lr"])
+    training_kwargs = {
+        "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimiser, patience=5, factor=0.5
+        ),
+        "clip_grad_norm": 0.5,
+        "extra_metrics": {"val_rmse": rmse, "val_mae": mae},
+        "sigma_reg": cfg.get("sigma_reg", 0.0),
+    }
+    return model, criterion, optimiser, training_kwargs
+
+class ProbLSTM(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers, dropout, horizon):
+        super().__init__()
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers,
+                            batch_first=True,
+                            dropout=dropout if num_layers > 1 else 0.0)
+        self.mu_head = nn.Sequential(
+            nn.Linear(hidden_size, 64),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(64, horizon),
+        )
+        self.sigma_head = nn.Sequential(
+            nn.Linear(hidden_size, 64),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(64, horizon),
+            nn.Softplus()
+        )
+
+    def forward(self, x):
+        out, _ = self.lstm(x)
+        last = out[:, -1, :]
+        return self.mu_head(last), self.sigma_head(last) + 1e-3
+
+
+def build_prob_lstm(cfg):
+    from utils.data import N_BATCH_FEATURES
+    from utils.common import device, rmse, mae, gaussian_nll_loss
+    model = ProbLSTM(
+        input_size  = N_BATCH_FEATURES,
+        hidden_size = int(cfg["hidden"]),
+        num_layers  = int(cfg["layers"]),
+        dropout     = cfg["dropout"],
+        horizon     = int(cfg["horizon"]),
+    ).to(device)
+    criterion = gaussian_nll_loss
+    optimiser = torch.optim.Adam(model.parameters(), lr=cfg["lr"])
+    training_kwargs = {
+        "scheduler": torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimiser, patience=5, factor=0.5
+        ),
+        "clip_grad_norm": 0.5,
+        "extra_metrics": {"val_rmse": rmse, "val_mae": mae},
+        "sigma_reg": cfg.get("sigma_reg", 0.0),
     }
     return model, criterion, optimiser, training_kwargs

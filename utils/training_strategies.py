@@ -13,3 +13,17 @@ def gru_step(model, inputs, labels, criterion, **kwargs):
     return loss, outputs
 
 gru_step.valid_train_accuracy = False
+
+def prob_gru_step(model, inputs, labels, criterion, **kwargs):
+    """
+    Training step for probabilistic GRU/LSTM.
+    Model outputs (mu, alpha) — criterion is nb_nll_loss.
+    """
+    # mu, alpha = model(inputs)
+    # loss = criterion(mu, alpha, labels)
+    # return loss, mu  # return mu as predictions for metric computation
+    mu, sigma = model(inputs)
+    loss = criterion(mu, sigma, labels, sigma_reg=kwargs.get("sigma_reg", 0.0))
+    return loss, mu
+
+prob_gru_step.valid_train_accuracy = False

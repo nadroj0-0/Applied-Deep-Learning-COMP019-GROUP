@@ -555,10 +555,12 @@ def normalise_batched(
         train_df: pd.DataFrame,
         val_df: pd.DataFrame,
         test_df: pd.DataFrame,
+        zscore_target: bool = True,
 ) -> tuple:
     """
-    Z-score normalise continuous features using TRAIN statistics only.
-    Same logic as normalise() but for the batched feature set.
+    zscore_target : If True (default), z-score the sales target after log1p.
+                    Set False for probabilistic models using NB NLL —
+                    log1p only keeps sales as non-negative counts.
 
     Returns (train_df, val_df, test_df, stats)
     """
@@ -569,6 +571,7 @@ def normalise_batched(
         "sales",
     ]
     stats = {}
+    # normalise features — always z-scored
     for col in continuous:
         for split in (train_df, val_df, test_df):
             split[col] = np.log1p(split[col].clip(lower=0))
@@ -577,6 +580,18 @@ def normalise_batched(
         stats[col] = {"mean": mean, "std": std, "log1p": True}
         for split in (train_df, val_df, test_df):
             split[col] = (split[col] - mean) / std
+
+    # sales target — log1p always, z-score only if zscore_target=True
+    for split in (train_df, val_df, test_df):
+        split["sales"] = np.log1p(split["sales"].clip(lower=0))
+    if zscore_target:
+        mean = float(train_df["sales"].mean())
+        std = float(train_df["sales"].std()) + 1e-8
+        stats["sales"] = {"mean": mean, "std": std, "log1p": True}
+        for split in (train_df, val_df, test_df):
+            split["sales"] = (split["sales"] - mean) / std
+    else:
+        stats["sales"] = {"mean": 0.0, "std": 1.0, "log1p": True, "zscore": False}
 
     return train_df, val_df, test_df, stats
 
@@ -590,6 +605,7 @@ def build_dataloaders_from_batches(
         max_series: int = None,
         num_workers: int = 2,
         seed: int = 42,
+        zscore_target: bool = True,
 ) -> tuple:
     """
     Pickle batches -> normalised PyTorch DataLoaders in one call.
@@ -626,7 +642,7 @@ def build_dataloaders_from_batches(
     train_df, val_df, test_df = split_data_rolling(df, seq_len=seq_len, horizon=horizon)
 
     # Normalise (fit on train only)
-    train_df, val_df, test_df, stats = normalise_batched(train_df, val_df, test_df)
+    train_df, val_df, test_df, stats = normalise_batched(train_df, val_df, test_df, zscore_target=zscore_target)
 
     # Build datasets using existing M5Dataset/M5SeriesDataset classes
     # but pointing at BATCH_FEATURE_COLS

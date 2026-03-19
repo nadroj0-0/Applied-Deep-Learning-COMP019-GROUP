@@ -45,6 +45,9 @@ def init_loss(model, train_loader, loss_fn=None):
     """
     print('\nCreating loss function...')
     criterion = loss_fn if loss_fn is not None else nn.MSELoss()
+    if loss_fn is not None:
+        print('Custom loss function — skipping initial loss test')
+        return criterion, None
     x, y = next(iter(train_loader))
     x, y = x.to(device), y.to(device)
     with torch.no_grad():
@@ -78,7 +81,7 @@ def init_optimiser(model, method, **kwargs):
     return optim_method
 
 
-def evaluate_model(data_loader, model, criterion):
+def evaluate_model(data_loader, model, criterion, training_step=None):
     model.eval()
     total_loss = 0.0
     total_samples = 0
@@ -88,8 +91,13 @@ def evaluate_model(data_loader, model, criterion):
         for inputs, labels in data_loader:
             inputs = inputs.to(device)
             labels = labels.to(device)
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
+            if training_step is not None:
+                loss, outputs = training_step(model, inputs, labels, criterion)
+            else:
+                preds = model(inputs)
+                loss = criterion(outputs, labels)
+            # outputs = model(inputs)
+            # loss = criterion(outputs, labels)
             total_loss += loss.item() * labels.size(0)
             total_samples += labels.size(0)
             all_preds.append(outputs)
@@ -151,7 +159,7 @@ def train_model(epochs, train_loader, val_loader, model, criterion, optim_method
         train_loss = epoch_train_loss_sum / epoch_train_samples
         if accuracy_valid:
             train_accuracy = epoch_train_correct / epoch_train_samples
-        val_loss, val_accuracy, val_preds, val_targets = evaluate_model(val_loader, model, criterion)
+        val_loss, val_accuracy, val_preds, val_targets = evaluate_model(val_loader, model, criterion, training_step=training_step)
         if scheduler is not None:
             scheduler.step(val_loss)
         epoch_record = {
@@ -392,3 +400,41 @@ def r2(preds, targets): #R Squared
     ss_res = ((targets - preds) ** 2).sum()
     ss_tot = ((targets - targets.mean()) ** 2).sum()
     return (1 - ss_res / ss_tot).item()
+
+def nb_nll_loss(mu, alpha, targets):
+    """
+    Negative Binomial NLL loss.
+    mu    : predicted mean  (batch, horizon) — must be > 0
+    alpha : dispersion      (batch, horizon) — must be > 0
+    targets: actual sales   (batch, horizon)
+    """
+    eps = 1e-8
+    r = 1.0 / (alpha + eps)
+    p = mu / (mu + r + eps)
+    nll = (
+        -torch.lgamma(targets + r)
+        + torch.lgamma(r)
+        + torch.lgamma(targets + 1)
+        - r * torch.log(r / (r + mu + eps))
+        - targets * torch.log(p + eps)
+    )
+    return nll.mean()
+
+def gaussian_nll_loss(mu, sigma, targets, sigma_reg=0.0):
+    """
+    Gaussian NLL loss in log1p space.
+    Mathematically correct for log-transformed count data.
+    Equivalent to assuming Log-Normal distribution in count space.
+    Industry standard — used by DeepAR, N-BEATS etc.
+
+    mu      : predicted mean in log1p space  (batch, horizon)
+    sigma   : predicted std  in log1p space  (batch, horizon) — must be > 0
+    targets : log1p transformed sales        (batch, horizon)
+    sigma_reg: penalty on mean sigma to discourage variance collapse.
+    """
+    sigma = sigma.clamp(min=1e-6, max=10.0)
+    dist  = torch.distributions.Normal(mu, sigma)
+    nll = -dist.log_prob(targets).mean()
+    if sigma_reg > 0.0:
+        nll = nll + sigma_reg * sigma.mean()
+    return nll

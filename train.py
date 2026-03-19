@@ -10,8 +10,8 @@ import math
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[0]))
 from utils.experiment import *
-from utils.network import build_gru, build_lstm
-from utils.training_strategies import gru_step
+from utils.network import build_gru, build_lstm, build_prob_gru, build_prob_lstm
+from utils.training_strategies import gru_step, prob_gru_step
 from utils.data import build_dataloaders_from_batches
 
 import argparse #for debuggin remove later before submission
@@ -34,9 +34,10 @@ TRAIN_CONFIG = {
     "num_workers":              2,
     "early_stopping_patience":  10,
     "early_stopping_min_delta": 0.001,
+    "sigma_reg": 0.01,
 }
 
-SEARCH = True
+SEARCH = False
 
 GRU_SEARCH_SPACE = {
     "lr":      (1e-4, 1e-2, "log"),
@@ -50,6 +51,14 @@ LSTM_SEARCH_SPACE = {
     "hidden":  (64, 256, "uniform"),
     "layers":  (1, 4, "uniform"),
     "dropout": (0.1, 0.4, "uniform"),
+}
+
+PROB_SEARCH_SPACE = {
+    "lr":        (1e-4, 1e-2, "log"),
+    "hidden":    (64, 256, "uniform"),
+    "layers":    (1, 3, "uniform"),   # cap at 3 — deeper models more prone to variance collapse
+    "dropout":   (0.1, 0.4, "uniform"),
+    "sigma_reg": (0.0, 0.05, "uniform"),
 }
 
 HYPER_PARAM_INIT_MODELS = 20
@@ -108,11 +117,16 @@ def main():
             training_step  = gru_step,
             search_space   = LSTM_SEARCH_SPACE if SEARCH else None,
         ),
-        # "gru_probabilistic": dict(
-        #     builder        = build_prob_gru,
-        #     training_step  = prob_gru_step,
-        #     search_space   = GRU_SEARCH_SPACE if SEARCH else None,
-        # ),
+        "gru_probabilistic": dict(
+            builder        = build_prob_gru,
+            training_step  = prob_gru_step,
+            search_space   = PROB_SEARCH_SPACE if SEARCH else None,
+        ),
+        "lstm_probabilistic": dict(
+            builder=build_prob_lstm,
+            training_step=prob_gru_step,
+            search_space=PROB_SEARCH_SPACE if SEARCH else None,
+        ),
         # "tft": dict(
         #     builder        = build_tft,
         #     training_step  = tft_step,
@@ -121,11 +135,13 @@ def main():
     }
 
     for name, kwargs in experiments.items():
+        is_prob = "prob" in name
         exp = Experiment(name, cfg, model_dir=get_model_dir(name, PROJECT_DIR))
         exp.run(
             data_fn=build_dataloaders_from_batches,
             schedule=HYPER_PARAM_SEARCH_SCHEDULE,
             initial_models=HYPER_PARAM_INIT_MODELS,
+            zscore_target=not is_prob,
             **data_kwargs,
             **kwargs,
         )
