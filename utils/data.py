@@ -670,47 +670,54 @@ def build_dataloaders_from_batches(
     return train_loader, val_loader, test_loader, stats
 
 class BatchSeriesDataset(Dataset):
-    """Sliding window dataset for one series using BATCH_FEATURE_COLS."""
+    """Pre-computes all windows at construction time for fast GPU feeding."""
     def __init__(self, series_df, seq_len, horizon):
-        self.seq_len  = seq_len
-        self.horizon  = horizon
-        self.features = series_df[BATCH_FEATURE_COLS].values.astype(np.float32)
-        self.targets  = series_df["sales"].values.astype(np.float32)
-        self.n        = max(0, len(series_df) - seq_len - horizon + 1)
+        features = series_df[BATCH_FEATURE_COLS].values.astype(np.float32)
+        targets  = series_df["sales"].values.astype(np.float32)
+        n = max(0, len(series_df) - seq_len - horizon + 1)
+        if n == 0:
+            self.x = torch.zeros((0, seq_len, len(BATCH_FEATURE_COLS)), dtype=torch.float32)
+            self.y = torch.zeros((0, horizon), dtype=torch.float32)
+        else:
+            self.x = torch.tensor(
+                np.stack([features[i: i + seq_len] for i in range(n)])
+            )
+            self.y = torch.tensor(
+                np.stack([targets[i + seq_len: i + seq_len + horizon] for i in range(n)])
+            )
 
     def __len__(self):
-        return self.n
+        return len(self.x)
 
     def __getitem__(self, idx):
-        x = self.features[idx: idx + self.seq_len]
-        y = self.targets[idx + self.seq_len: idx + self.seq_len + self.horizon]
-        return torch.tensor(x), torch.tensor(y)
+        return self.x[idx], self.y[idx]
 
 
 class BatchDataset(Dataset):
-    """Aggregates sliding windows from all series."""
+    """Concatenates all series windows into one flat tensor dataset."""
     def __init__(self, df, seq_len, horizon):
-        self.datasets = []
+        all_x, all_y = [], []
+        count = 0
         for sid in df["id"].unique():
             sub = df[df["id"] == sid].sort_values("d_num").reset_index(drop=True)
             ds  = BatchSeriesDataset(sub, seq_len, horizon)
             if len(ds) > 0:
-                self.datasets.append(ds)
-        self.index = [
-            (d_i, s_i)
-            for d_i, ds in enumerate(self.datasets)
-            for s_i in range(len(ds))
-        ]
-        print(f"[data] {len(self.datasets)} series -> {len(self.index):,} windows")
+                all_x.append(ds.x)
+                all_y.append(ds.y)
+                count += 1
+        self.x = torch.cat(all_x, dim=0)
+        self.y = torch.cat(all_y, dim=0)
+        print(f"[data] {count} series -> {len(self.x):,} windows")
 
     def __len__(self):
-        return len(self.index)
+        return len(self.x)
 
     def __getitem__(self, idx):
-        d_i, s_i = self.index[idx]
-        return self.datasets[d_i][s_i]
+        return self.x[idx], self.y[idx]
+
 
 def _make_batch_dataset(df: pd.DataFrame, seq_len: int, horizon: int) -> Dataset:
-    """Build a BatchDataset from a DataFrame using BATCH_FEATURE_COLS."""
+    """Build a pre-computed BatchDataset. Use num_workers=0 only."""
     return BatchDataset(df, seq_len, horizon)
+
 
