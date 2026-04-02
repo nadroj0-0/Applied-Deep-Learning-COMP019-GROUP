@@ -264,3 +264,10 @@ runs/**/plots/*
 
 # teammates scratch / reference code
 Teammates reference code/
+
+
+# local junk
+.Rhistory
+
+# placeholder files
+.gitkeep
