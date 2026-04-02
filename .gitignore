@@ -215,7 +215,52 @@ __marimo__/
 *.zip
 data/*.csv
 
+# model weights
+# ignore model weights globally
 *.pt
-*.json
-*.png
+
+# ignore all JSON by default (optional advanced)
+# *.json
+
+# logs
+# ignore logs by default
+*.log
+
+# but keep key logs
+!runs/**/train.log
+
+# optional: ignore raw runs completely
+# runs/
+
+# ===== RUNS CONTROL =====
+
+# keep runs structure
+!runs/
+!runs/**/
+
+# keep configs
+!runs/**/configs/
+!runs/**/configs/**
+
+# keep key metrics
+!runs/**/all_test_metrics.json
+
+# keep per-model outputs
+!runs/**/models/**/*_search.json
+!runs/**/models/**/*_test_metrics.json
+# explicitly allow weights only inside runs models
+!runs/**/models/**/*.pt
+
+# ignore large histories
+*train_history.json
+
+# plots: ignore most
+runs/**/plots/*
+
+# keep only training curves
+!runs/**/plots/*training_curves.png
+
 *.loh
+
+# teammates scratch / reference code
+Teammates reference code/

@@ -1,0 +1,2267 @@
+Using device: cuda
+main started
+args parsed
+
+============================================================
+  M5 TRAINING — baseline_ablation_sales_hierarchy_dow
+  Models : ['baseline_gru_det', 'baseline_gru_prob', 'baseline_gru_nb', 'baseline_quantile_gru', 'baseline_wquantile_gru']
+  Search : True
+============================================================
+[config] Run directory: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow
+[config] Snapshotted experiment config → /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/configs/experiment.yml
+[config] Snapshotted model config  → /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/configs/models/baseline_gru_det.yml
+[config] Snapshotted model config  → /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/configs/models/baseline_gru_prob.yml
+[config] Snapshotted model config  → /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/configs/models/baseline_gru_nb.yml
+[config] Snapshotted model config  → /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/configs/models/baseline_quantile_gru.yml
+[config] Snapshotted model config  → /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/configs/models/baseline_wquantile_gru.yml
+
+[search] Hyperparameter search — 5 model(s)
+[search] Sampling  : stratified
+[search] Per-strat : 1000
+[search] Init mods : 10
+[search] Schedule  : [{'epochs': 10, 'keep': 5}, {'epochs': 10, 'keep': 3}, {'epochs': 20, 'keep': 1}]
+
+[search] Loading data once for all models...
+[search] Sampling  : stratified | top_k=1000 | feature_set=sales_hierarchy_dow
+Random seed set to 42
+[data] Downloading sales...
+[data] Downloading calendar...
+[data] Downloading prices...
+[data] Sales    : (30490, 1947)
+[data] Calendar : (1969, 14)
+[data] Prices   : (6841121, 4)
+[data] Original items: 30490 | Stratified 1000+1000+1000 = 3000 series
+[data] Trimmed shape : (3000, 1947)
+[data] After melt  : (5823000, 8)
+[data] After hierarchy encoding : (5823000, 15)
+[data] Hierarchy pipeline (sales_hierarchy_dow): (5823000, 15)
+[data] Train : 2011-01-29 -> 2016-02-28  (5,571,000 rows)
+[data] Val   : 2016-02-29 -> 2016-04-24  (168,000 rows)
+[data] Test  : 2016-04-25 -> 2016-05-22  (84,000 rows)
+[data] No normalisation — using raw sales counts
+[data] train: 5,406,000 windows  (autoregressive=True)
+[data] val: 87,000 windows  (autoregressive=True)
+[data] test: 3,000 windows  (autoregressive=True)
+
+[data] Feature set  : sales_hierarchy_dow  (6 features)
+[data] Input shape  : (seq_len=28, n_features=6)
+[data] Autoregressive: True
+[data] Train batches: 2640
+[data] Val batches  : 43
+[data] Test batches : 2
+[DEBUG] Train windows: 5,406,000
+[DEBUG] Val windows  : 87,000
+[DEBUG] Test windows : 3,000
+Random seed set to 42
+[data] Found local sales
+[data] Found local calendar
+[data] Found local prices
+[data] Sales    : (30490, 1947)
+[data] Calendar : (1969, 14)
+[data] Prices   : (6841121, 4)
+[data] Original items: 30490 | Stratified 1000+1000+1000 = 3000 series
+[data] Trimmed shape : (3000, 1947)
+[data] After melt  : (5823000, 8)
+[data] After hierarchy encoding : (5823000, 15)
+[data] Hierarchy pipeline (sales_hierarchy_dow): (5823000, 15)
+[data] Train : 2011-01-29 -> 2016-02-28  (5,571,000 rows)
+[data] Val   : 2016-02-29 -> 2016-04-24  (168,000 rows)
+[data] Test  : 2016-04-25 -> 2016-05-22  (84,000 rows)
+[data] No normalisation — using raw sales counts
+[data] Revenue weights computed (3000 series)
+[data] train: 5,406,000 windows  (autoregressive=True)
+[data] val: 87,000 windows  (autoregressive=True)
+[data] test: 3,000 windows  (autoregressive=True)
+
+[data] Feature set  : sales_hierarchy_dow  (6 features)
+[data] Input shape  : (seq_len=28, n_features=6)
+[data] Autoregressive: True
+[data] Train batches: 2640
+[data] Val batches  : 43
+[data] Test batches : 2
+[DEBUG] Train windows: 5,406,000
+[DEBUG] Val windows  : 87,000
+[DEBUG] Test windows : 3,000
+[search] Data loaded. Starting search loop.
+
+
+============================================================
+  SEARCH: baseline_gru_det
+============================================================
+
+Starting baseline_gru_det hyperparameter search
+
+Stage 0: training 10 models for 10 epochs
+
+Starting training...
+/workspace/comp0197-experiments/utils/common.py:126: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler() if use_amp else None
+Epoch 01 | train_loss=36.4497 | val_loss=19.1264 | val_rmse=4.3734 | val_mae=1.8290 | val_mape=71.3130 | val_r2=0.7726
+Epoch 02 | train_loss=27.8126 | val_loss=18.6409 | val_rmse=4.3175 | val_mae=1.7857 | val_mape=66.0000 | val_r2=0.7783
+Epoch 03 | train_loss=26.3625 | val_loss=18.3609 | val_rmse=4.2850 | val_mae=1.8366 | val_mape=62.7404 | val_r2=0.7817
+Epoch 04 | train_loss=25.7388 | val_loss=18.3598 | val_rmse=4.2848 | val_mae=1.8954 | val_mape=64.7783 | val_r2=0.7817
+Epoch 05 | train_loss=25.3218 | val_loss=18.2892 | val_rmse=4.2766 | val_mae=1.9473 | val_mape=59.9853 | val_r2=0.7825
+Epoch 06 | train_loss=25.1200 | val_loss=18.5281 | val_rmse=4.3044 | val_mae=1.8219 | val_mape=68.2763 | val_r2=0.7797
+Epoch 07 | train_loss=24.9776 | val_loss=18.7272 | val_rmse=4.3275 | val_mae=1.8196 | val_mape=63.1252 | val_r2=0.7773
+Epoch 08 | train_loss=24.8494 | val_loss=18.6479 | val_rmse=4.3183 | val_mae=1.8500 | val_mape=64.5682 | val_r2=0.7783
+Epoch 09 | train_loss=24.7793 | val_loss=18.1083 | val_rmse=4.2554 | val_mae=1.7893 | val_mape=69.6252 | val_r2=0.7847
+Epoch 10 | train_loss=24.6682 | val_loss=18.2552 | val_rmse=4.2726 | val_mae=1.8405 | val_mape=67.0980 | val_r2=0.7829
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.1083 at epoch 9
+
+search_stage0_0 training completed in 1195.99 seconds
+
+Starting training...
+Epoch 01 | train_loss=30.4844 | val_loss=19.2647 | val_rmse=4.3892 | val_mae=2.0929 | val_mape=61.7436 | val_r2=0.7709
+Epoch 02 | train_loss=26.9529 | val_loss=20.2063 | val_rmse=4.4951 | val_mae=2.1196 | val_mape=73.9480 | val_r2=0.7597
+Epoch 03 | train_loss=26.6195 | val_loss=18.8843 | val_rmse=4.3456 | val_mae=1.8862 | val_mape=70.4129 | val_r2=0.7754
+Epoch 04 | train_loss=26.2202 | val_loss=18.8965 | val_rmse=4.3470 | val_mae=1.8694 | val_mape=68.9022 | val_r2=0.7753
+Epoch 05 | train_loss=26.0259 | val_loss=19.0564 | val_rmse=4.3654 | val_mae=2.0250 | val_mape=64.2114 | val_r2=0.7734
+Epoch 06 | train_loss=26.0845 | val_loss=18.9874 | val_rmse=4.3574 | val_mae=2.0990 | val_mape=59.7123 | val_r2=0.7742
+Epoch 07 | train_loss=25.9039 | val_loss=18.8550 | val_rmse=4.3422 | val_mae=1.9411 | val_mape=78.2417 | val_r2=0.7758
+Epoch 08 | train_loss=25.9255 | val_loss=19.3125 | val_rmse=4.3946 | val_mae=2.0167 | val_mape=67.3777 | val_r2=0.7704
+Epoch 09 | train_loss=25.8232 | val_loss=19.0233 | val_rmse=4.3616 | val_mae=1.8143 | val_mape=65.6573 | val_r2=0.7738
+Epoch 10 | train_loss=25.9483 | val_loss=18.8564 | val_rmse=4.3424 | val_mae=1.8435 | val_mape=69.2044 | val_r2=0.7758
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.8550 at epoch 7
+
+search_stage0_1 training completed in 1199.73 seconds
+
+Starting training...
+Epoch 01 | train_loss=62.7867 | val_loss=27.9264 | val_rmse=5.2845 | val_mae=1.9632 | val_mape=67.7259 | val_r2=0.6679
+Epoch 02 | train_loss=39.9548 | val_loss=22.6011 | val_rmse=4.7541 | val_mae=1.8724 | val_mape=66.1836 | val_r2=0.7313
+Epoch 03 | train_loss=34.5267 | val_loss=20.5066 | val_rmse=4.5284 | val_mae=1.8337 | val_mape=66.7456 | val_r2=0.7562
+Epoch 04 | train_loss=31.5157 | val_loss=19.5431 | val_rmse=4.4208 | val_mae=1.8244 | val_mape=65.4397 | val_r2=0.7676
+Epoch 05 | train_loss=29.6761 | val_loss=19.0772 | val_rmse=4.3677 | val_mae=1.8105 | val_mape=65.1244 | val_r2=0.7732
+Epoch 06 | train_loss=28.5270 | val_loss=18.7577 | val_rmse=4.3310 | val_mae=1.8346 | val_mape=64.4131 | val_r2=0.7770
+Epoch 07 | train_loss=27.7341 | val_loss=18.5926 | val_rmse=4.3119 | val_mae=1.8107 | val_mape=65.4220 | val_r2=0.7789
+Epoch 08 | train_loss=27.1769 | val_loss=18.4579 | val_rmse=4.2963 | val_mae=1.7982 | val_mape=68.9170 | val_r2=0.7805
+Epoch 09 | train_loss=26.7665 | val_loss=18.3863 | val_rmse=4.2879 | val_mae=1.8420 | val_mape=65.4562 | val_r2=0.7814
+Epoch 10 | train_loss=26.4415 | val_loss=18.3327 | val_rmse=4.2817 | val_mae=1.8001 | val_mape=66.8484 | val_r2=0.7820
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.3327 at epoch 10
+
+search_stage0_2 training completed in 1204.45 seconds
+
+Starting training...
+Epoch 01 | train_loss=29.8096 | val_loss=19.0475 | val_rmse=4.3643 | val_mae=1.8996 | val_mape=68.6889 | val_r2=0.7735
+Epoch 02 | train_loss=26.4952 | val_loss=18.9683 | val_rmse=4.3553 | val_mae=1.9186 | val_mape=63.0522 | val_r2=0.7745
+Epoch 03 | train_loss=26.0844 | val_loss=18.7486 | val_rmse=4.3300 | val_mae=1.8857 | val_mape=62.1085 | val_r2=0.7771
+Epoch 04 | train_loss=26.0127 | val_loss=18.7074 | val_rmse=4.3252 | val_mae=1.8587 | val_mape=67.0412 | val_r2=0.7776
+Epoch 05 | train_loss=25.8457 | val_loss=18.8486 | val_rmse=4.3415 | val_mae=1.9729 | val_mape=78.8182 | val_r2=0.7759
+Epoch 06 | train_loss=25.7262 | val_loss=18.9250 | val_rmse=4.3503 | val_mae=1.9239 | val_mape=65.6149 | val_r2=0.7750
+Epoch 07 | train_loss=25.5938 | val_loss=18.8114 | val_rmse=4.3372 | val_mae=1.8841 | val_mape=63.9416 | val_r2=0.7763
+Epoch 08 | train_loss=25.4385 | val_loss=19.2974 | val_rmse=4.3929 | val_mae=1.9203 | val_mape=74.1429 | val_r2=0.7705
+Epoch 09 | train_loss=25.5608 | val_loss=18.6709 | val_rmse=4.3210 | val_mae=1.8721 | val_mape=67.7886 | val_r2=0.7780
+Epoch 10 | train_loss=25.5742 | val_loss=19.0547 | val_rmse=4.3652 | val_mae=1.9664 | val_mape=61.1558 | val_r2=0.7734
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.6709 at epoch 9
+
+search_stage0_3 training completed in 1202.35 seconds
+
+Starting training...
+Epoch 01 | train_loss=32.1256 | val_loss=19.4949 | val_rmse=4.4153 | val_mae=1.8646 | val_mape=63.2591 | val_r2=0.7682
+Epoch 02 | train_loss=27.7544 | val_loss=19.4339 | val_rmse=4.4084 | val_mae=1.8601 | val_mape=69.6092 | val_r2=0.7689
+Epoch 03 | train_loss=27.3505 | val_loss=19.4398 | val_rmse=4.4091 | val_mae=1.8652 | val_mape=67.6537 | val_r2=0.7688
+Epoch 04 | train_loss=26.8851 | val_loss=19.3085 | val_rmse=4.3941 | val_mae=1.9404 | val_mape=68.5368 | val_r2=0.7704
+Epoch 05 | train_loss=26.8725 | val_loss=19.2529 | val_rmse=4.3878 | val_mae=1.8487 | val_mape=66.4049 | val_r2=0.7711
+Epoch 06 | train_loss=26.6698 | val_loss=18.8612 | val_rmse=4.3429 | val_mae=1.8771 | val_mape=73.1002 | val_r2=0.7757
+Epoch 07 | train_loss=26.3610 | val_loss=20.0151 | val_rmse=4.4738 | val_mae=1.9723 | val_mape=62.2139 | val_r2=0.7620
+Epoch 08 | train_loss=26.4296 | val_loss=18.8075 | val_rmse=4.3368 | val_mae=1.8881 | val_mape=66.9063 | val_r2=0.7764
+Epoch 09 | train_loss=26.2651 | val_loss=19.0944 | val_rmse=4.3697 | val_mae=2.0049 | val_mape=66.0089 | val_r2=0.7730
+Epoch 10 | train_loss=26.3743 | val_loss=19.1799 | val_rmse=4.3795 | val_mae=1.9668 | val_mape=77.1164 | val_r2=0.7719
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.8075 at epoch 8
+
+search_stage0_4 training completed in 1199.08 seconds
+
+Starting training...
+Epoch 01 | train_loss=30.9453 | val_loss=18.8786 | val_rmse=4.3450 | val_mae=1.8666 | val_mape=69.2627 | val_r2=0.7755
+Epoch 02 | train_loss=26.5960 | val_loss=18.8538 | val_rmse=4.3421 | val_mae=1.9487 | val_mape=59.9260 | val_r2=0.7758
+Epoch 03 | train_loss=26.1490 | val_loss=18.5830 | val_rmse=4.3108 | val_mae=1.8455 | val_mape=65.9888 | val_r2=0.7790
+Epoch 04 | train_loss=25.9692 | val_loss=18.8441 | val_rmse=4.3410 | val_mae=2.0268 | val_mape=64.9648 | val_r2=0.7759
+Epoch 05 | train_loss=25.8846 | val_loss=18.7310 | val_rmse=4.3279 | val_mae=1.8878 | val_mape=64.2542 | val_r2=0.7773
+Epoch 06 | train_loss=25.7073 | val_loss=18.8572 | val_rmse=4.3425 | val_mae=1.8523 | val_mape=71.1844 | val_r2=0.7758
+Epoch 07 | train_loss=25.5175 | val_loss=18.9808 | val_rmse=4.3567 | val_mae=1.8614 | val_mape=68.3957 | val_r2=0.7743
+Epoch 08 | train_loss=25.5300 | val_loss=18.7912 | val_rmse=4.3349 | val_mae=1.8221 | val_mape=69.5207 | val_r2=0.7766
+Epoch 09 | train_loss=25.3992 | val_loss=18.8883 | val_rmse=4.3461 | val_mae=1.9820 | val_mape=63.8813 | val_r2=0.7754
+Epoch 10 | train_loss=24.9586 | val_loss=18.2507 | val_rmse=4.2721 | val_mae=1.8105 | val_mape=64.5945 | val_r2=0.7830
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.2507 at epoch 10
+
+search_stage0_5 training completed in 1202.76 seconds
+
+Starting training...
+Epoch 01 | train_loss=29.7450 | val_loss=19.1340 | val_rmse=4.3742 | val_mae=1.9003 | val_mape=72.7840 | val_r2=0.7725
+Epoch 02 | train_loss=26.5983 | val_loss=18.9207 | val_rmse=4.3498 | val_mae=1.8574 | val_mape=67.8922 | val_r2=0.7750
+Epoch 03 | train_loss=26.1932 | val_loss=18.9527 | val_rmse=4.3535 | val_mae=1.9394 | val_mape=69.7560 | val_r2=0.7746
+Epoch 04 | train_loss=25.9561 | val_loss=18.6331 | val_rmse=4.3166 | val_mae=1.8975 | val_mape=75.1043 | val_r2=0.7784
+Epoch 05 | train_loss=25.7333 | val_loss=18.6124 | val_rmse=4.3142 | val_mae=1.8379 | val_mape=70.4549 | val_r2=0.7787
+Epoch 06 | train_loss=25.5616 | val_loss=18.7717 | val_rmse=4.3326 | val_mae=1.9436 | val_mape=76.6637 | val_r2=0.7768
+Epoch 07 | train_loss=25.6566 | val_loss=18.7458 | val_rmse=4.3296 | val_mae=1.8596 | val_mape=72.8905 | val_r2=0.7771
+Epoch 08 | train_loss=25.5398 | val_loss=18.6826 | val_rmse=4.3223 | val_mae=1.8987 | val_mape=65.3899 | val_r2=0.7778
+Epoch 09 | train_loss=25.4940 | val_loss=18.5688 | val_rmse=4.3092 | val_mae=1.8415 | val_mape=72.7243 | val_r2=0.7792
+Epoch 10 | train_loss=25.4875 | val_loss=19.0655 | val_rmse=4.3664 | val_mae=1.9095 | val_mape=76.1495 | val_r2=0.7733
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.5688 at epoch 9
+
+search_stage0_6 training completed in 1204.15 seconds
+
+Starting training...
+Epoch 01 | train_loss=64.5217 | val_loss=28.7719 | val_rmse=5.3639 | val_mae=1.9690 | val_mape=69.2227 | val_r2=0.6579
+Epoch 02 | train_loss=41.3161 | val_loss=23.3383 | val_rmse=4.8310 | val_mae=1.8760 | val_mape=66.6343 | val_r2=0.7225
+Epoch 03 | train_loss=35.7175 | val_loss=20.9201 | val_rmse=4.5739 | val_mae=1.8514 | val_mape=65.1394 | val_r2=0.7512
+Epoch 04 | train_loss=32.3804 | val_loss=19.7740 | val_rmse=4.4468 | val_mae=1.8385 | val_mape=67.8976 | val_r2=0.7649
+Epoch 05 | train_loss=30.2206 | val_loss=19.1345 | val_rmse=4.3743 | val_mae=1.8434 | val_mape=65.1250 | val_r2=0.7725
+Epoch 06 | train_loss=28.8526 | val_loss=18.7752 | val_rmse=4.3330 | val_mae=1.8269 | val_mape=66.0772 | val_r2=0.7767
+Epoch 07 | train_loss=27.9793 | val_loss=18.5470 | val_rmse=4.3066 | val_mae=1.8450 | val_mape=64.0801 | val_r2=0.7795
+Epoch 08 | train_loss=27.3805 | val_loss=18.5068 | val_rmse=4.3020 | val_mae=1.8041 | val_mape=68.1252 | val_r2=0.7799
+Epoch 09 | train_loss=26.9487 | val_loss=18.4075 | val_rmse=4.2904 | val_mae=1.7996 | val_mape=65.8362 | val_r2=0.7811
+Epoch 10 | train_loss=26.6148 | val_loss=18.3699 | val_rmse=4.2860 | val_mae=1.8610 | val_mape=65.5349 | val_r2=0.7816
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.3699 at epoch 10
+
+search_stage0_7 training completed in 1203.31 seconds
+
+Starting training...
+Epoch 01 | train_loss=35.5668 | val_loss=19.0534 | val_rmse=4.3650 | val_mae=1.8159 | val_mape=67.8174 | val_r2=0.7734
+Epoch 02 | train_loss=27.4880 | val_loss=18.7102 | val_rmse=4.3255 | val_mae=1.8293 | val_mape=69.6053 | val_r2=0.7775
+Epoch 03 | train_loss=26.1867 | val_loss=18.4739 | val_rmse=4.2981 | val_mae=1.8539 | val_mape=63.1278 | val_r2=0.7803
+Epoch 04 | train_loss=25.6149 | val_loss=18.4034 | val_rmse=4.2899 | val_mae=1.8585 | val_mape=72.2299 | val_r2=0.7812
+Epoch 05 | train_loss=25.2920 | val_loss=18.4335 | val_rmse=4.2934 | val_mae=1.8626 | val_mape=69.0782 | val_r2=0.7808
+Epoch 06 | train_loss=25.0667 | val_loss=18.4007 | val_rmse=4.2896 | val_mae=1.8331 | val_mape=71.6498 | val_r2=0.7812
+Epoch 07 | train_loss=24.9916 | val_loss=18.2583 | val_rmse=4.2730 | val_mae=1.8160 | val_mape=67.7077 | val_r2=0.7829
+Epoch 08 | train_loss=24.8714 | val_loss=18.0104 | val_rmse=4.2439 | val_mae=1.8532 | val_mape=71.5486 | val_r2=0.7858
+Epoch 09 | train_loss=24.7739 | val_loss=18.2741 | val_rmse=4.2748 | val_mae=1.9580 | val_mape=61.2935 | val_r2=0.7827
+Epoch 10 | train_loss=24.6556 | val_loss=18.2607 | val_rmse=4.2733 | val_mae=1.8343 | val_mape=66.6068 | val_r2=0.7829
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.0104 at epoch 8
+
+search_stage0_8 training completed in 1203.92 seconds
+
+Starting training...
+Epoch 01 | train_loss=37.7349 | val_loss=19.3987 | val_rmse=4.4044 | val_mae=1.8304 | val_mape=71.3290 | val_r2=0.7693
+Epoch 02 | train_loss=28.4131 | val_loss=18.7805 | val_rmse=4.3337 | val_mae=1.8184 | val_mape=69.4537 | val_r2=0.7767
+Epoch 03 | train_loss=26.7053 | val_loss=18.4485 | val_rmse=4.2952 | val_mae=1.8325 | val_mape=69.3337 | val_r2=0.7806
+Epoch 04 | train_loss=25.9519 | val_loss=18.2828 | val_rmse=4.2758 | val_mae=1.8690 | val_mape=67.8106 | val_r2=0.7826
+Epoch 05 | train_loss=25.5998 | val_loss=18.2017 | val_rmse=4.2663 | val_mae=1.7902 | val_mape=68.6829 | val_r2=0.7836
+Epoch 06 | train_loss=25.3212 | val_loss=18.3390 | val_rmse=4.2824 | val_mae=1.8210 | val_mape=70.0717 | val_r2=0.7819
+Epoch 07 | train_loss=25.1385 | val_loss=18.2111 | val_rmse=4.2674 | val_mae=1.9444 | val_mape=63.0157 | val_r2=0.7835
+Epoch 08 | train_loss=25.0704 | val_loss=18.1264 | val_rmse=4.2575 | val_mae=1.8112 | val_mape=66.2600 | val_r2=0.7845
+Epoch 09 | train_loss=24.9539 | val_loss=18.0802 | val_rmse=4.2521 | val_mae=1.8052 | val_mape=66.4067 | val_r2=0.7850
+Epoch 10 | train_loss=24.8524 | val_loss=18.0618 | val_rmse=4.2499 | val_mae=1.7951 | val_mape=65.4237 | val_r2=0.7852
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.0618 at epoch 10
+
+search_stage0_9 training completed in 1197.40 seconds
+Pruned to 5 models
+
+Stage 1: training 5 models for 10 epochs
+
+Starting training...
+Epoch 01 | train_loss=24.8123 | val_loss=18.4169 | val_rmse=4.2915 | val_mae=1.9559 | val_mape=64.4921 | val_r2=0.7810
+Epoch 02 | train_loss=24.8217 | val_loss=18.3228 | val_rmse=4.2805 | val_mae=1.8170 | val_mape=71.5488 | val_r2=0.7821
+Epoch 03 | train_loss=24.7149 | val_loss=18.1783 | val_rmse=4.2636 | val_mae=1.7892 | val_mape=67.5656 | val_r2=0.7838
+Epoch 04 | train_loss=24.6508 | val_loss=18.2309 | val_rmse=4.2698 | val_mae=1.8137 | val_mape=69.4122 | val_r2=0.7832
+Epoch 05 | train_loss=24.3377 | val_loss=18.1746 | val_rmse=4.2632 | val_mae=1.8154 | val_mape=67.4165 | val_r2=0.7839
+Epoch 06 | train_loss=24.2427 | val_loss=18.1859 | val_rmse=4.2645 | val_mae=1.7953 | val_mape=67.4601 | val_r2=0.7838
+Epoch 07 | train_loss=24.1716 | val_loss=18.0816 | val_rmse=4.2522 | val_mae=1.8375 | val_mape=62.6760 | val_r2=0.7850
+Epoch 08 | train_loss=24.1343 | val_loss=18.0425 | val_rmse=4.2476 | val_mae=1.8558 | val_mape=63.9503 | val_r2=0.7855
+Epoch 09 | train_loss=24.0783 | val_loss=18.1250 | val_rmse=4.2574 | val_mae=1.9092 | val_mape=64.5736 | val_r2=0.7845
+Epoch 10 | train_loss=24.0764 | val_loss=18.0507 | val_rmse=4.2486 | val_mae=1.9625 | val_mape=60.0904 | val_r2=0.7854
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.0425 at epoch 8
+
+search_stage1_0 training completed in 1204.86 seconds
+
+Starting training...
+Epoch 01 | train_loss=24.8226 | val_loss=18.6134 | val_rmse=4.3143 | val_mae=1.8388 | val_mape=63.0064 | val_r2=0.7787
+Epoch 02 | train_loss=24.8466 | val_loss=18.1515 | val_rmse=4.2605 | val_mae=1.8156 | val_mape=67.5862 | val_r2=0.7842
+Epoch 03 | train_loss=24.7886 | val_loss=18.4159 | val_rmse=4.2914 | val_mae=1.8438 | val_mape=67.9827 | val_r2=0.7810
+Epoch 04 | train_loss=24.6418 | val_loss=18.1472 | val_rmse=4.2600 | val_mae=1.8480 | val_mape=64.5446 | val_r2=0.7842
+Epoch 05 | train_loss=24.6753 | val_loss=18.3853 | val_rmse=4.2878 | val_mae=1.8683 | val_mape=65.9962 | val_r2=0.7814
+Epoch 06 | train_loss=24.6398 | val_loss=18.2288 | val_rmse=4.2695 | val_mae=1.8648 | val_mape=63.6050 | val_r2=0.7832
+Epoch 07 | train_loss=24.3439 | val_loss=17.9221 | val_rmse=4.2335 | val_mae=1.8060 | val_mape=64.8684 | val_r2=0.7869
+Epoch 08 | train_loss=24.2260 | val_loss=18.1467 | val_rmse=4.2599 | val_mae=1.8526 | val_mape=66.8844 | val_r2=0.7842
+Epoch 09 | train_loss=24.1863 | val_loss=18.1148 | val_rmse=4.2561 | val_mae=1.8078 | val_mape=65.8020 | val_r2=0.7846
+Epoch 10 | train_loss=24.1655 | val_loss=17.9610 | val_rmse=4.2380 | val_mae=1.7866 | val_mape=67.7953 | val_r2=0.7864
+Training finished.
+Restored best model from early stopping.
+Best validation loss 17.9221 at epoch 7
+
+search_stage1_1 training completed in 1202.41 seconds
+
+Starting training...
+Epoch 01 | train_loss=24.6919 | val_loss=18.2186 | val_rmse=4.2683 | val_mae=1.8190 | val_mape=69.1697 | val_r2=0.7834
+Epoch 02 | train_loss=24.6198 | val_loss=18.3476 | val_rmse=4.2834 | val_mae=1.8166 | val_mape=67.4563 | val_r2=0.7818
+Epoch 03 | train_loss=24.5475 | val_loss=18.5531 | val_rmse=4.3073 | val_mae=1.9733 | val_mape=61.2206 | val_r2=0.7794
+Epoch 04 | train_loss=24.5795 | val_loss=18.1684 | val_rmse=4.2624 | val_mae=1.9147 | val_mape=63.1513 | val_r2=0.7840
+Epoch 05 | train_loss=24.5137 | val_loss=18.4975 | val_rmse=4.3009 | val_mae=1.9625 | val_mape=63.1822 | val_r2=0.7800
+Epoch 06 | train_loss=24.1957 | val_loss=18.0658 | val_rmse=4.2504 | val_mae=1.8050 | val_mape=65.3906 | val_r2=0.7852
+Epoch 07 | train_loss=24.0954 | val_loss=18.1023 | val_rmse=4.2547 | val_mae=1.8339 | val_mape=66.5750 | val_r2=0.7847
+Epoch 08 | train_loss=24.0260 | val_loss=17.9305 | val_rmse=4.2344 | val_mae=1.8043 | val_mape=66.8420 | val_r2=0.7868
+Epoch 09 | train_loss=24.0467 | val_loss=18.0430 | val_rmse=4.2477 | val_mae=1.8685 | val_mape=63.4070 | val_r2=0.7855
+Epoch 10 | train_loss=23.9769 | val_loss=18.0006 | val_rmse=4.2427 | val_mae=1.8074 | val_mape=66.0770 | val_r2=0.7860
+Training finished.
+Restored best model from early stopping.
+Best validation loss 17.9305 at epoch 8
+
+search_stage1_2 training completed in 1200.09 seconds
+
+Starting training...
+Epoch 01 | train_loss=24.7962 | val_loss=18.7240 | val_rmse=4.3271 | val_mae=2.0190 | val_mape=62.1257 | val_r2=0.7774
+Epoch 02 | train_loss=24.7769 | val_loss=18.2898 | val_rmse=4.2767 | val_mae=1.8992 | val_mape=64.9762 | val_r2=0.7825
+Epoch 03 | train_loss=24.7225 | val_loss=18.2051 | val_rmse=4.2667 | val_mae=1.8045 | val_mape=64.9063 | val_r2=0.7835
+Epoch 04 | train_loss=24.6331 | val_loss=18.3485 | val_rmse=4.2835 | val_mae=1.8311 | val_mape=71.1855 | val_r2=0.7818
+Epoch 05 | train_loss=24.5416 | val_loss=18.2950 | val_rmse=4.2773 | val_mae=1.8366 | val_mape=71.3604 | val_r2=0.7825
+Epoch 06 | train_loss=24.5493 | val_loss=18.3066 | val_rmse=4.2786 | val_mae=1.8280 | val_mape=68.1286 | val_r2=0.7823
+Epoch 07 | train_loss=24.5634 | val_loss=18.3538 | val_rmse=4.2841 | val_mae=1.8203 | val_mape=70.1391 | val_r2=0.7818
+Epoch 08 | train_loss=24.5109 | val_loss=17.9884 | val_rmse=4.2413 | val_mae=1.8848 | val_mape=62.2507 | val_r2=0.7861
+Epoch 09 | train_loss=24.5046 | val_loss=18.1878 | val_rmse=4.2647 | val_mae=1.8049 | val_mape=66.8263 | val_r2=0.7837
+Epoch 10 | train_loss=24.4255 | val_loss=18.2216 | val_rmse=4.2687 | val_mae=1.8633 | val_mape=65.0677 | val_r2=0.7833
+Training finished.
+Restored best model from early stopping.
+Best validation loss 17.9884 at epoch 8
+
+search_stage1_3 training completed in 1203.92 seconds
+
+Starting training...
+Epoch 01 | train_loss=26.1938 | val_loss=18.2531 | val_rmse=4.2724 | val_mae=1.7956 | val_mape=67.2995 | val_r2=0.7830
+Epoch 02 | train_loss=25.9704 | val_loss=18.3002 | val_rmse=4.2779 | val_mae=1.8541 | val_mape=63.2559 | val_r2=0.7824
+Epoch 03 | train_loss=25.7970 | val_loss=18.1942 | val_rmse=4.2655 | val_mae=1.7926 | val_mape=66.5568 | val_r2=0.7837
+Epoch 04 | train_loss=25.6426 | val_loss=18.1668 | val_rmse=4.2622 | val_mae=1.7971 | val_mape=65.6977 | val_r2=0.7840
+Epoch 05 | train_loss=25.5097 | val_loss=18.1301 | val_rmse=4.2579 | val_mae=1.8169 | val_mape=63.5736 | val_r2=0.7844
+Epoch 06 | train_loss=25.3886 | val_loss=18.2577 | val_rmse=4.2729 | val_mae=1.8192 | val_mape=66.0964 | val_r2=0.7829
+Epoch 07 | train_loss=25.2817 | val_loss=18.1195 | val_rmse=4.2567 | val_mae=1.8188 | val_mape=62.9196 | val_r2=0.7845
+Epoch 08 | train_loss=25.1766 | val_loss=18.1374 | val_rmse=4.2588 | val_mae=1.8096 | val_mape=67.1824 | val_r2=0.7843
+Epoch 09 | train_loss=25.0843 | val_loss=18.0257 | val_rmse=4.2457 | val_mae=1.8096 | val_mape=63.6044 | val_r2=0.7857
+Epoch 10 | train_loss=25.0021 | val_loss=18.0730 | val_rmse=4.2512 | val_mae=1.7932 | val_mape=68.0638 | val_r2=0.7851
+Training finished.
+Restored best model from early stopping.
+Best validation loss 18.0257 at epoch 9
+
+search_stage1_4 training completed in 1208.09 seconds
+Pruned to 3 models
+
+Stage 2: training 3 models for 20 epochs
+
+Starting training...
+Epoch 01 | train_loss=24.2531 | val_loss=17.9600 | val_rmse=4.2379 | val_mae=1.8061 | val_mape=69.9684 | val_r2=0.7864
+Epoch 02 | train_loss=24.2062 | val_loss=18.3328 | val_rmse=4.2817 | val_mae=1.8763 | val_mape=73.9863 | val_r2=0.7820
+Epoch 03 | train_loss=24.1208 | val_loss=18.1238 | val_rmse=4.2572 | val_mae=1.7809 | val_mape=67.1600 | val_r2=0.7845
+Epoch 04 | train_loss=23.9479 | val_loss=18.0100 | val_rmse=4.2438 | val_mae=1.8349 | val_mape=67.0696 | val_r2=0.7858
+Epoch 05 | train_loss=23.9056 | val_loss=18.0575 | val_rmse=4.2494 | val_mae=1.7913 | val_mape=65.3238 | val_r2=0.7853
+Epoch 06 | train_loss=23.8979 | val_loss=17.9234 | val_rmse=4.2336 | val_mae=1.8142 | val_mape=64.5780 | val_r2=0.7869
+Epoch 07 | train_loss=23.8634 | val_loss=18.0353 | val_rmse=4.2468 | val_mae=1.8181 | val_mape=65.5978 | val_r2=0.7855
+Epoch 08 | train_loss=23.8454 | val_loss=17.9657 | val_rmse=4.2386 | val_mae=1.7892 | val_mape=66.5640 | val_r2=0.7864
+Epoch 09 | train_loss=23.8315 | val_loss=17.8707 | val_rmse=4.2274 | val_mae=1.7890 | val_mape=67.3822 | val_r2=0.7875
+Epoch 10 | train_loss=23.8157 | val_loss=18.0809 | val_rmse=4.2522 | val_mae=1.8274 | val_mape=71.6748 | val_r2=0.7850
+Epoch 11 | train_loss=23.7818 | val_loss=18.0336 | val_rmse=4.2466 | val_mae=1.8023 | val_mape=65.5847 | val_r2=0.7856
+Epoch 12 | train_loss=23.7873 | val_loss=18.0485 | val_rmse=4.2484 | val_mae=1.8184 | val_mape=64.8282 | val_r2=0.7854
+Epoch 13 | train_loss=23.7397 | val_loss=18.2529 | val_rmse=4.2723 | val_mae=1.7902 | val_mape=69.3586 | val_r2=0.7830
+Epoch 14 | train_loss=23.7572 | val_loss=17.9391 | val_rmse=4.2355 | val_mae=1.8005 | val_mape=66.3436 | val_r2=0.7867
+Epoch 15 | train_loss=23.7300 | val_loss=18.0270 | val_rmse=4.2458 | val_mae=1.8919 | val_mape=61.8361 | val_r2=0.7856
+Epoch 16 | train_loss=23.6285 | val_loss=17.9570 | val_rmse=4.2376 | val_mae=1.7974 | val_mape=66.6491 | val_r2=0.7865
+Early stopping triggered at epoch 17
+Training finished.
+Restored best model from early stopping.
+Best validation loss 17.8707 at epoch 9
+
+search_stage2_0 training completed in 2073.48 seconds
+
+Starting training...
+Epoch 01 | train_loss=24.0416 | val_loss=17.9586 | val_rmse=4.2378 | val_mae=1.8161 | val_mape=69.8609 | val_r2=0.7865
+Epoch 02 | train_loss=23.9836 | val_loss=17.9894 | val_rmse=4.2414 | val_mae=1.8111 | val_mape=63.1945 | val_r2=0.7861
+Epoch 03 | train_loss=23.9565 | val_loss=18.0357 | val_rmse=4.2469 | val_mae=1.7908 | val_mape=69.1531 | val_r2=0.7855
+Epoch 04 | train_loss=23.9316 | val_loss=17.9838 | val_rmse=4.2407 | val_mae=1.8424 | val_mape=64.7938 | val_r2=0.7862
+Epoch 05 | train_loss=23.7390 | val_loss=17.9620 | val_rmse=4.2382 | val_mae=1.7953 | val_mape=65.5584 | val_r2=0.7864
+Epoch 06 | train_loss=23.7092 | val_loss=17.9966 | val_rmse=4.2422 | val_mae=1.8224 | val_mape=64.2435 | val_r2=0.7860
+Epoch 07 | train_loss=23.6766 | val_loss=17.8992 | val_rmse=4.2307 | val_mae=1.7884 | val_mape=66.8823 | val_r2=0.7872
+Epoch 08 | train_loss=23.6343 | val_loss=17.9045 | val_rmse=4.2314 | val_mae=1.8372 | val_mape=64.8026 | val_r2=0.7871
+Epoch 09 | train_loss=23.6222 | val_loss=17.8801 | val_rmse=4.2285 | val_mae=1.8066 | val_mape=65.2152 | val_r2=0.7874
+Epoch 10 | train_loss=23.6078 | val_loss=18.0429 | val_rmse=4.2477 | val_mae=1.8223 | val_mape=66.5178 | val_r2=0.7855
+Epoch 11 | train_loss=23.5744 | val_loss=17.8284 | val_rmse=4.2224 | val_mae=1.8023 | val_mape=65.8486 | val_r2=0.7880
+Epoch 12 | train_loss=23.5719 | val_loss=17.8697 | val_rmse=4.2273 | val_mae=1.7978 | val_mape=66.9865 | val_r2=0.7875
+Epoch 13 | train_loss=23.5571 | val_loss=17.8989 | val_rmse=4.2307 | val_mae=1.8047 | val_mape=64.7760 | val_r2=0.7872
+Epoch 14 | train_loss=23.5415 | val_loss=17.9563 | val_rmse=4.2375 | val_mae=1.7923 | val_mape=68.4187 | val_r2=0.7865
+Epoch 15 | train_loss=23.5193 | val_loss=17.9260 | val_rmse=4.2339 | val_mae=1.7867 | val_mape=66.2785 | val_r2=0.7868
+Epoch 16 | train_loss=23.4697 | val_loss=17.9249 | val_rmse=4.2338 | val_mae=1.8173 | val_mape=64.0056 | val_r2=0.7869
+Epoch 17 | train_loss=23.4852 | val_loss=17.7241 | val_rmse=4.2100 | val_mae=1.7849 | val_mape=66.8055 | val_r2=0.7892
+Epoch 18 | train_loss=23.4790 | val_loss=17.9336 | val_rmse=4.2348 | val_mae=1.8148 | val_mape=64.3143 | val_r2=0.7868
+Epoch 19 | train_loss=23.4694 | val_loss=17.8695 | val_rmse=4.2272 | val_mae=1.8405 | val_mape=63.1205 | val_r2=0.7875
+Epoch 20 | train_loss=23.4501 | val_loss=17.8765 | val_rmse=4.2281 | val_mae=1.7895 | val_mape=64.3961 | val_r2=0.7874
+Training finished.
+Restored best model from early stopping.
+Best validation loss 17.7241 at epoch 17
+
+search_stage2_1 training completed in 2411.61 seconds
+
+Starting training...
+Epoch 01 | train_loss=24.4755 | val_loss=18.2250 | val_rmse=4.2691 | val_mae=1.8115 | val_mape=69.7213 | val_r2=0.7833
+Epoch 02 | train_loss=24.4295 | val_loss=18.2854 | val_rmse=4.2761 | val_mae=1.8177 | val_mape=63.1946 | val_r2=0.7826
+Epoch 03 | train_loss=24.4359 | val_loss=18.2584 | val_rmse=4.2730 | val_mae=1.8353 | val_mape=64.8091 | val_r2=0.7829
+Epoch 04 | train_loss=24.3885 | val_loss=18.3109 | val_rmse=4.2791 | val_mae=1.8393 | val_mape=65.4797 | val_r2=0.7823
+Epoch 05 | train_loss=24.1266 | val_loss=17.9967 | val_rmse=4.2423 | val_mae=1.8275 | val_mape=65.3486 | val_r2=0.7860
+Epoch 06 | train_loss=24.0278 | val_loss=18.0612 | val_rmse=4.2498 | val_mae=1.8563 | val_mape=63.5604 | val_r2=0.7852
+Epoch 07 | train_loss=24.0010 | val_loss=18.0424 | val_rmse=4.2476 | val_mae=1.8257 | val_mape=65.0044 | val_r2=0.7855
+Epoch 08 | train_loss=24.0054 | val_loss=18.0512 | val_rmse=4.2487 | val_mae=1.8239 | val_mape=65.6915 | val_r2=0.7854
+Epoch 09 | train_loss=23.9518 | val_loss=18.0066 | val_rmse=4.2434 | val_mae=1.8554 | val_mape=64.3526 | val_r2=0.7859
+Epoch 10 | train_loss=23.9514 | val_loss=17.9713 | val_rmse=4.2393 | val_mae=1.8029 | val_mape=66.8635 | val_r2=0.7863
+Epoch 11 | train_loss=23.8849 | val_loss=18.0428 | val_rmse=4.2477 | val_mae=1.8281 | val_mape=63.9557 | val_r2=0.7855
+Epoch 12 | train_loss=23.8913 | val_loss=18.0383 | val_rmse=4.2471 | val_mae=1.8616 | val_mape=63.1706 | val_r2=0.7855
+Epoch 13 | train_loss=23.8523 | val_loss=17.9697 | val_rmse=4.2391 | val_mae=1.8199 | val_mape=65.5217 | val_r2=0.7863
+Epoch 14 | train_loss=23.8137 | val_loss=17.9591 | val_rmse=4.2378 | val_mae=1.8226 | val_mape=64.2924 | val_r2=0.7865
+Epoch 15 | train_loss=23.8402 | val_loss=18.0565 | val_rmse=4.2493 | val_mae=1.8027 | val_mape=67.6558 | val_r2=0.7853
+Epoch 16 | train_loss=23.8515 | val_loss=17.9885 | val_rmse=4.2413 | val_mae=1.8402 | val_mape=64.1469 | val_r2=0.7861
+Epoch 17 | train_loss=23.7988 | val_loss=17.9980 | val_rmse=4.2424 | val_mae=1.7936 | val_mape=66.7841 | val_r2=0.7860
+Epoch 18 | train_loss=23.7520 | val_loss=18.0817 | val_rmse=4.2523 | val_mae=1.8065 | val_mape=68.3654 | val_r2=0.7850
+Epoch 19 | train_loss=23.7397 | val_loss=18.2000 | val_rmse=4.2661 | val_mae=1.8087 | val_mape=70.0244 | val_r2=0.7836
+Epoch 20 | train_loss=23.7308 | val_loss=18.0538 | val_rmse=4.2490 | val_mae=1.8250 | val_mape=67.6832 | val_r2=0.7853
+Training finished.
+Restored best model from early stopping.
+Best validation loss 17.9591 at epoch 14
+
+search_stage2_2 training completed in 2401.10 seconds
+Pruned to 1 models
+
+Hyperparameter search summary saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_det/baseline_gru_det_search.json
+Best baseline_gru_det configuration:
+{'epochs': 60, 'seed': 42, 'horizon': 28, 'seq_len': 28, 'autoregressive': True, 'use_normalise': False, 'feature_set': 'sales_hierarchy_dow', 'early_stopping_patience': 8, 'early_stopping_min_delta': 0.0005, 'optimiser': 'adamw', 'optimiser_params': {'lr': 0.0019004375238737116, 'weight_decay': 1.2590501261927495e-07}, 'scheduler': 'plateau', 'scheduler_params': {'patience': 5, 'factor': 0.5}, 'clip_grad_norm': 1.515049231134367, 'hidden': 58.40281456343545, 'layers': 1.2232107381488229, 'dropout': 0.22094136424920371, 'n_features': 6}
+[config] Best config written → /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/configs/models/baseline_gru_det.yml
+
+  Best config for baseline_gru_det:
+    epochs: 60
+    seed: 42
+    horizon: 28
+    seq_len: 28
+    autoregressive: True
+    use_normalise: False
+    feature_set: sales_hierarchy_dow
+    early_stopping_patience: 8
+    early_stopping_min_delta: 0.0005
+    optimiser: adamw
+    optimiser_params.lr: 0.0019004375238737116
+    optimiser_params.weight_decay: 1.2590501261927495e-07
+    scheduler: plateau
+    scheduler_params.patience: 5
+    scheduler_params.factor: 0.5
+    clip_grad_norm: 1.515049231134367
+    hidden: 58.40281456343545
+    layers: 1.2232107381488229
+    dropout: 0.22094136424920371
+    n_features: 6
+
+============================================================
+  SEARCH: baseline_gru_prob
+============================================================
+
+Starting baseline_gru_prob hyperparameter search
+
+Stage 0: training 10 models for 10 epochs
+
+Starting training...
+Epoch 01 | train_loss=2.3009 | val_loss=2.2306 | val_rmse=4.6366 | val_mae=1.8445 | val_mape=63.3681 | val_r2=0.7444
+Epoch 02 | train_loss=2.0107 | val_loss=1.8996 | val_rmse=4.4354 | val_mae=1.8481 | val_mape=68.0704 | val_r2=0.7661
+Epoch 03 | train_loss=1.9566 | val_loss=2.9554 | val_rmse=4.4108 | val_mae=1.8265 | val_mape=67.0910 | val_r2=0.7687
+Epoch 04 | train_loss=1.9639 | val_loss=3.5993 | val_rmse=4.4078 | val_mae=1.8762 | val_mape=70.5348 | val_r2=0.7690
+Epoch 05 | train_loss=1.8611 | val_loss=3.0700 | val_rmse=4.4090 | val_mae=1.8847 | val_mape=69.6101 | val_r2=0.7689
+Epoch 06 | train_loss=1.8452 | val_loss=2.9452 | val_rmse=4.3754 | val_mae=1.8319 | val_mape=67.4579 | val_r2=0.7724
+Epoch 07 | train_loss=2.0562 | val_loss=7.1935 | val_rmse=4.3733 | val_mae=1.8462 | val_mape=67.5372 | val_r2=0.7726
+Epoch 08 | train_loss=1.8088 | val_loss=7.9353 | val_rmse=4.4261 | val_mae=1.8553 | val_mape=68.5155 | val_r2=0.7671
+Epoch 09 | train_loss=1.8553 | val_loss=4.4612 | val_rmse=4.3708 | val_mae=1.8367 | val_mape=68.3047 | val_r2=0.7728
+Early stopping triggered at epoch 10
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.8996 at epoch 2
+
+search_stage0_0 training completed in 1235.99 seconds
+
+Starting training...
+Epoch 01 | train_loss=8.2652 | val_loss=2.7063 | val_rmse=8.0440 | val_mae=2.8693 | val_mape=63.0371 | val_r2=0.2306
+Epoch 02 | train_loss=2.7908 | val_loss=3.2726 | val_rmse=7.8538 | val_mae=2.7439 | val_mape=63.2049 | val_r2=0.2665
+Epoch 03 | train_loss=2.9612 | val_loss=2.4318 | val_rmse=7.7036 | val_mae=2.6870 | val_mape=62.3344 | val_r2=0.2943
+Epoch 04 | train_loss=3.0323 | val_loss=2.8213 | val_rmse=7.5424 | val_mae=2.6222 | val_mape=62.7360 | val_r2=0.3236
+Epoch 05 | train_loss=3.0628 | val_loss=3.0275 | val_rmse=7.3947 | val_mae=2.5726 | val_mape=62.6014 | val_r2=0.3498
+Epoch 06 | train_loss=3.0906 | val_loss=2.8869 | val_rmse=7.2569 | val_mae=2.5244 | val_mape=63.3980 | val_r2=0.3738
+Epoch 07 | train_loss=3.0383 | val_loss=3.4204 | val_rmse=7.1224 | val_mae=2.4818 | val_mape=64.1499 | val_r2=0.3968
+Epoch 08 | train_loss=3.4320 | val_loss=2.8815 | val_rmse=7.0052 | val_mae=2.4455 | val_mape=65.2656 | val_r2=0.4165
+Epoch 09 | train_loss=3.2858 | val_loss=4.3849 | val_rmse=6.9012 | val_mae=2.4136 | val_mape=66.0231 | val_r2=0.4337
+Epoch 10 | train_loss=3.4017 | val_loss=3.7164 | val_rmse=6.8472 | val_mae=2.3984 | val_mape=66.5930 | val_r2=0.4425
+Training finished.
+Restored best model from early stopping.
+Best validation loss 2.4318 at epoch 3
+
+search_stage0_1 training completed in 1221.60 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.4923 | val_loss=2.3191 | val_rmse=5.4760 | val_mae=2.0158 | val_mape=66.8279 | val_r2=0.6434
+Epoch 02 | train_loss=2.4790 | val_loss=2.0253 | val_rmse=4.7975 | val_mae=1.8805 | val_mape=69.2884 | val_r2=0.7263
+Epoch 03 | train_loss=2.0640 | val_loss=2.3861 | val_rmse=4.5630 | val_mae=1.8746 | val_mape=66.1945 | val_r2=0.7524
+Epoch 04 | train_loss=2.2889 | val_loss=5.1573 | val_rmse=4.4677 | val_mae=1.8405 | val_mape=65.9473 | val_r2=0.7627
+Epoch 05 | train_loss=1.9028 | val_loss=5.4948 | val_rmse=4.4248 | val_mae=1.8387 | val_mape=65.1845 | val_r2=0.7672
+Epoch 06 | train_loss=1.8056 | val_loss=3.4656 | val_rmse=4.3929 | val_mae=1.8434 | val_mape=65.6642 | val_r2=0.7705
+Epoch 07 | train_loss=1.8487 | val_loss=5.4862 | val_rmse=4.3524 | val_mae=1.7945 | val_mape=66.8287 | val_r2=0.7748
+Epoch 08 | train_loss=1.7861 | val_loss=6.6942 | val_rmse=4.3462 | val_mae=1.8191 | val_mape=65.0731 | val_r2=0.7754
+Epoch 09 | train_loss=1.8757 | val_loss=4.7811 | val_rmse=4.3186 | val_mae=1.8042 | val_mape=66.1739 | val_r2=0.7782
+Early stopping triggered at epoch 10
+Training finished.
+Restored best model from early stopping.
+Best validation loss 2.0253 at epoch 2
+
+search_stage0_2 training completed in 1252.72 seconds
+
+Starting training...
+Epoch 01 | train_loss=4.0873 | val_loss=3.7646 | val_rmse=7.2333 | val_mae=2.5248 | val_mape=67.1131 | val_r2=0.3779
+Epoch 02 | train_loss=2.9286 | val_loss=2.3672 | val_rmse=6.6726 | val_mae=2.3631 | val_mape=65.9475 | val_r2=0.4706
+Epoch 03 | train_loss=2.9442 | val_loss=4.1182 | val_rmse=6.2798 | val_mae=2.2427 | val_mape=69.1004 | val_r2=0.5311
+Epoch 04 | train_loss=3.1164 | val_loss=2.5667 | val_rmse=5.9552 | val_mae=2.1527 | val_mape=68.7873 | val_r2=0.5783
+Epoch 05 | train_loss=3.0260 | val_loss=3.2740 | val_rmse=5.6870 | val_mae=2.0690 | val_mape=67.8634 | val_r2=0.6154
+Epoch 06 | train_loss=3.0025 | val_loss=2.9583 | val_rmse=5.4693 | val_mae=2.0304 | val_mape=67.2162 | val_r2=0.6443
+Epoch 07 | train_loss=2.9081 | val_loss=2.3950 | val_rmse=5.3110 | val_mae=1.9970 | val_mape=67.6581 | val_r2=0.6646
+Epoch 08 | train_loss=2.8815 | val_loss=2.0999 | val_rmse=5.1830 | val_mae=1.9780 | val_mape=67.2525 | val_r2=0.6806
+Epoch 09 | train_loss=2.6669 | val_loss=2.2722 | val_rmse=5.0867 | val_mae=1.9502 | val_mape=67.6157 | val_r2=0.6923
+Epoch 10 | train_loss=2.6580 | val_loss=2.7529 | val_rmse=4.9996 | val_mae=1.9305 | val_mape=67.8498 | val_r2=0.7028
+Training finished.
+Restored best model from early stopping.
+Best validation loss 2.0999 at epoch 8
+
+search_stage0_3 training completed in 1252.69 seconds
+
+Starting training...
+Epoch 01 | train_loss=17.5294 | val_loss=2.5889 | val_rmse=7.9011 | val_mae=2.8343 | val_mape=66.0034 | val_r2=0.2577
+Epoch 02 | train_loss=2.7147 | val_loss=2.4685 | val_rmse=7.7326 | val_mae=2.7326 | val_mape=59.8354 | val_r2=0.2890
+Epoch 03 | train_loss=2.6941 | val_loss=2.8916 | val_rmse=7.5727 | val_mae=2.6369 | val_mape=62.0716 | val_r2=0.3181
+Epoch 04 | train_loss=2.7345 | val_loss=2.4520 | val_rmse=7.4095 | val_mae=2.5836 | val_mape=63.2352 | val_r2=0.3472
+Epoch 05 | train_loss=2.6515 | val_loss=2.4477 | val_rmse=7.2803 | val_mae=2.5393 | val_mape=63.8477 | val_r2=0.3698
+Epoch 06 | train_loss=2.6077 | val_loss=2.1720 | val_rmse=7.1654 | val_mae=2.5085 | val_mape=64.5638 | val_r2=0.3895
+Epoch 07 | train_loss=2.6276 | val_loss=3.3164 | val_rmse=7.0608 | val_mae=2.4674 | val_mape=66.3424 | val_r2=0.4072
+Epoch 08 | train_loss=2.7656 | val_loss=2.3869 | val_rmse=6.9646 | val_mae=2.4585 | val_mape=66.7617 | val_r2=0.4232
+Epoch 09 | train_loss=2.8749 | val_loss=3.6857 | val_rmse=6.8882 | val_mae=2.4170 | val_mape=67.7966 | val_r2=0.4358
+Epoch 10 | train_loss=3.0817 | val_loss=3.2202 | val_rmse=6.8124 | val_mae=2.3961 | val_mape=68.3363 | val_r2=0.4482
+Training finished.
+Restored best model from early stopping.
+Best validation loss 2.1720 at epoch 6
+
+search_stage0_4 training completed in 1220.70 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.8954 | val_loss=2.3482 | val_rmse=7.1715 | val_mae=2.4917 | val_mape=66.6676 | val_r2=0.3885
+Epoch 02 | train_loss=3.4149 | val_loss=3.8554 | val_rmse=6.5878 | val_mae=2.3808 | val_mape=68.9707 | val_r2=0.4840
+Epoch 03 | train_loss=3.5477 | val_loss=2.8299 | val_rmse=6.1668 | val_mae=2.2201 | val_mape=69.8240 | val_r2=0.5478
+Epoch 04 | train_loss=3.0750 | val_loss=2.8323 | val_rmse=5.8303 | val_mae=2.1135 | val_mape=68.3878 | val_r2=0.5958
+Epoch 05 | train_loss=2.9585 | val_loss=2.2623 | val_rmse=5.5640 | val_mae=2.0387 | val_mape=69.9619 | val_r2=0.6319
+Epoch 06 | train_loss=2.7606 | val_loss=2.6667 | val_rmse=5.3569 | val_mae=1.9995 | val_mape=68.3353 | val_r2=0.6588
+Epoch 07 | train_loss=2.7201 | val_loss=2.7342 | val_rmse=5.2077 | val_mae=1.9499 | val_mape=68.0847 | val_r2=0.6775
+Epoch 08 | train_loss=2.4692 | val_loss=5.3113 | val_rmse=5.1054 | val_mae=1.9587 | val_mape=67.5336 | val_r2=0.6901
+Epoch 09 | train_loss=2.4399 | val_loss=6.1971 | val_rmse=5.0135 | val_mae=1.9302 | val_mape=67.0424 | val_r2=0.7011
+Epoch 10 | train_loss=2.5849 | val_loss=4.9293 | val_rmse=4.9372 | val_mae=1.9106 | val_mape=66.4203 | val_r2=0.7102
+Training finished.
+Restored best model from early stopping.
+Best validation loss 2.2623 at epoch 5
+
+search_stage0_5 training completed in 1239.99 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.0628 | val_loss=2.7237 | val_rmse=6.3603 | val_mae=2.2756 | val_mape=68.5050 | val_r2=0.5190
+Epoch 02 | train_loss=2.7176 | val_loss=2.5857 | val_rmse=5.4766 | val_mae=2.0003 | val_mape=66.5859 | val_r2=0.6434
+Epoch 03 | train_loss=2.2534 | val_loss=2.1416 | val_rmse=5.0467 | val_mae=1.9248 | val_mape=67.8881 | val_r2=0.6971
+Epoch 04 | train_loss=2.3283 | val_loss=2.6270 | val_rmse=4.7976 | val_mae=1.8843 | val_mape=68.1554 | val_r2=0.7263
+Epoch 05 | train_loss=2.3263 | val_loss=3.0332 | val_rmse=4.6396 | val_mae=1.8597 | val_mape=68.3164 | val_r2=0.7440
+Epoch 06 | train_loss=1.9397 | val_loss=4.1636 | val_rmse=4.5471 | val_mae=1.8355 | val_mape=67.0962 | val_r2=0.7541
+Epoch 07 | train_loss=2.2379 | val_loss=3.1026 | val_rmse=4.4998 | val_mae=1.8328 | val_mape=65.1264 | val_r2=0.7592
+Epoch 08 | train_loss=1.8640 | val_loss=3.9417 | val_rmse=4.4654 | val_mae=1.8251 | val_mape=65.1456 | val_r2=0.7629
+Epoch 09 | train_loss=1.9288 | val_loss=4.9246 | val_rmse=4.4197 | val_mae=1.8109 | val_mape=65.2834 | val_r2=0.7677
+Epoch 10 | train_loss=1.9591 | val_loss=6.3665 | val_rmse=4.4089 | val_mae=1.8342 | val_mape=66.9130 | val_r2=0.7689
+Training finished.
+Restored best model from early stopping.
+Best validation loss 2.1416 at epoch 3
+
+search_stage0_6 training completed in 1230.80 seconds
+
+Starting training...
+Epoch 01 | train_loss=2.4952 | val_loss=2.0547 | val_rmse=5.1335 | val_mae=1.9496 | val_mape=67.1321 | val_r2=0.6866
+Epoch 02 | train_loss=2.0309 | val_loss=1.8492 | val_rmse=4.5629 | val_mae=1.8297 | val_mape=66.2005 | val_r2=0.7524
+Epoch 03 | train_loss=2.0351 | val_loss=8.3739 | val_rmse=4.4407 | val_mae=1.8151 | val_mape=66.0791 | val_r2=0.7655
+Epoch 04 | train_loss=2.0722 | val_loss=5.2282 | val_rmse=4.4120 | val_mae=1.8487 | val_mape=66.7200 | val_r2=0.7685
+Epoch 05 | train_loss=2.0813 | val_loss=11.9367 | val_rmse=4.4793 | val_mae=1.8304 | val_mape=61.0919 | val_r2=0.7614
+Epoch 06 | train_loss=2.0167 | val_loss=3.2281 | val_rmse=4.3505 | val_mae=1.8080 | val_mape=66.8147 | val_r2=0.7749
+Epoch 07 | train_loss=1.9966 | val_loss=4.8859 | val_rmse=4.3939 | val_mae=1.8609 | val_mape=68.4905 | val_r2=0.7704
+Epoch 08 | train_loss=1.8802 | val_loss=6.3301 | val_rmse=4.3793 | val_mae=1.8284 | val_mape=67.3480 | val_r2=0.7720
+Epoch 09 | train_loss=2.0616 | val_loss=7.5179 | val_rmse=4.3281 | val_mae=1.8006 | val_mape=66.0129 | val_r2=0.7773
+Early stopping triggered at epoch 10
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.8492 at epoch 2
+
+search_stage0_7 training completed in 1228.82 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.8705 | val_loss=4.2292 | val_rmse=7.2778 | val_mae=2.5263 | val_mape=66.6179 | val_r2=0.3702
+Epoch 02 | train_loss=2.8640 | val_loss=4.0568 | val_rmse=6.7774 | val_mae=2.3802 | val_mape=67.0747 | val_r2=0.4538
+Epoch 03 | train_loss=3.2854 | val_loss=3.1105 | val_rmse=6.4161 | val_mae=2.2798 | val_mape=69.8235 | val_r2=0.5105
+Epoch 04 | train_loss=3.3100 | val_loss=2.8238 | val_rmse=6.1245 | val_mae=2.1957 | val_mape=69.0189 | val_r2=0.5540
+Epoch 05 | train_loss=3.3066 | val_loss=2.2293 | val_rmse=5.8724 | val_mae=2.1240 | val_mape=69.3190 | val_r2=0.5899
+Epoch 06 | train_loss=3.7131 | val_loss=3.1001 | val_rmse=5.6708 | val_mae=2.0755 | val_mape=68.7833 | val_r2=0.6176
+Epoch 07 | train_loss=2.9649 | val_loss=2.9451 | val_rmse=5.4935 | val_mae=2.0268 | val_mape=67.7334 | val_r2=0.6412
+Epoch 08 | train_loss=3.1377 | val_loss=2.0059 | val_rmse=5.3544 | val_mae=1.9802 | val_mape=68.4673 | val_r2=0.6591
+Epoch 09 | train_loss=3.1810 | val_loss=2.6986 | val_rmse=5.2358 | val_mae=1.9673 | val_mape=68.1684 | val_r2=0.6740
+Epoch 10 | train_loss=2.8714 | val_loss=2.7216 | val_rmse=5.1363 | val_mae=1.9470 | val_mape=67.6178 | val_r2=0.6863
+Training finished.
+Restored best model from early stopping.
+Best validation loss 2.0059 at epoch 8
+
+search_stage0_8 training completed in 1245.19 seconds
+
+Starting training...
+Epoch 01 | train_loss=4.5887 | val_loss=3.3158 | val_rmse=6.8102 | val_mae=2.3996 | val_mape=67.0471 | val_r2=0.4485
+Epoch 02 | train_loss=3.1925 | val_loss=3.1383 | val_rmse=6.2024 | val_mae=2.1908 | val_mape=69.0279 | val_r2=0.5426
+Epoch 03 | train_loss=2.7500 | val_loss=3.4027 | val_rmse=5.7200 | val_mae=2.0710 | val_mape=69.2323 | val_r2=0.6110
+Epoch 04 | train_loss=2.5552 | val_loss=2.6729 | val_rmse=5.3995 | val_mae=1.9918 | val_mape=68.5058 | val_r2=0.6533
+Epoch 05 | train_loss=2.2838 | val_loss=2.9735 | val_rmse=5.1844 | val_mae=1.9538 | val_mape=68.2538 | val_r2=0.6804
+Epoch 06 | train_loss=2.1409 | val_loss=3.9976 | val_rmse=5.0283 | val_mae=1.9177 | val_mape=66.1867 | val_r2=0.6994
+Epoch 07 | train_loss=2.1551 | val_loss=5.0455 | val_rmse=4.9214 | val_mae=1.9335 | val_mape=69.5617 | val_r2=0.7120
+Epoch 08 | train_loss=2.1854 | val_loss=4.9588 | val_rmse=4.8057 | val_mae=1.8947 | val_mape=65.7944 | val_r2=0.7254
+Epoch 09 | train_loss=2.0527 | val_loss=3.4228 | val_rmse=4.7278 | val_mae=1.8529 | val_mape=67.7745 | val_r2=0.7342
+Epoch 10 | train_loss=1.9788 | val_loss=5.6707 | val_rmse=4.6708 | val_mae=1.8765 | val_mape=68.7430 | val_r2=0.7406
+Training finished.
+Restored best model from early stopping.
+Best validation loss 2.6729 at epoch 4
+
+search_stage0_9 training completed in 1228.91 seconds
+Pruned to 5 models
+
+Stage 1: training 5 models for 10 epochs
+
+Starting training...
+Epoch 01 | train_loss=2.1487 | val_loss=3.5211 | val_rmse=4.3929 | val_mae=1.8178 | val_mape=65.6389 | val_r2=0.7705
+Epoch 02 | train_loss=2.1212 | val_loss=2.4023 | val_rmse=4.3784 | val_mae=1.8114 | val_mape=65.2935 | val_r2=0.7720
+Epoch 03 | train_loss=2.1055 | val_loss=6.4515 | val_rmse=4.3629 | val_mae=1.8123 | val_mape=65.6487 | val_r2=0.7737
+Epoch 04 | train_loss=2.0978 | val_loss=4.8498 | val_rmse=4.3643 | val_mae=1.8078 | val_mape=63.9967 | val_r2=0.7735
+Epoch 05 | train_loss=2.2242 | val_loss=8.6927 | val_rmse=4.3103 | val_mae=1.8195 | val_mape=66.8846 | val_r2=0.7791
+Epoch 06 | train_loss=2.2394 | val_loss=9.5173 | val_rmse=4.3164 | val_mae=1.8092 | val_mape=66.1316 | val_r2=0.7785
+Epoch 07 | train_loss=2.2955 | val_loss=8.8502 | val_rmse=4.3382 | val_mae=1.8096 | val_mape=65.1502 | val_r2=0.7762
+Epoch 08 | train_loss=2.1749 | val_loss=7.7957 | val_rmse=4.3170 | val_mae=1.8227 | val_mape=65.4834 | val_r2=0.7784
+Epoch 09 | train_loss=2.1699 | val_loss=11.3652 | val_rmse=4.3150 | val_mae=1.8049 | val_mape=66.7023 | val_r2=0.7786
+Early stopping triggered at epoch 10
+Training finished.
+Restored best model from early stopping.
+Best validation loss 2.4023 at epoch 2
+
+search_stage1_0 training completed in 1232.40 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.9494 | val_loss=3.7553 | val_rmse=4.3665 | val_mae=1.8285 | val_mape=67.1909 | val_r2=0.7733
+Epoch 02 | train_loss=1.9561 | val_loss=13.2519 | val_rmse=4.3354 | val_mae=1.8191 | val_mape=65.8085 | val_r2=0.7765
+Epoch 03 | train_loss=1.8524 | val_loss=5.6316 | val_rmse=4.3572 | val_mae=1.8224 | val_mape=65.9685 | val_r2=0.7743
+Epoch 04 | train_loss=2.0433 | val_loss=7.7188 | val_rmse=4.3508 | val_mae=1.8098 | val_mape=64.3541 | val_r2=0.7749
+Epoch 05 | train_loss=2.0307 | val_loss=4.6911 | val_rmse=4.3459 | val_mae=1.8388 | val_mape=68.1774 | val_r2=0.7754
+Epoch 06 | train_loss=1.9481 | val_loss=4.7980 | val_rmse=4.3214 | val_mae=1.7953 | val_mape=65.7392 | val_r2=0.7779
+Epoch 07 | train_loss=1.7978 | val_loss=12.1120 | val_rmse=4.3321 | val_mae=1.8173 | val_mape=66.3121 | val_r2=0.7768
+Epoch 08 | train_loss=1.8466 | val_loss=9.8850 | val_rmse=4.3400 | val_mae=1.8093 | val_mape=65.2279 | val_r2=0.7760
+Early stopping triggered at epoch 9
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.7553 at epoch 1
+
+search_stage1_1 training completed in 1120.50 seconds
+
+Starting training...
+Epoch 01 | train_loss=2.8065 | val_loss=2.9555 | val_rmse=5.2295 | val_mae=1.9558 | val_mape=68.0404 | val_r2=0.6748
+Epoch 02 | train_loss=3.1035 | val_loss=2.3365 | val_rmse=5.1439 | val_mae=1.9491 | val_mape=68.7302 | val_r2=0.6854
+Epoch 03 | train_loss=2.6811 | val_loss=2.5882 | val_rmse=5.0627 | val_mae=1.9477 | val_mape=67.2071 | val_r2=0.6952
+Epoch 04 | train_loss=2.5618 | val_loss=2.5313 | val_rmse=5.0002 | val_mae=1.9284 | val_mape=67.1524 | val_r2=0.7027
+Epoch 05 | train_loss=2.8718 | val_loss=3.5356 | val_rmse=4.9671 | val_mae=1.9213 | val_mape=66.9258 | val_r2=0.7066
+Epoch 06 | train_loss=2.7907 | val_loss=3.4261 | val_rmse=4.9388 | val_mae=1.9070 | val_mape=67.7272 | val_r2=0.7100
+Epoch 07 | train_loss=2.8004 | val_loss=3.5411 | val_rmse=4.9106 | val_mae=1.9032 | val_mape=67.5755 | val_r2=0.7133
+Epoch 08 | train_loss=2.5904 | val_loss=3.9596 | val_rmse=4.8830 | val_mae=1.8957 | val_mape=67.0442 | val_r2=0.7165
+Epoch 09 | train_loss=2.5802 | val_loss=5.0643 | val_rmse=4.8587 | val_mae=1.8867 | val_mape=67.2009 | val_r2=0.7193
+Early stopping triggered at epoch 10
+Training finished.
+Restored best model from early stopping.
+Best validation loss 2.3365 at epoch 2
+
+search_stage1_2 training completed in 1245.50 seconds
+
+Starting training...
+Epoch 01 | train_loss=2.3265 | val_loss=4.4362 | val_rmse=4.5906 | val_mae=1.8368 | val_mape=67.9332 | val_r2=0.7494
+Epoch 02 | train_loss=2.4241 | val_loss=1.9589 | val_rmse=4.5201 | val_mae=1.8429 | val_mape=66.9596 | val_r2=0.7571
+Epoch 03 | train_loss=2.1498 | val_loss=5.0698 | val_rmse=4.4699 | val_mae=1.8327 | val_mape=65.9989 | val_r2=0.7624
+Epoch 04 | train_loss=2.0878 | val_loss=2.3306 | val_rmse=4.4265 | val_mae=1.8208 | val_mape=65.3191 | val_r2=0.7670
+Epoch 05 | train_loss=2.5365 | val_loss=8.1219 | val_rmse=4.4055 | val_mae=1.8208 | val_mape=65.9950 | val_r2=0.7692
+Epoch 06 | train_loss=1.9391 | val_loss=9.6524 | val_rmse=4.3797 | val_mae=1.8241 | val_mape=66.8989 | val_r2=0.7719
+Epoch 07 | train_loss=2.1106 | val_loss=3.3051 | val_rmse=4.3680 | val_mae=1.7908 | val_mape=65.3216 | val_r2=0.7731
+Epoch 08 | train_loss=1.9291 | val_loss=8.3360 | val_rmse=4.3648 | val_mae=1.8271 | val_mape=66.1827 | val_r2=0.7735
+Epoch 09 | train_loss=2.0444 | val_loss=6.5998 | val_rmse=4.3454 | val_mae=1.8135 | val_mape=66.2320 | val_r2=0.7755
+Early stopping triggered at epoch 10
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.9589 at epoch 2
+
+search_stage1_3 training completed in 1258.20 seconds
+
+Starting training...
+Epoch 01 | train_loss=2.7218 | val_loss=2.8463 | val_rmse=5.0799 | val_mae=1.9310 | val_mape=66.9856 | val_r2=0.6932
+Epoch 02 | train_loss=2.4762 | val_loss=2.1793 | val_rmse=4.9932 | val_mae=1.9056 | val_mape=67.4996 | val_r2=0.7035
+Epoch 03 | train_loss=2.2659 | val_loss=2.5041 | val_rmse=4.9274 | val_mae=1.9094 | val_mape=68.4442 | val_r2=0.7113
+Epoch 04 | train_loss=2.3565 | val_loss=4.5143 | val_rmse=4.8621 | val_mae=1.8907 | val_mape=67.2166 | val_r2=0.7189
+Epoch 05 | train_loss=2.5256 | val_loss=5.0392 | val_rmse=4.8359 | val_mae=1.8937 | val_mape=66.9619 | val_r2=0.7219
+Epoch 06 | train_loss=2.6738 | val_loss=3.2287 | val_rmse=4.8026 | val_mae=1.8857 | val_mape=67.0994 | val_r2=0.7257
+Epoch 07 | train_loss=2.6089 | val_loss=3.2914 | val_rmse=4.7814 | val_mae=1.8782 | val_mape=67.2639 | val_r2=0.7282
+Epoch 08 | train_loss=2.6847 | val_loss=4.5831 | val_rmse=4.7597 | val_mae=1.8799 | val_mape=67.8131 | val_r2=0.7306
+Epoch 09 | train_loss=2.8032 | val_loss=4.8136 | val_rmse=4.7304 | val_mae=1.8701 | val_mape=66.4757 | val_r2=0.7339
+Early stopping triggered at epoch 10
+Training finished.
+Restored best model from early stopping.
+Best validation loss 2.1793 at epoch 2
+
+search_stage1_4 training completed in 1261.49 seconds
+Pruned to 3 models
+
+Stage 2: training 3 models for 20 epochs
+
+Starting training...
+Epoch 01 | train_loss=2.1599 | val_loss=4.7214 | val_rmse=4.3499 | val_mae=1.8238 | val_mape=66.4000 | val_r2=0.7750
+Epoch 02 | train_loss=2.2262 | val_loss=5.1845 | val_rmse=4.3322 | val_mae=1.8040 | val_mape=65.6942 | val_r2=0.7768
+Epoch 03 | train_loss=2.2946 | val_loss=7.8188 | val_rmse=4.3328 | val_mae=1.8234 | val_mape=67.2556 | val_r2=0.7768
+Epoch 04 | train_loss=2.3093 | val_loss=8.1455 | val_rmse=4.3384 | val_mae=1.8047 | val_mape=65.9296 | val_r2=0.7762
+Epoch 05 | train_loss=2.4022 | val_loss=6.3934 | val_rmse=4.3335 | val_mae=1.8259 | val_mape=66.2199 | val_r2=0.7767
+Epoch 06 | train_loss=2.3346 | val_loss=5.7779 | val_rmse=4.3197 | val_mae=1.8262 | val_mape=66.4841 | val_r2=0.7781
+Epoch 07 | train_loss=2.4869 | val_loss=8.4528 | val_rmse=4.3129 | val_mae=1.8141 | val_mape=66.3279 | val_r2=0.7788
+Epoch 08 | train_loss=2.3446 | val_loss=7.6006 | val_rmse=4.3042 | val_mae=1.8072 | val_mape=65.7116 | val_r2=0.7797
+Early stopping triggered at epoch 9
+Training finished.
+Restored best model from early stopping.
+Best validation loss 4.7214 at epoch 1
+
+search_stage2_0 training completed in 1115.21 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.8574 | val_loss=5.7251 | val_rmse=4.3548 | val_mae=1.8250 | val_mape=66.3379 | val_r2=0.7745
+Epoch 02 | train_loss=2.0876 | val_loss=7.3654 | val_rmse=4.3290 | val_mae=1.8090 | val_mape=65.6604 | val_r2=0.7772
+Epoch 03 | train_loss=1.9899 | val_loss=8.8721 | val_rmse=4.3376 | val_mae=1.8123 | val_mape=66.8848 | val_r2=0.7763
+Epoch 04 | train_loss=2.0789 | val_loss=6.8429 | val_rmse=4.3157 | val_mae=1.7992 | val_mape=65.5361 | val_r2=0.7785
+Epoch 05 | train_loss=1.9131 | val_loss=6.9620 | val_rmse=4.3095 | val_mae=1.8091 | val_mape=66.3984 | val_r2=0.7792
+Epoch 06 | train_loss=1.9185 | val_loss=5.6529 | val_rmse=4.3259 | val_mae=1.8233 | val_mape=67.7532 | val_r2=0.7775
+Epoch 07 | train_loss=1.8803 | val_loss=7.2534 | val_rmse=4.3233 | val_mae=1.8214 | val_mape=66.3778 | val_r2=0.7777
+Epoch 08 | train_loss=2.0739 | val_loss=10.5288 | val_rmse=4.3172 | val_mae=1.8160 | val_mape=66.5817 | val_r2=0.7784
+Epoch 09 | train_loss=2.0944 | val_loss=9.6558 | val_rmse=4.3155 | val_mae=1.8079 | val_mape=66.1329 | val_r2=0.7786
+Epoch 10 | train_loss=2.0463 | val_loss=13.5376 | val_rmse=4.3120 | val_mae=1.8090 | val_mape=65.8852 | val_r2=0.7789
+Epoch 11 | train_loss=2.0718 | val_loss=11.3794 | val_rmse=4.3122 | val_mae=1.8118 | val_mape=66.5183 | val_r2=0.7789
+Epoch 12 | train_loss=2.1794 | val_loss=11.1488 | val_rmse=4.3048 | val_mae=1.8100 | val_mape=65.9370 | val_r2=0.7796
+Epoch 13 | train_loss=2.0817 | val_loss=8.9652 | val_rmse=4.3246 | val_mae=1.8085 | val_mape=66.4036 | val_r2=0.7776
+Early stopping triggered at epoch 14
+Training finished.
+Restored best model from early stopping.
+Best validation loss 5.6529 at epoch 6
+
+search_stage2_1 training completed in 1749.78 seconds
+
+Starting training...
+Epoch 01 | train_loss=2.2626 | val_loss=5.8005 | val_rmse=4.4851 | val_mae=1.8176 | val_mape=66.6119 | val_r2=0.7608
+Epoch 02 | train_loss=2.5227 | val_loss=5.5993 | val_rmse=4.4616 | val_mae=1.8332 | val_mape=66.7585 | val_r2=0.7633
+Epoch 03 | train_loss=2.2235 | val_loss=4.3286 | val_rmse=4.4336 | val_mae=1.8085 | val_mape=66.1432 | val_r2=0.7663
+Epoch 04 | train_loss=2.7684 | val_loss=4.1853 | val_rmse=4.4122 | val_mae=1.8226 | val_mape=66.7808 | val_r2=0.7685
+Epoch 05 | train_loss=2.3386 | val_loss=7.5338 | val_rmse=4.4085 | val_mae=1.8283 | val_mape=66.8472 | val_r2=0.7689
+Epoch 06 | train_loss=2.2419 | val_loss=7.5751 | val_rmse=4.3997 | val_mae=1.8189 | val_mape=65.9417 | val_r2=0.7698
+Epoch 07 | train_loss=2.1981 | val_loss=8.2785 | val_rmse=4.3940 | val_mae=1.8202 | val_mape=66.2896 | val_r2=0.7704
+Epoch 08 | train_loss=2.5454 | val_loss=9.4876 | val_rmse=4.3852 | val_mae=1.8104 | val_mape=66.2876 | val_r2=0.7713
+Epoch 09 | train_loss=2.5906 | val_loss=6.2347 | val_rmse=4.3757 | val_mae=1.8142 | val_mape=66.6093 | val_r2=0.7723
+Epoch 10 | train_loss=2.4141 | val_loss=4.9952 | val_rmse=4.3672 | val_mae=1.8044 | val_mape=66.1628 | val_r2=0.7732
+Epoch 11 | train_loss=2.2250 | val_loss=8.4761 | val_rmse=4.3667 | val_mae=1.8060 | val_mape=66.9678 | val_r2=0.7733
+Early stopping triggered at epoch 12
+Training finished.
+Restored best model from early stopping.
+Best validation loss 4.1853 at epoch 4
+
+search_stage2_2 training completed in 1521.10 seconds
+Pruned to 1 models
+
+Hyperparameter search summary saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_prob/baseline_gru_prob_search.json
+Best baseline_gru_prob configuration:
+{'epochs': 60, 'seed': 42, 'horizon': 28, 'seq_len': 28, 'autoregressive': True, 'use_normalise': False, 'feature_set': 'sales_hierarchy_dow', 'early_stopping_patience': 8, 'early_stopping_min_delta': 0.0005, 'optimiser': 'adamw', 'optimiser_params': {'lr': 0.00404205165630284, 'weight_decay': 0.000318721794172056}, 'scheduler': 'plateau', 'scheduler_params': {'patience': 5, 'factor': 0.5}, 'clip_grad_norm': 1.3907847991810256, 'hidden': 57.28534887210471, 'layers': 1.5005861130502982, 'dropout': 0.05359556415903941, 'sigma_reg': 0.02236163262253329, 'n_features': 6}
+[config] Best config written → /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/configs/models/baseline_gru_prob.yml
+
+  Best config for baseline_gru_prob:
+    epochs: 60
+    seed: 42
+    horizon: 28
+    seq_len: 28
+    autoregressive: True
+    use_normalise: False
+    feature_set: sales_hierarchy_dow
+    early_stopping_patience: 8
+    early_stopping_min_delta: 0.0005
+    optimiser: adamw
+    optimiser_params.lr: 0.00404205165630284
+    optimiser_params.weight_decay: 0.000318721794172056
+    scheduler: plateau
+    scheduler_params.patience: 5
+    scheduler_params.factor: 0.5
+    clip_grad_norm: 1.3907847991810256
+    hidden: 57.28534887210471
+    layers: 1.5005861130502982
+    dropout: 0.05359556415903941
+    sigma_reg: 0.02236163262253329
+    n_features: 6
+
+============================================================
+  SEARCH: baseline_gru_nb
+============================================================
+
+Starting baseline_gru_nb hyperparameter search
+
+Stage 0: training 10 models for 10 epochs
+
+Starting training...
+Epoch 01 | train_loss=1.3543 | val_loss=1.4386 | val_rmse=6.2860 | val_mae=2.1910 | val_mape=67.8205 | val_r2=0.5302
+Epoch 02 | train_loss=1.2158 | val_loss=1.4104 | val_rmse=5.5785 | val_mae=2.0153 | val_mape=67.3010 | val_r2=0.6300
+Epoch 03 | train_loss=1.1990 | val_loss=1.4026 | val_rmse=5.2601 | val_mae=1.9474 | val_mape=66.6221 | val_r2=0.6710
+Epoch 04 | train_loss=1.1921 | val_loss=1.4010 | val_rmse=5.0886 | val_mae=1.9214 | val_mape=66.6111 | val_r2=0.6921
+Epoch 05 | train_loss=1.1881 | val_loss=1.3998 | val_rmse=4.9774 | val_mae=1.9062 | val_mape=66.7366 | val_r2=0.7054
+Epoch 06 | train_loss=1.1854 | val_loss=1.3958 | val_rmse=4.8978 | val_mae=1.8672 | val_mape=66.3488 | val_r2=0.7148
+Epoch 07 | train_loss=1.1834 | val_loss=1.3951 | val_rmse=4.8387 | val_mae=1.8568 | val_mape=66.1617 | val_r2=0.7216
+Epoch 08 | train_loss=1.1820 | val_loss=1.3925 | val_rmse=4.7911 | val_mae=1.8563 | val_mape=66.3104 | val_r2=0.7270
+Epoch 09 | train_loss=1.1808 | val_loss=1.3924 | val_rmse=4.7538 | val_mae=1.8508 | val_mape=65.9455 | val_r2=0.7313
+Epoch 10 | train_loss=1.1798 | val_loss=1.3892 | val_rmse=4.7229 | val_mae=1.8482 | val_mape=66.0865 | val_r2=0.7348
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3892 at epoch 10
+
+search_stage0_0 training completed in 1221.01 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.4732 | val_loss=1.4960 | val_rmse=7.0254 | val_mae=2.4112 | val_mape=68.1475 | val_r2=0.4131
+Epoch 02 | train_loss=1.2579 | val_loss=1.4545 | val_rmse=6.3266 | val_mae=2.1932 | val_mape=68.4018 | val_r2=0.5241
+Epoch 03 | train_loss=1.2252 | val_loss=1.4247 | val_rmse=5.8130 | val_mae=2.0675 | val_mape=67.5029 | val_r2=0.5982
+Epoch 04 | train_loss=1.2094 | val_loss=1.4113 | val_rmse=5.5164 | val_mae=2.0040 | val_mape=65.7802 | val_r2=0.6382
+Epoch 05 | train_loss=1.2015 | val_loss=1.4060 | val_rmse=5.3425 | val_mae=1.9732 | val_mape=65.7903 | val_r2=0.6606
+Epoch 06 | train_loss=1.1969 | val_loss=1.4052 | val_rmse=5.2208 | val_mae=1.9276 | val_mape=66.4507 | val_r2=0.6759
+Epoch 07 | train_loss=1.1936 | val_loss=1.4030 | val_rmse=5.1319 | val_mae=1.9201 | val_mape=66.0757 | val_r2=0.6868
+Epoch 08 | train_loss=1.1913 | val_loss=1.4015 | val_rmse=5.0634 | val_mae=1.9084 | val_mape=65.4794 | val_r2=0.6951
+Epoch 09 | train_loss=1.1894 | val_loss=1.3964 | val_rmse=5.0071 | val_mae=1.8974 | val_mape=65.8621 | val_r2=0.7019
+Epoch 10 | train_loss=1.1878 | val_loss=1.3978 | val_rmse=4.9633 | val_mae=1.8934 | val_mape=65.5815 | val_r2=0.7071
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3964 at epoch 9
+
+search_stage0_1 training completed in 1222.41 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.4636 | val_loss=1.4801 | val_rmse=6.9653 | val_mae=2.3998 | val_mape=67.4661 | val_r2=0.4231
+Epoch 02 | train_loss=1.2430 | val_loss=1.4386 | val_rmse=6.1685 | val_mae=2.1420 | val_mape=67.8690 | val_r2=0.5475
+Epoch 03 | train_loss=1.2141 | val_loss=1.4192 | val_rmse=5.7131 | val_mae=2.0302 | val_mape=67.2853 | val_r2=0.6119
+Epoch 04 | train_loss=1.2024 | val_loss=1.4079 | val_rmse=5.4592 | val_mae=1.9836 | val_mape=67.3598 | val_r2=0.6456
+Epoch 05 | train_loss=1.1963 | val_loss=1.4034 | val_rmse=5.2986 | val_mae=1.9478 | val_mape=65.8625 | val_r2=0.6662
+Epoch 06 | train_loss=1.1925 | val_loss=1.4017 | val_rmse=5.1903 | val_mae=1.9217 | val_mape=66.6864 | val_r2=0.6797
+Epoch 07 | train_loss=1.1900 | val_loss=1.4006 | val_rmse=5.1123 | val_mae=1.9136 | val_mape=66.5228 | val_r2=0.6892
+Epoch 08 | train_loss=1.1881 | val_loss=1.3988 | val_rmse=5.0498 | val_mae=1.8965 | val_mape=66.2247 | val_r2=0.6968
+Epoch 09 | train_loss=1.1867 | val_loss=1.3960 | val_rmse=4.9997 | val_mae=1.8915 | val_mape=66.4983 | val_r2=0.7028
+Epoch 10 | train_loss=1.1854 | val_loss=1.3955 | val_rmse=4.9576 | val_mae=1.8874 | val_mape=66.4740 | val_r2=0.7078
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3955 at epoch 10
+
+search_stage0_2 training completed in 1223.10 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.3986 | val_loss=1.4626 | val_rmse=6.5300 | val_mae=2.2609 | val_mape=68.0768 | val_r2=0.4930
+Epoch 02 | train_loss=1.2277 | val_loss=1.4208 | val_rmse=5.7483 | val_mae=2.0457 | val_mape=66.5772 | val_r2=0.6071
+Epoch 03 | train_loss=1.2048 | val_loss=1.4071 | val_rmse=5.3612 | val_mae=1.9715 | val_mape=66.3082 | val_r2=0.6582
+Epoch 04 | train_loss=1.1958 | val_loss=1.4061 | val_rmse=5.1579 | val_mae=1.9155 | val_mape=66.8192 | val_r2=0.6837
+Epoch 05 | train_loss=1.1911 | val_loss=1.3965 | val_rmse=5.0364 | val_mae=1.9126 | val_mape=66.0456 | val_r2=0.6984
+Epoch 06 | train_loss=1.1880 | val_loss=1.3976 | val_rmse=4.9497 | val_mae=1.8945 | val_mape=65.7835 | val_r2=0.7087
+Epoch 07 | train_loss=1.1857 | val_loss=1.3952 | val_rmse=4.8861 | val_mae=1.8816 | val_mape=66.0747 | val_r2=0.7161
+Epoch 08 | train_loss=1.1840 | val_loss=1.3943 | val_rmse=4.8350 | val_mae=1.8646 | val_mape=65.8551 | val_r2=0.7220
+Epoch 09 | train_loss=1.1828 | val_loss=1.3925 | val_rmse=4.7932 | val_mae=1.8662 | val_mape=65.7621 | val_r2=0.7268
+Epoch 10 | train_loss=1.1817 | val_loss=1.3915 | val_rmse=4.7620 | val_mae=1.8581 | val_mape=65.3843 | val_r2=0.7304
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3915 at epoch 10
+
+search_stage0_3 training completed in 1245.10 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.5112 | val_loss=1.5222 | val_rmse=7.3685 | val_mae=2.5408 | val_mape=67.7750 | val_r2=0.3544
+Epoch 02 | train_loss=1.2771 | val_loss=1.4647 | val_rmse=6.7019 | val_mae=2.3066 | val_mape=67.9717 | val_r2=0.4659
+Epoch 03 | train_loss=1.2375 | val_loss=1.4351 | val_rmse=6.1532 | val_mae=2.1525 | val_mape=67.2887 | val_r2=0.5498
+Epoch 04 | train_loss=1.2178 | val_loss=1.4219 | val_rmse=5.8144 | val_mae=2.0645 | val_mape=68.0419 | val_r2=0.5980
+Epoch 05 | train_loss=1.2083 | val_loss=1.4140 | val_rmse=5.6064 | val_mae=2.0185 | val_mape=67.0259 | val_r2=0.6262
+Epoch 06 | train_loss=1.2029 | val_loss=1.4114 | val_rmse=5.4613 | val_mae=1.9860 | val_mape=67.0693 | val_r2=0.6453
+Epoch 07 | train_loss=1.1991 | val_loss=1.4091 | val_rmse=5.3546 | val_mae=1.9577 | val_mape=66.6688 | val_r2=0.6591
+Epoch 08 | train_loss=1.1964 | val_loss=1.4061 | val_rmse=5.2678 | val_mae=1.9422 | val_mape=66.6839 | val_r2=0.6700
+Epoch 09 | train_loss=1.1940 | val_loss=1.4033 | val_rmse=5.1987 | val_mae=1.9276 | val_mape=66.3333 | val_r2=0.6786
+Epoch 10 | train_loss=1.1923 | val_loss=1.3992 | val_rmse=5.1418 | val_mae=1.9238 | val_mape=65.5815 | val_r2=0.6856
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3992 at epoch 10
+
+search_stage0_4 training completed in 1230.29 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.5751 | val_loss=1.5510 | val_rmse=7.6562 | val_mae=2.6602 | val_mape=66.6799 | val_r2=0.3030
+Epoch 02 | train_loss=1.3056 | val_loss=1.4939 | val_rmse=7.0862 | val_mae=2.4388 | val_mape=68.2740 | val_r2=0.4029
+Epoch 03 | train_loss=1.2636 | val_loss=1.4551 | val_rmse=6.5820 | val_mae=2.2754 | val_mape=67.6152 | val_r2=0.4849
+Epoch 04 | train_loss=1.2367 | val_loss=1.4341 | val_rmse=6.1585 | val_mae=2.1471 | val_mape=67.5901 | val_r2=0.5490
+Epoch 05 | train_loss=1.2203 | val_loss=1.4245 | val_rmse=5.8754 | val_mae=2.0733 | val_mape=67.7764 | val_r2=0.5895
+Epoch 06 | train_loss=1.2116 | val_loss=1.4187 | val_rmse=5.6922 | val_mae=2.0301 | val_mape=67.0322 | val_r2=0.6147
+Epoch 07 | train_loss=1.2062 | val_loss=1.4117 | val_rmse=5.5642 | val_mae=2.0039 | val_mape=67.3254 | val_r2=0.6319
+Epoch 08 | train_loss=1.2024 | val_loss=1.4114 | val_rmse=5.4638 | val_mae=1.9794 | val_mape=66.1866 | val_r2=0.6450
+Epoch 09 | train_loss=1.1995 | val_loss=1.4079 | val_rmse=5.3810 | val_mae=1.9710 | val_mape=66.1496 | val_r2=0.6557
+Epoch 10 | train_loss=1.1972 | val_loss=1.4091 | val_rmse=5.3135 | val_mae=1.9505 | val_mape=66.1074 | val_r2=0.6643
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.4079 at epoch 9
+
+search_stage0_5 training completed in 1235.71 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.5602 | val_loss=1.5341 | val_rmse=7.3115 | val_mae=2.5219 | val_mape=69.3765 | val_r2=0.3643
+Epoch 02 | train_loss=1.2758 | val_loss=1.4622 | val_rmse=6.5826 | val_mae=2.2609 | val_mape=67.9739 | val_r2=0.4848
+Epoch 03 | train_loss=1.2330 | val_loss=1.4326 | val_rmse=6.0245 | val_mae=2.1041 | val_mape=67.2711 | val_r2=0.5684
+Epoch 04 | train_loss=1.2138 | val_loss=1.4173 | val_rmse=5.7062 | val_mae=2.0332 | val_mape=66.5242 | val_r2=0.6128
+Epoch 05 | train_loss=1.2048 | val_loss=1.4114 | val_rmse=5.5104 | val_mae=1.9990 | val_mape=66.2540 | val_r2=0.6389
+Epoch 06 | train_loss=1.1995 | val_loss=1.4090 | val_rmse=5.3732 | val_mae=1.9518 | val_mape=66.4026 | val_r2=0.6567
+Epoch 07 | train_loss=1.1960 | val_loss=1.4048 | val_rmse=5.2736 | val_mae=1.9405 | val_mape=65.9244 | val_r2=0.6693
+Epoch 08 | train_loss=1.1933 | val_loss=1.4027 | val_rmse=5.1966 | val_mae=1.9414 | val_mape=66.0702 | val_r2=0.6789
+Epoch 09 | train_loss=1.1913 | val_loss=1.4027 | val_rmse=5.1343 | val_mae=1.9233 | val_mape=66.1184 | val_r2=0.6865
+Epoch 10 | train_loss=1.1897 | val_loss=1.3988 | val_rmse=5.0826 | val_mae=1.9151 | val_mape=66.0423 | val_r2=0.6928
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3988 at epoch 10
+
+search_stage0_6 training completed in 1236.90 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.3160 | val_loss=1.4413 | val_rmse=5.9393 | val_mae=2.0639 | val_mape=67.5535 | val_r2=0.5806
+Epoch 02 | train_loss=1.2035 | val_loss=1.4088 | val_rmse=5.3113 | val_mae=1.9618 | val_mape=66.0697 | val_r2=0.6646
+Epoch 03 | train_loss=1.1914 | val_loss=1.3993 | val_rmse=5.0550 | val_mae=1.9075 | val_mape=66.5112 | val_r2=0.6961
+Epoch 04 | train_loss=1.1865 | val_loss=1.3967 | val_rmse=4.9226 | val_mae=1.8804 | val_mape=66.2067 | val_r2=0.7119
+Epoch 05 | train_loss=1.1835 | val_loss=1.3959 | val_rmse=4.8388 | val_mae=1.8676 | val_mape=65.8356 | val_r2=0.7216
+Epoch 06 | train_loss=1.1816 | val_loss=1.3912 | val_rmse=4.7807 | val_mae=1.8524 | val_mape=66.0041 | val_r2=0.7282
+Epoch 07 | train_loss=1.1801 | val_loss=1.3890 | val_rmse=4.7335 | val_mae=1.8493 | val_mape=65.8550 | val_r2=0.7336
+Epoch 08 | train_loss=1.1789 | val_loss=1.3932 | val_rmse=4.7003 | val_mae=1.8575 | val_mape=66.4234 | val_r2=0.7373
+Epoch 09 | train_loss=1.1779 | val_loss=1.3868 | val_rmse=4.6641 | val_mae=1.8479 | val_mape=66.1931 | val_r2=0.7413
+Epoch 10 | train_loss=1.1771 | val_loss=1.3951 | val_rmse=4.6414 | val_mae=1.8334 | val_mape=65.8108 | val_r2=0.7438
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3868 at epoch 9
+
+search_stage0_7 training completed in 1249.40 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.3352 | val_loss=1.4313 | val_rmse=6.0933 | val_mae=2.1323 | val_mape=66.6672 | val_r2=0.5585
+Epoch 02 | train_loss=1.2084 | val_loss=1.4070 | val_rmse=5.4122 | val_mae=1.9663 | val_mape=65.7508 | val_r2=0.6517
+Epoch 03 | train_loss=1.1944 | val_loss=1.4006 | val_rmse=5.1246 | val_mae=1.9136 | val_mape=66.2481 | val_r2=0.6877
+Epoch 04 | train_loss=1.1886 | val_loss=1.3980 | val_rmse=4.9781 | val_mae=1.8864 | val_mape=65.7063 | val_r2=0.7053
+Epoch 05 | train_loss=1.1854 | val_loss=1.3960 | val_rmse=4.8900 | val_mae=1.8641 | val_mape=65.1975 | val_r2=0.7157
+Epoch 06 | train_loss=1.1831 | val_loss=1.3953 | val_rmse=4.8202 | val_mae=1.8789 | val_mape=65.7604 | val_r2=0.7237
+Epoch 07 | train_loss=1.1814 | val_loss=1.3944 | val_rmse=4.7719 | val_mae=1.8539 | val_mape=66.2675 | val_r2=0.7292
+Epoch 08 | train_loss=1.1804 | val_loss=1.3906 | val_rmse=4.7283 | val_mae=1.8592 | val_mape=65.5056 | val_r2=0.7342
+Epoch 09 | train_loss=1.1792 | val_loss=1.3894 | val_rmse=4.6952 | val_mae=1.8462 | val_mape=66.1979 | val_r2=0.7379
+Epoch 10 | train_loss=1.1783 | val_loss=1.3894 | val_rmse=4.6664 | val_mae=1.8421 | val_mape=65.5446 | val_r2=0.7411
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3894 at epoch 9
+
+search_stage0_8 training completed in 1249.00 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.3263 | val_loss=1.4353 | val_rmse=6.0582 | val_mae=2.1141 | val_mape=67.3948 | val_r2=0.5636
+Epoch 02 | train_loss=1.2084 | val_loss=1.4120 | val_rmse=5.3896 | val_mae=1.9632 | val_mape=67.1096 | val_r2=0.6546
+Epoch 03 | train_loss=1.1941 | val_loss=1.4038 | val_rmse=5.1144 | val_mae=1.9212 | val_mape=66.0815 | val_r2=0.6890
+Epoch 04 | train_loss=1.1884 | val_loss=1.3978 | val_rmse=4.9740 | val_mae=1.9012 | val_mape=65.8305 | val_r2=0.7058
+Epoch 05 | train_loss=1.1851 | val_loss=1.3945 | val_rmse=4.8831 | val_mae=1.8884 | val_mape=66.2531 | val_r2=0.7165
+Epoch 06 | train_loss=1.1829 | val_loss=1.3948 | val_rmse=4.8143 | val_mae=1.8544 | val_mape=66.5504 | val_r2=0.7244
+Epoch 07 | train_loss=1.1814 | val_loss=1.3935 | val_rmse=4.7646 | val_mae=1.8652 | val_mape=65.2640 | val_r2=0.7301
+Epoch 08 | train_loss=1.1800 | val_loss=1.3923 | val_rmse=4.7238 | val_mae=1.8489 | val_mape=66.5032 | val_r2=0.7347
+Epoch 09 | train_loss=1.1790 | val_loss=1.3891 | val_rmse=4.6906 | val_mae=1.8365 | val_mape=65.5572 | val_r2=0.7384
+Epoch 10 | train_loss=1.1781 | val_loss=1.3894 | val_rmse=4.6636 | val_mae=1.8604 | val_mape=65.4254 | val_r2=0.7414
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3891 at epoch 9
+
+search_stage0_9 training completed in 1250.00 seconds
+Pruned to 5 models
+
+Stage 1: training 5 models for 10 epochs
+
+Starting training...
+Epoch 01 | train_loss=1.1771 | val_loss=1.3889 | val_rmse=4.6417 | val_mae=1.8351 | val_mape=65.6126 | val_r2=0.7438
+Epoch 02 | train_loss=1.1763 | val_loss=1.3880 | val_rmse=4.6154 | val_mae=1.8375 | val_mape=65.2205 | val_r2=0.7467
+Epoch 03 | train_loss=1.1757 | val_loss=1.3874 | val_rmse=4.5962 | val_mae=1.8225 | val_mape=65.4220 | val_r2=0.7488
+Epoch 04 | train_loss=1.1751 | val_loss=1.3872 | val_rmse=4.5811 | val_mae=1.8292 | val_mape=65.9343 | val_r2=0.7505
+Epoch 05 | train_loss=1.1746 | val_loss=1.3877 | val_rmse=4.5671 | val_mae=1.8192 | val_mape=65.9721 | val_r2=0.7520
+Epoch 06 | train_loss=1.1736 | val_loss=1.3875 | val_rmse=4.5571 | val_mae=1.8212 | val_mape=65.8873 | val_r2=0.7531
+Epoch 07 | train_loss=1.1734 | val_loss=1.3874 | val_rmse=4.5470 | val_mae=1.8302 | val_mape=65.1188 | val_r2=0.7542
+Epoch 08 | train_loss=1.1731 | val_loss=1.3869 | val_rmse=4.5402 | val_mae=1.8183 | val_mape=65.5445 | val_r2=0.7549
+Epoch 09 | train_loss=1.1729 | val_loss=1.3866 | val_rmse=4.5350 | val_mae=1.8211 | val_mape=65.1615 | val_r2=0.7554
+Epoch 10 | train_loss=1.1727 | val_loss=1.3869 | val_rmse=4.5276 | val_mae=1.8055 | val_mape=65.3392 | val_r2=0.7563
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3866 at epoch 9
+
+search_stage1_0 training completed in 1249.48 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.1782 | val_loss=1.3900 | val_rmse=4.6624 | val_mae=1.8433 | val_mape=65.8750 | val_r2=0.7415
+Epoch 02 | train_loss=1.1774 | val_loss=1.3900 | val_rmse=4.6390 | val_mae=1.8421 | val_mape=66.2025 | val_r2=0.7441
+Epoch 03 | train_loss=1.1767 | val_loss=1.3884 | val_rmse=4.6161 | val_mae=1.8224 | val_mape=65.5080 | val_r2=0.7466
+Epoch 04 | train_loss=1.1760 | val_loss=1.3889 | val_rmse=4.5991 | val_mae=1.8254 | val_mape=65.0124 | val_r2=0.7485
+Epoch 05 | train_loss=1.1755 | val_loss=1.3889 | val_rmse=4.5811 | val_mae=1.8262 | val_mape=66.0245 | val_r2=0.7505
+Epoch 06 | train_loss=1.1749 | val_loss=1.3878 | val_rmse=4.5630 | val_mae=1.8230 | val_mape=65.5064 | val_r2=0.7524
+Epoch 07 | train_loss=1.1745 | val_loss=1.3886 | val_rmse=4.5482 | val_mae=1.8221 | val_mape=64.6152 | val_r2=0.7540
+Epoch 08 | train_loss=1.1740 | val_loss=1.3890 | val_rmse=4.5339 | val_mae=1.8063 | val_mape=65.7872 | val_r2=0.7556
+Epoch 09 | train_loss=1.1736 | val_loss=1.3868 | val_rmse=4.5222 | val_mae=1.8169 | val_mape=65.8534 | val_r2=0.7568
+Epoch 10 | train_loss=1.1732 | val_loss=1.3864 | val_rmse=4.5121 | val_mae=1.8130 | val_mape=66.3009 | val_r2=0.7579
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3868 at epoch 9
+
+search_stage1_1 training completed in 1250.00 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.1790 | val_loss=1.3890 | val_rmse=4.6991 | val_mae=1.8430 | val_mape=66.3774 | val_r2=0.7374
+Epoch 02 | train_loss=1.1782 | val_loss=1.3885 | val_rmse=4.6775 | val_mae=1.8450 | val_mape=65.9659 | val_r2=0.7398
+Epoch 03 | train_loss=1.1776 | val_loss=1.3903 | val_rmse=4.6560 | val_mae=1.8456 | val_mape=66.4259 | val_r2=0.7422
+Epoch 04 | train_loss=1.1771 | val_loss=1.3900 | val_rmse=4.6382 | val_mae=1.8393 | val_mape=65.9272 | val_r2=0.7442
+Epoch 05 | train_loss=1.1766 | val_loss=1.3883 | val_rmse=4.6229 | val_mae=1.8456 | val_mape=65.9323 | val_r2=0.7459
+Epoch 06 | train_loss=1.1761 | val_loss=1.3883 | val_rmse=4.6059 | val_mae=1.8369 | val_mape=65.1381 | val_r2=0.7477
+Epoch 07 | train_loss=1.1756 | val_loss=1.3884 | val_rmse=4.5934 | val_mae=1.8290 | val_mape=65.9170 | val_r2=0.7491
+Epoch 08 | train_loss=1.1752 | val_loss=1.3893 | val_rmse=4.5826 | val_mae=1.8299 | val_mape=66.4324 | val_r2=0.7503
+Epoch 09 | train_loss=1.1747 | val_loss=1.3883 | val_rmse=4.5727 | val_mae=1.8362 | val_mape=65.8546 | val_r2=0.7514
+Early stopping triggered at epoch 10
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3885 at epoch 2
+
+search_stage1_2 training completed in 1248.10 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.1785 | val_loss=1.3883 | val_rmse=4.6690 | val_mae=1.8410 | val_mape=65.6350 | val_r2=0.7408
+Epoch 02 | train_loss=1.1778 | val_loss=1.3881 | val_rmse=4.6427 | val_mae=1.8434 | val_mape=65.6537 | val_r2=0.7437
+Epoch 03 | train_loss=1.1771 | val_loss=1.3894 | val_rmse=4.6249 | val_mae=1.8495 | val_mape=65.8806 | val_r2=0.7457
+Epoch 04 | train_loss=1.1765 | val_loss=1.3889 | val_rmse=4.6024 | val_mae=1.8242 | val_mape=65.3724 | val_r2=0.7481
+Epoch 05 | train_loss=1.1758 | val_loss=1.3867 | val_rmse=4.5851 | val_mae=1.8338 | val_mape=65.5140 | val_r2=0.7500
+Epoch 06 | train_loss=1.1753 | val_loss=1.3867 | val_rmse=4.5705 | val_mae=1.8226 | val_mape=65.4680 | val_r2=0.7516
+Epoch 07 | train_loss=1.1746 | val_loss=1.3887 | val_rmse=4.5584 | val_mae=1.8206 | val_mape=66.0763 | val_r2=0.7529
+Epoch 08 | train_loss=1.1741 | val_loss=1.3858 | val_rmse=4.5407 | val_mae=1.8251 | val_mape=65.3287 | val_r2=0.7548
+Epoch 09 | train_loss=1.1737 | val_loss=1.3864 | val_rmse=4.5308 | val_mae=1.8119 | val_mape=65.5946 | val_r2=0.7559
+Epoch 10 | train_loss=1.1733 | val_loss=1.3855 | val_rmse=4.5173 | val_mae=1.8222 | val_mape=65.7769 | val_r2=0.7574
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3858 at epoch 8
+
+search_stage1_3 training completed in 1250.50 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.1807 | val_loss=1.3914 | val_rmse=4.7331 | val_mae=1.8568 | val_mape=64.9364 | val_r2=0.7336
+Epoch 02 | train_loss=1.1799 | val_loss=1.3908 | val_rmse=4.7071 | val_mae=1.8432 | val_mape=65.3548 | val_r2=0.7365
+Epoch 03 | train_loss=1.1792 | val_loss=1.3916 | val_rmse=4.6876 | val_mae=1.8514 | val_mape=64.9979 | val_r2=0.7387
+Epoch 04 | train_loss=1.1787 | val_loss=1.3888 | val_rmse=4.6677 | val_mae=1.8430 | val_mape=65.6661 | val_r2=0.7409
+Epoch 05 | train_loss=1.1781 | val_loss=1.3927 | val_rmse=4.6523 | val_mae=1.8416 | val_mape=64.4909 | val_r2=0.7426
+Epoch 06 | train_loss=1.1775 | val_loss=1.3904 | val_rmse=4.6369 | val_mae=1.8428 | val_mape=65.9254 | val_r2=0.7443
+Epoch 07 | train_loss=1.1770 | val_loss=1.3924 | val_rmse=4.6207 | val_mae=1.8285 | val_mape=65.9777 | val_r2=0.7461
+Epoch 08 | train_loss=1.1765 | val_loss=1.3897 | val_rmse=4.6094 | val_mae=1.8226 | val_mape=65.0284 | val_r2=0.7474
+Epoch 09 | train_loss=1.1761 | val_loss=1.3909 | val_rmse=4.5964 | val_mae=1.8357 | val_mape=65.9604 | val_r2=0.7488
+Epoch 10 | train_loss=1.1757 | val_loss=1.3889 | val_rmse=4.5851 | val_mae=1.8208 | val_mape=65.1345 | val_r2=0.7500
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3888 at epoch 4
+
+search_stage1_4 training completed in 1256.62 seconds
+Pruned to 3 models
+
+Stage 2: training 3 models for 20 epochs
+
+Starting training...
+Epoch 01 | train_loss=1.1737 | val_loss=1.3851 | val_rmse=4.5302 | val_mae=1.8209 | val_mape=65.4450 | val_r2=0.7560
+Epoch 02 | train_loss=1.1733 | val_loss=1.3873 | val_rmse=4.5220 | val_mae=1.8262 | val_mape=66.2253 | val_r2=0.7568
+Epoch 03 | train_loss=1.1730 | val_loss=1.3862 | val_rmse=4.5099 | val_mae=1.8232 | val_mape=65.4617 | val_r2=0.7581
+Epoch 04 | train_loss=1.1727 | val_loss=1.3869 | val_rmse=4.4986 | val_mae=1.8174 | val_mape=65.9788 | val_r2=0.7594
+Epoch 05 | train_loss=1.1723 | val_loss=1.3872 | val_rmse=4.4926 | val_mae=1.8140 | val_mape=65.8849 | val_r2=0.7600
+Epoch 06 | train_loss=1.1721 | val_loss=1.3857 | val_rmse=4.4808 | val_mae=1.8173 | val_mape=64.5171 | val_r2=0.7613
+Epoch 07 | train_loss=1.1717 | val_loss=1.3893 | val_rmse=4.4734 | val_mae=1.7963 | val_mape=65.2037 | val_r2=0.7621
+Epoch 08 | train_loss=1.1711 | val_loss=1.3861 | val_rmse=4.4717 | val_mae=1.8147 | val_mape=65.5077 | val_r2=0.7622
+Early stopping triggered at epoch 9
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3851 at epoch 1
+
+search_stage2_0 training completed in 1130.15 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.1732 | val_loss=1.3859 | val_rmse=4.5095 | val_mae=1.8113 | val_mape=65.6753 | val_r2=0.7582
+Epoch 02 | train_loss=1.1729 | val_loss=1.3885 | val_rmse=4.5038 | val_mae=1.8205 | val_mape=66.1040 | val_r2=0.7588
+Epoch 03 | train_loss=1.1725 | val_loss=1.3886 | val_rmse=4.4963 | val_mae=1.8344 | val_mape=65.4324 | val_r2=0.7596
+Epoch 04 | train_loss=1.1722 | val_loss=1.3865 | val_rmse=4.4842 | val_mae=1.8224 | val_mape=65.3085 | val_r2=0.7609
+Epoch 05 | train_loss=1.1719 | val_loss=1.3863 | val_rmse=4.4779 | val_mae=1.8103 | val_mape=65.7576 | val_r2=0.7616
+Epoch 06 | train_loss=1.1717 | val_loss=1.3858 | val_rmse=4.4683 | val_mae=1.8181 | val_mape=64.9726 | val_r2=0.7626
+Epoch 07 | train_loss=1.1714 | val_loss=1.3849 | val_rmse=4.4605 | val_mae=1.8202 | val_mape=65.1421 | val_r2=0.7634
+Epoch 08 | train_loss=1.1712 | val_loss=1.3859 | val_rmse=4.4519 | val_mae=1.8040 | val_mape=66.0589 | val_r2=0.7643
+Epoch 09 | train_loss=1.1710 | val_loss=1.3876 | val_rmse=4.4514 | val_mae=1.7983 | val_mape=66.4237 | val_r2=0.7644
+Epoch 10 | train_loss=1.1708 | val_loss=1.3848 | val_rmse=4.4426 | val_mae=1.8157 | val_mape=65.4199 | val_r2=0.7653
+Epoch 11 | train_loss=1.1705 | val_loss=1.3848 | val_rmse=4.4401 | val_mae=1.8144 | val_mape=66.4366 | val_r2=0.7656
+Epoch 12 | train_loss=1.1703 | val_loss=1.3855 | val_rmse=4.4405 | val_mae=1.8251 | val_mape=66.7093 | val_r2=0.7655
+Epoch 13 | train_loss=1.1701 | val_loss=1.3846 | val_rmse=4.4300 | val_mae=1.8071 | val_mape=66.2914 | val_r2=0.7666
+Epoch 14 | train_loss=1.1700 | val_loss=1.3859 | val_rmse=4.4267 | val_mae=1.8115 | val_mape=66.1733 | val_r2=0.7670
+Early stopping triggered at epoch 15
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3849 at epoch 7
+
+search_stage2_1 training completed in 1867.39 seconds
+
+Starting training...
+Epoch 01 | train_loss=1.1727 | val_loss=1.3870 | val_rmse=4.5268 | val_mae=1.8209 | val_mape=65.6861 | val_r2=0.7563
+Epoch 02 | train_loss=1.1725 | val_loss=1.3863 | val_rmse=4.5216 | val_mae=1.8169 | val_mape=65.4125 | val_r2=0.7569
+Epoch 03 | train_loss=1.1723 | val_loss=1.3863 | val_rmse=4.5130 | val_mae=1.8168 | val_mape=65.9477 | val_r2=0.7578
+Epoch 04 | train_loss=1.1721 | val_loss=1.3863 | val_rmse=4.5104 | val_mae=1.8175 | val_mape=65.8460 | val_r2=0.7581
+Epoch 05 | train_loss=1.1719 | val_loss=1.3869 | val_rmse=4.5069 | val_mae=1.8121 | val_mape=65.3589 | val_r2=0.7585
+Epoch 06 | train_loss=1.1718 | val_loss=1.3867 | val_rmse=4.4972 | val_mae=1.8115 | val_mape=65.9023 | val_r2=0.7595
+Epoch 07 | train_loss=1.1716 | val_loss=1.3861 | val_rmse=4.4919 | val_mae=1.8056 | val_mape=65.6195 | val_r2=0.7601
+Epoch 08 | train_loss=1.1714 | val_loss=1.3866 | val_rmse=4.4906 | val_mae=1.8050 | val_mape=65.6142 | val_r2=0.7602
+Epoch 09 | train_loss=1.1713 | val_loss=1.3849 | val_rmse=4.4836 | val_mae=1.8111 | val_mape=66.2144 | val_r2=0.7610
+Epoch 10 | train_loss=1.1712 | val_loss=1.3859 | val_rmse=4.4781 | val_mae=1.8062 | val_mape=65.2711 | val_r2=0.7616
+Epoch 11 | train_loss=1.1710 | val_loss=1.3862 | val_rmse=4.4771 | val_mae=1.8150 | val_mape=65.9656 | val_r2=0.7617
+Epoch 12 | train_loss=1.1709 | val_loss=1.3853 | val_rmse=4.4713 | val_mae=1.8137 | val_mape=64.9536 | val_r2=0.7623
+Epoch 13 | train_loss=1.1707 | val_loss=1.3851 | val_rmse=4.4642 | val_mae=1.8024 | val_mape=64.8941 | val_r2=0.7630
+Epoch 14 | train_loss=1.1706 | val_loss=1.3857 | val_rmse=4.4636 | val_mae=1.7982 | val_mape=64.8407 | val_r2=0.7631
+Epoch 15 | train_loss=1.1705 | val_loss=1.3856 | val_rmse=4.4565 | val_mae=1.7994 | val_mape=64.8814 | val_r2=0.7638
+Epoch 16 | train_loss=1.1701 | val_loss=1.3850 | val_rmse=4.4564 | val_mae=1.8039 | val_mape=65.4064 | val_r2=0.7639
+Early stopping triggered at epoch 17
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.3849 at epoch 9
+
+search_stage2_2 training completed in 2108.73 seconds
+Pruned to 1 models
+
+Hyperparameter search summary saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_nb/baseline_gru_nb_search.json
+Best baseline_gru_nb configuration:
+{'epochs': 60, 'seed': 42, 'horizon': 28, 'seq_len': 28, 'autoregressive': True, 'use_normalise': False, 'feature_set': 'sales_hierarchy_dow', 'early_stopping_patience': 8, 'early_stopping_min_delta': 0.0005, 'optimiser': 'adamw', 'optimiser_params': {'lr': 0.00016702918777512899, 'weight_decay': 2.2762000134892934e-05}, 'scheduler': 'plateau', 'scheduler_params': {'patience': 5, 'factor': 0.5}, 'clip_grad_norm': 0.586460160874849, 'hidden': 114.72056348986794, 'layers': 1.2486563339202856, 'dropout': 0.05706267253224345, 'n_features': 6}
+[config] Best config written → /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/configs/models/baseline_gru_nb.yml
+
+  Best config for baseline_gru_nb:
+    epochs: 60
+    seed: 42
+    horizon: 28
+    seq_len: 28
+    autoregressive: True
+    use_normalise: False
+    feature_set: sales_hierarchy_dow
+    early_stopping_patience: 8
+    early_stopping_min_delta: 0.0005
+    optimiser: adamw
+    optimiser_params.lr: 0.00016702918777512899
+    optimiser_params.weight_decay: 2.2762000134892934e-05
+    scheduler: plateau
+    scheduler_params.patience: 5
+    scheduler_params.factor: 0.5
+    clip_grad_norm: 0.586460160874849
+    hidden: 114.72056348986794
+    layers: 1.2486563339202856
+    dropout: 0.05706267253224345
+    n_features: 6
+
+============================================================
+  SEARCH: baseline_quantile_gru
+============================================================
+
+Starting baseline_quantile_gru hyperparameter search
+
+Stage 0: training 10 models for 10 epochs
+
+Starting training...
+Epoch 01 | train_loss=5.4679 | val_loss=3.9218 | val_rmse=5.8882 | val_mae=1.9951 | val_mape=72.3900 | val_r2=0.5877
+Epoch 02 | train_loss=3.8671 | val_loss=3.4924 | val_rmse=5.3326 | val_mae=1.8782 | val_mape=73.0973 | val_r2=0.6619
+Epoch 03 | train_loss=3.5371 | val_loss=3.3264 | val_rmse=5.0534 | val_mae=1.8183 | val_mape=71.6944 | val_r2=0.6964
+Epoch 04 | train_loss=3.3840 | val_loss=3.2556 | val_rmse=4.8943 | val_mae=1.7968 | val_mape=72.4902 | val_r2=0.7152
+Epoch 05 | train_loss=3.2990 | val_loss=3.1901 | val_rmse=4.7570 | val_mae=1.7657 | val_mape=72.0053 | val_r2=0.7309
+Epoch 06 | train_loss=3.2466 | val_loss=3.1705 | val_rmse=4.6586 | val_mae=1.7622 | val_mape=70.7523 | val_r2=0.7419
+Epoch 07 | train_loss=3.2113 | val_loss=3.1508 | val_rmse=4.6260 | val_mae=1.7555 | val_mape=72.2748 | val_r2=0.7455
+Epoch 08 | train_loss=3.1853 | val_loss=3.1345 | val_rmse=4.5749 | val_mae=1.7391 | val_mape=70.1663 | val_r2=0.7511
+Epoch 09 | train_loss=3.1635 | val_loss=3.1325 | val_rmse=4.5304 | val_mae=1.7371 | val_mape=72.0694 | val_r2=0.7559
+Epoch 10 | train_loss=3.1469 | val_loss=3.1178 | val_rmse=4.4993 | val_mae=1.7311 | val_mape=70.9957 | val_r2=0.7593
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.1178 at epoch 10
+
+search_stage0_0 training completed in 1182.76 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.9912 | val_loss=3.2417 | val_rmse=4.7621 | val_mae=1.7743 | val_mape=70.5139 | val_r2=0.7303
+Epoch 02 | train_loss=3.2403 | val_loss=3.1377 | val_rmse=4.5047 | val_mae=1.7351 | val_mape=71.1370 | val_r2=0.7587
+Epoch 03 | train_loss=3.1304 | val_loss=3.0993 | val_rmse=4.3982 | val_mae=1.7227 | val_mape=70.7531 | val_r2=0.7700
+Epoch 04 | train_loss=3.0816 | val_loss=3.0638 | val_rmse=4.3676 | val_mae=1.7046 | val_mape=71.0032 | val_r2=0.7732
+Epoch 05 | train_loss=3.0526 | val_loss=3.0606 | val_rmse=4.3322 | val_mae=1.7026 | val_mape=71.1763 | val_r2=0.7768
+Epoch 06 | train_loss=3.0352 | val_loss=3.0669 | val_rmse=4.3408 | val_mae=1.7169 | val_mape=71.2953 | val_r2=0.7759
+Epoch 07 | train_loss=3.0231 | val_loss=3.0614 | val_rmse=4.3244 | val_mae=1.7099 | val_mape=71.9616 | val_r2=0.7776
+Epoch 08 | train_loss=3.0137 | val_loss=3.0439 | val_rmse=4.3334 | val_mae=1.6960 | val_mape=69.5527 | val_r2=0.7767
+Epoch 09 | train_loss=3.0063 | val_loss=3.0425 | val_rmse=4.3254 | val_mae=1.6967 | val_mape=70.1721 | val_r2=0.7775
+Epoch 10 | train_loss=3.0001 | val_loss=3.0329 | val_rmse=4.3066 | val_mae=1.6915 | val_mape=69.8129 | val_r2=0.7795
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0329 at epoch 10
+
+search_stage0_1 training completed in 1222.11 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.6413 | val_loss=3.1627 | val_rmse=4.5466 | val_mae=1.7476 | val_mape=70.1243 | val_r2=0.7542
+Epoch 02 | train_loss=3.1800 | val_loss=3.1209 | val_rmse=4.4278 | val_mae=1.7319 | val_mape=71.3971 | val_r2=0.7669
+Epoch 03 | train_loss=3.1174 | val_loss=3.0889 | val_rmse=4.3829 | val_mae=1.7238 | val_mape=69.4590 | val_r2=0.7716
+Epoch 04 | train_loss=3.0898 | val_loss=3.0879 | val_rmse=4.3809 | val_mae=1.7190 | val_mape=71.2835 | val_r2=0.7718
+Epoch 05 | train_loss=3.0779 | val_loss=3.0937 | val_rmse=4.3747 | val_mae=1.7263 | val_mape=70.2360 | val_r2=0.7724
+Epoch 06 | train_loss=3.0654 | val_loss=3.0898 | val_rmse=4.3871 | val_mae=1.7234 | val_mape=70.7469 | val_r2=0.7711
+Epoch 07 | train_loss=3.0604 | val_loss=3.1036 | val_rmse=4.3660 | val_mae=1.7360 | val_mape=72.6702 | val_r2=0.7733
+Epoch 08 | train_loss=3.0550 | val_loss=3.0785 | val_rmse=4.4006 | val_mae=1.7179 | val_mape=71.4733 | val_r2=0.7697
+Epoch 09 | train_loss=3.0507 | val_loss=3.0888 | val_rmse=4.3493 | val_mae=1.7223 | val_mape=72.9032 | val_r2=0.7751
+Epoch 10 | train_loss=3.0518 | val_loss=3.0769 | val_rmse=4.3459 | val_mae=1.7178 | val_mape=72.8480 | val_r2=0.7754
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0769 at epoch 10
+
+search_stage0_2 training completed in 1203.19 seconds
+
+Starting training...
+Epoch 01 | train_loss=5.6760 | val_loss=4.0515 | val_rmse=6.0201 | val_mae=2.0359 | val_mape=74.1786 | val_r2=0.5691
+Epoch 02 | train_loss=3.9938 | val_loss=3.5803 | val_rmse=5.4819 | val_mae=1.8998 | val_mape=72.2429 | val_r2=0.6427
+Epoch 03 | train_loss=3.6275 | val_loss=3.3782 | val_rmse=5.1863 | val_mae=1.8425 | val_mape=71.1537 | val_r2=0.6802
+Epoch 04 | train_loss=3.4512 | val_loss=3.2894 | val_rmse=5.0137 | val_mae=1.8076 | val_mape=71.2495 | val_r2=0.7011
+Epoch 05 | train_loss=3.3589 | val_loss=3.2486 | val_rmse=4.8717 | val_mae=1.7899 | val_mape=72.2878 | val_r2=0.7178
+Epoch 06 | train_loss=3.3021 | val_loss=3.2044 | val_rmse=4.7869 | val_mae=1.7706 | val_mape=70.2807 | val_r2=0.7275
+Epoch 07 | train_loss=3.2616 | val_loss=3.2086 | val_rmse=4.7082 | val_mae=1.7716 | val_mape=72.8485 | val_r2=0.7364
+Epoch 08 | train_loss=3.2294 | val_loss=3.1642 | val_rmse=4.6375 | val_mae=1.7529 | val_mape=70.6339 | val_r2=0.7443
+Epoch 09 | train_loss=3.2078 | val_loss=3.1383 | val_rmse=4.6100 | val_mae=1.7360 | val_mape=70.4692 | val_r2=0.7473
+Epoch 10 | train_loss=3.1905 | val_loss=3.1376 | val_rmse=4.5757 | val_mae=1.7425 | val_mape=71.3113 | val_r2=0.7510
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.1376 at epoch 10
+
+search_stage0_3 training completed in 1185.51 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.4685 | val_loss=3.1709 | val_rmse=4.4914 | val_mae=1.7612 | val_mape=70.7686 | val_r2=0.7601
+Epoch 02 | train_loss=3.1645 | val_loss=3.1423 | val_rmse=4.4125 | val_mae=1.7342 | val_mape=72.3689 | val_r2=0.7685
+Epoch 03 | train_loss=3.1279 | val_loss=3.1370 | val_rmse=4.4517 | val_mae=1.7521 | val_mape=69.0498 | val_r2=0.7644
+Epoch 04 | train_loss=3.1163 | val_loss=3.1312 | val_rmse=4.4047 | val_mae=1.7524 | val_mape=70.8806 | val_r2=0.7693
+Epoch 05 | train_loss=3.1035 | val_loss=3.1371 | val_rmse=4.4535 | val_mae=1.7382 | val_mape=71.3822 | val_r2=0.7642
+Epoch 06 | train_loss=3.0980 | val_loss=3.1173 | val_rmse=4.3986 | val_mae=1.7357 | val_mape=71.5919 | val_r2=0.7699
+Epoch 07 | train_loss=3.0911 | val_loss=3.1150 | val_rmse=4.4477 | val_mae=1.7364 | val_mape=71.7535 | val_r2=0.7648
+Epoch 08 | train_loss=3.0875 | val_loss=3.1185 | val_rmse=4.4185 | val_mae=1.7362 | val_mape=73.9650 | val_r2=0.7679
+Epoch 09 | train_loss=3.0868 | val_loss=3.1092 | val_rmse=4.4064 | val_mae=1.7330 | val_mape=72.0774 | val_r2=0.7691
+Epoch 10 | train_loss=3.0851 | val_loss=3.1183 | val_rmse=4.4189 | val_mae=1.7334 | val_mape=72.0982 | val_r2=0.7678
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.1092 at epoch 9
+
+search_stage0_4 training completed in 1203.50 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.4672 | val_loss=3.1684 | val_rmse=4.4875 | val_mae=1.7625 | val_mape=76.2824 | val_r2=0.7605
+Epoch 02 | train_loss=3.1597 | val_loss=3.1446 | val_rmse=4.4617 | val_mae=1.7545 | val_mape=73.1029 | val_r2=0.7633
+Epoch 03 | train_loss=3.1309 | val_loss=3.1220 | val_rmse=4.4138 | val_mae=1.7339 | val_mape=71.3223 | val_r2=0.7683
+Epoch 04 | train_loss=3.1182 | val_loss=3.1421 | val_rmse=4.5003 | val_mae=1.7543 | val_mape=70.9234 | val_r2=0.7592
+Epoch 05 | train_loss=3.1119 | val_loss=3.1253 | val_rmse=4.4442 | val_mae=1.7538 | val_mape=72.5163 | val_r2=0.7652
+Epoch 06 | train_loss=3.1060 | val_loss=3.1256 | val_rmse=4.4488 | val_mae=1.7451 | val_mape=73.7838 | val_r2=0.7647
+Epoch 07 | train_loss=3.0993 | val_loss=3.1468 | val_rmse=4.4661 | val_mae=1.7491 | val_mape=71.5013 | val_r2=0.7628
+Epoch 08 | train_loss=3.0952 | val_loss=3.1154 | val_rmse=4.3942 | val_mae=1.7446 | val_mape=74.9294 | val_r2=0.7704
+Epoch 09 | train_loss=3.0893 | val_loss=3.1113 | val_rmse=4.3736 | val_mae=1.7246 | val_mape=72.7421 | val_r2=0.7725
+Epoch 10 | train_loss=3.0907 | val_loss=3.1592 | val_rmse=4.4066 | val_mae=1.7637 | val_mape=74.2343 | val_r2=0.7691
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.1113 at epoch 9
+
+search_stage0_5 training completed in 1203.12 seconds
+
+Starting training...
+Epoch 01 | train_loss=5.2412 | val_loss=3.8085 | val_rmse=5.7458 | val_mae=1.9699 | val_mape=74.2136 | val_r2=0.6074
+Epoch 02 | train_loss=3.7724 | val_loss=3.4271 | val_rmse=5.2137 | val_mae=1.8539 | val_mape=72.6562 | val_r2=0.6768
+Epoch 03 | train_loss=3.4800 | val_loss=3.2811 | val_rmse=4.9564 | val_mae=1.8027 | val_mape=72.0724 | val_r2=0.7079
+Epoch 04 | train_loss=3.3430 | val_loss=3.2450 | val_rmse=4.7962 | val_mae=1.7908 | val_mape=73.5376 | val_r2=0.7265
+Epoch 05 | train_loss=3.2690 | val_loss=3.1871 | val_rmse=4.6855 | val_mae=1.7640 | val_mape=69.0354 | val_r2=0.7390
+Epoch 06 | train_loss=3.2166 | val_loss=3.1535 | val_rmse=4.5898 | val_mae=1.7471 | val_mape=70.2043 | val_r2=0.7495
+Epoch 07 | train_loss=3.1842 | val_loss=3.1222 | val_rmse=4.5497 | val_mae=1.7289 | val_mape=70.8735 | val_r2=0.7539
+Epoch 08 | train_loss=3.1623 | val_loss=3.1238 | val_rmse=4.5206 | val_mae=1.7333 | val_mape=68.8001 | val_r2=0.7570
+Epoch 09 | train_loss=3.1432 | val_loss=3.1070 | val_rmse=4.4916 | val_mae=1.7277 | val_mape=71.3889 | val_r2=0.7601
+Epoch 10 | train_loss=3.1262 | val_loss=3.1173 | val_rmse=4.4633 | val_mae=1.7308 | val_mape=72.2112 | val_r2=0.7631
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.1070 at epoch 9
+
+search_stage0_6 training completed in 1182.26 seconds
+
+Starting training...
+Epoch 01 | train_loss=4.7141 | val_loss=3.6103 | val_rmse=5.3517 | val_mae=1.9069 | val_mape=74.1876 | val_r2=0.6594
+Epoch 02 | train_loss=3.5299 | val_loss=3.2738 | val_rmse=4.8894 | val_mae=1.7902 | val_mape=70.8052 | val_r2=0.7157
+Epoch 03 | train_loss=3.3108 | val_loss=3.1707 | val_rmse=4.6302 | val_mae=1.7510 | val_mape=71.8490 | val_r2=0.7451
+Epoch 04 | train_loss=3.2123 | val_loss=3.1535 | val_rmse=4.5685 | val_mae=1.7469 | val_mape=68.7674 | val_r2=0.7518
+Epoch 05 | train_loss=3.1597 | val_loss=3.1119 | val_rmse=4.4558 | val_mae=1.7239 | val_mape=71.2789 | val_r2=0.7639
+Epoch 06 | train_loss=3.1273 | val_loss=3.1011 | val_rmse=4.4420 | val_mae=1.7162 | val_mape=70.2873 | val_r2=0.7654
+Epoch 07 | train_loss=3.1082 | val_loss=3.0789 | val_rmse=4.4046 | val_mae=1.7114 | val_mape=69.9237 | val_r2=0.7693
+Epoch 08 | train_loss=3.0944 | val_loss=3.0757 | val_rmse=4.3699 | val_mae=1.7118 | val_mape=71.5033 | val_r2=0.7729
+Epoch 09 | train_loss=3.0814 | val_loss=3.0830 | val_rmse=4.3716 | val_mae=1.7162 | val_mape=70.2275 | val_r2=0.7728
+Epoch 10 | train_loss=3.0712 | val_loss=3.0809 | val_rmse=4.3924 | val_mae=1.7137 | val_mape=69.3473 | val_r2=0.7706
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0757 at epoch 8
+
+search_stage0_7 training completed in 1188.72 seconds
+
+Starting training...
+Epoch 01 | train_loss=4.3839 | val_loss=3.4349 | val_rmse=5.1413 | val_mae=1.8642 | val_mape=72.5725 | val_r2=0.6857
+Epoch 02 | train_loss=3.4195 | val_loss=3.2205 | val_rmse=4.7572 | val_mae=1.7712 | val_mape=72.3138 | val_r2=0.7309
+Epoch 03 | train_loss=3.2554 | val_loss=3.1510 | val_rmse=4.5916 | val_mae=1.7437 | val_mape=69.3060 | val_r2=0.7493
+Epoch 04 | train_loss=3.1754 | val_loss=3.1073 | val_rmse=4.4620 | val_mae=1.7212 | val_mape=69.9299 | val_r2=0.7633
+Epoch 05 | train_loss=3.1288 | val_loss=3.0912 | val_rmse=4.4245 | val_mae=1.7178 | val_mape=70.2875 | val_r2=0.7672
+Epoch 06 | train_loss=3.1048 | val_loss=3.0944 | val_rmse=4.4448 | val_mae=1.7240 | val_mape=69.1110 | val_r2=0.7651
+Epoch 07 | train_loss=3.0830 | val_loss=3.0719 | val_rmse=4.3564 | val_mae=1.7144 | val_mape=68.4244 | val_r2=0.7743
+Epoch 08 | train_loss=3.0702 | val_loss=3.0726 | val_rmse=4.3365 | val_mae=1.7118 | val_mape=70.3084 | val_r2=0.7764
+Epoch 09 | train_loss=3.0573 | val_loss=3.0615 | val_rmse=4.3459 | val_mae=1.7044 | val_mape=70.1748 | val_r2=0.7754
+Epoch 10 | train_loss=3.0491 | val_loss=3.0548 | val_rmse=4.3471 | val_mae=1.7001 | val_mape=69.3433 | val_r2=0.7753
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0548 at epoch 10
+
+search_stage0_8 training completed in 1198.28 seconds
+
+Starting training...
+Epoch 01 | train_loss=6.9359 | val_loss=4.7469 | val_rmse=6.5359 | val_mae=2.1892 | val_mape=73.0432 | val_r2=0.4920
+Epoch 02 | train_loss=4.6197 | val_loss=4.0300 | val_rmse=5.9873 | val_mae=2.0255 | val_mape=73.6913 | val_r2=0.5737
+Epoch 03 | train_loss=4.0621 | val_loss=3.6953 | val_rmse=5.6492 | val_mae=1.9395 | val_mape=72.9977 | val_r2=0.6205
+Epoch 04 | train_loss=3.7779 | val_loss=3.5210 | val_rmse=5.4314 | val_mae=1.8922 | val_mape=72.7656 | val_r2=0.6492
+Epoch 05 | train_loss=3.6154 | val_loss=3.4243 | val_rmse=5.2756 | val_mae=1.8611 | val_mape=72.5500 | val_r2=0.6691
+Epoch 06 | train_loss=3.5168 | val_loss=3.3602 | val_rmse=5.1569 | val_mae=1.8350 | val_mape=71.8446 | val_r2=0.6838
+Epoch 07 | train_loss=3.4511 | val_loss=3.3255 | val_rmse=5.0615 | val_mae=1.8201 | val_mape=72.6036 | val_r2=0.6954
+Epoch 08 | train_loss=3.4033 | val_loss=3.2884 | val_rmse=4.9957 | val_mae=1.8061 | val_mape=72.1788 | val_r2=0.7032
+Epoch 09 | train_loss=3.3675 | val_loss=3.2681 | val_rmse=4.9461 | val_mae=1.8007 | val_mape=71.0771 | val_r2=0.7091
+Epoch 10 | train_loss=3.3396 | val_loss=3.2470 | val_rmse=4.8830 | val_mae=1.7889 | val_mape=72.7259 | val_r2=0.7165
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.2470 at epoch 10
+
+search_stage0_9 training completed in 1188.63 seconds
+Pruned to 5 models
+
+Stage 1: training 5 models for 10 epochs
+
+Starting training...
+Epoch 01 | train_loss=2.9957 | val_loss=3.0390 | val_rmse=4.3100 | val_mae=1.6925 | val_mape=70.0812 | val_r2=0.7791
+Epoch 02 | train_loss=2.9899 | val_loss=3.0380 | val_rmse=4.3059 | val_mae=1.6976 | val_mape=70.8009 | val_r2=0.7795
+Epoch 03 | train_loss=2.9870 | val_loss=3.0361 | val_rmse=4.3016 | val_mae=1.6942 | val_mape=70.3950 | val_r2=0.7800
+Epoch 04 | train_loss=2.9843 | val_loss=3.0326 | val_rmse=4.3090 | val_mae=1.6925 | val_mape=70.4541 | val_r2=0.7792
+Epoch 05 | train_loss=2.9802 | val_loss=3.0346 | val_rmse=4.2866 | val_mae=1.6945 | val_mape=71.5908 | val_r2=0.7815
+Epoch 06 | train_loss=2.9774 | val_loss=3.0252 | val_rmse=4.2934 | val_mae=1.6911 | val_mape=70.2810 | val_r2=0.7808
+Epoch 07 | train_loss=2.9744 | val_loss=3.0351 | val_rmse=4.2906 | val_mae=1.6934 | val_mape=69.6256 | val_r2=0.7811
+Epoch 08 | train_loss=2.9730 | val_loss=3.0296 | val_rmse=4.3083 | val_mae=1.6953 | val_mape=69.5634 | val_r2=0.7793
+Epoch 09 | train_loss=2.9721 | val_loss=3.0311 | val_rmse=4.2794 | val_mae=1.6933 | val_mape=70.9587 | val_r2=0.7822
+Epoch 10 | train_loss=2.9695 | val_loss=3.0338 | val_rmse=4.2985 | val_mae=1.6927 | val_mape=70.2528 | val_r2=0.7803
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0252 at epoch 6
+
+search_stage1_0 training completed in 1228.24 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.0431 | val_loss=3.0541 | val_rmse=4.3330 | val_mae=1.7030 | val_mape=70.9737 | val_r2=0.7768
+Epoch 02 | train_loss=3.0343 | val_loss=3.0417 | val_rmse=4.3253 | val_mae=1.6993 | val_mape=69.8232 | val_r2=0.7775
+Epoch 03 | train_loss=3.0305 | val_loss=3.0429 | val_rmse=4.3389 | val_mae=1.6984 | val_mape=68.0916 | val_r2=0.7761
+Epoch 04 | train_loss=3.0256 | val_loss=3.0575 | val_rmse=4.3170 | val_mae=1.7110 | val_mape=70.7070 | val_r2=0.7784
+Epoch 05 | train_loss=3.0213 | val_loss=3.0378 | val_rmse=4.3167 | val_mae=1.6954 | val_mape=68.8907 | val_r2=0.7784
+Epoch 06 | train_loss=3.0177 | val_loss=3.0443 | val_rmse=4.3328 | val_mae=1.6986 | val_mape=69.0508 | val_r2=0.7768
+Epoch 07 | train_loss=3.0151 | val_loss=3.0374 | val_rmse=4.3252 | val_mae=1.6962 | val_mape=68.8499 | val_r2=0.7775
+Epoch 08 | train_loss=3.0120 | val_loss=3.0428 | val_rmse=4.3146 | val_mae=1.7015 | val_mape=70.4506 | val_r2=0.7786
+Epoch 09 | train_loss=3.0100 | val_loss=3.0507 | val_rmse=4.3127 | val_mae=1.7048 | val_mape=70.1029 | val_r2=0.7788
+Epoch 10 | train_loss=3.0070 | val_loss=3.0396 | val_rmse=4.2989 | val_mae=1.6943 | val_mape=70.2766 | val_r2=0.7803
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0378 at epoch 5
+
+search_stage1_1 training completed in 1203.43 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.0801 | val_loss=3.0759 | val_rmse=4.3803 | val_mae=1.7086 | val_mape=71.0651 | val_r2=0.7718
+Epoch 02 | train_loss=3.0722 | val_loss=3.0746 | val_rmse=4.3758 | val_mae=1.7038 | val_mape=69.1951 | val_r2=0.7723
+Epoch 03 | train_loss=3.0645 | val_loss=3.0828 | val_rmse=4.3676 | val_mae=1.7139 | val_mape=69.8097 | val_r2=0.7732
+Epoch 04 | train_loss=3.0581 | val_loss=3.0922 | val_rmse=4.3857 | val_mae=1.7315 | val_mape=71.3736 | val_r2=0.7713
+Epoch 05 | train_loss=3.0516 | val_loss=3.0620 | val_rmse=4.3361 | val_mae=1.7037 | val_mape=71.1824 | val_r2=0.7764
+Epoch 06 | train_loss=3.0495 | val_loss=3.0694 | val_rmse=4.3577 | val_mae=1.7178 | val_mape=68.4890 | val_r2=0.7742
+Epoch 07 | train_loss=3.0439 | val_loss=3.0573 | val_rmse=4.3379 | val_mae=1.7020 | val_mape=70.8516 | val_r2=0.7762
+Epoch 08 | train_loss=3.0397 | val_loss=3.0729 | val_rmse=4.3196 | val_mae=1.7168 | val_mape=73.5117 | val_r2=0.7781
+Epoch 09 | train_loss=3.0356 | val_loss=3.0737 | val_rmse=4.3231 | val_mae=1.7160 | val_mape=69.7014 | val_r2=0.7778
+Epoch 10 | train_loss=3.0334 | val_loss=3.0498 | val_rmse=4.3566 | val_mae=1.6994 | val_mape=69.8088 | val_r2=0.7743
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0498 at epoch 10
+
+search_stage1_2 training completed in 1197.97 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.0496 | val_loss=3.0832 | val_rmse=4.3798 | val_mae=1.7199 | val_mape=71.9875 | val_r2=0.7719
+Epoch 02 | train_loss=3.0469 | val_loss=3.0759 | val_rmse=4.4058 | val_mae=1.7178 | val_mape=70.9565 | val_r2=0.7692
+Epoch 03 | train_loss=3.0474 | val_loss=3.0811 | val_rmse=4.3790 | val_mae=1.7221 | val_mape=72.4910 | val_r2=0.7720
+Epoch 04 | train_loss=3.0485 | val_loss=3.0787 | val_rmse=4.3929 | val_mae=1.7198 | val_mape=71.0596 | val_r2=0.7705
+Epoch 05 | train_loss=3.0505 | val_loss=3.0932 | val_rmse=4.3856 | val_mae=1.7296 | val_mape=72.9333 | val_r2=0.7713
+Epoch 06 | train_loss=3.0516 | val_loss=3.0832 | val_rmse=4.3886 | val_mae=1.7162 | val_mape=70.4479 | val_r2=0.7710
+Epoch 07 | train_loss=3.0483 | val_loss=3.0818 | val_rmse=4.3773 | val_mae=1.7192 | val_mape=72.4190 | val_r2=0.7722
+Epoch 08 | train_loss=3.0458 | val_loss=3.0776 | val_rmse=4.3697 | val_mae=1.7180 | val_mape=72.1813 | val_r2=0.7730
+Epoch 09 | train_loss=3.0181 | val_loss=3.0572 | val_rmse=4.3499 | val_mae=1.7048 | val_mape=72.0764 | val_r2=0.7750
+Epoch 10 | train_loss=3.0129 | val_loss=3.0593 | val_rmse=4.3676 | val_mae=1.7083 | val_mape=70.8483 | val_r2=0.7732
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0572 at epoch 9
+
+search_stage1_3 training completed in 1217.04 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.1261 | val_loss=3.1191 | val_rmse=4.4680 | val_mae=1.7288 | val_mape=70.1919 | val_r2=0.7626
+Epoch 02 | train_loss=3.1146 | val_loss=3.0988 | val_rmse=4.4679 | val_mae=1.7268 | val_mape=68.8148 | val_r2=0.7626
+Epoch 03 | train_loss=3.1025 | val_loss=3.0867 | val_rmse=4.4548 | val_mae=1.7182 | val_mape=68.6013 | val_r2=0.7640
+Epoch 04 | train_loss=3.0926 | val_loss=3.0818 | val_rmse=4.4133 | val_mae=1.7139 | val_mape=70.8647 | val_r2=0.7684
+Epoch 05 | train_loss=3.0859 | val_loss=3.0743 | val_rmse=4.3861 | val_mae=1.7089 | val_mape=70.8508 | val_r2=0.7712
+Epoch 06 | train_loss=3.0796 | val_loss=3.0745 | val_rmse=4.3859 | val_mae=1.7174 | val_mape=70.3139 | val_r2=0.7713
+Epoch 07 | train_loss=3.0711 | val_loss=3.0930 | val_rmse=4.3878 | val_mae=1.7180 | val_mape=70.6898 | val_r2=0.7711
+Epoch 08 | train_loss=3.0652 | val_loss=3.0599 | val_rmse=4.3749 | val_mae=1.7040 | val_mape=69.0834 | val_r2=0.7724
+Epoch 09 | train_loss=3.0616 | val_loss=3.0527 | val_rmse=4.3553 | val_mae=1.6979 | val_mape=69.3071 | val_r2=0.7745
+Epoch 10 | train_loss=3.0545 | val_loss=3.0623 | val_rmse=4.3730 | val_mae=1.7039 | val_mape=70.5883 | val_r2=0.7726
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0527 at epoch 9
+
+search_stage1_4 training completed in 1204.59 seconds
+Pruned to 3 models
+
+Stage 2: training 3 models for 20 epochs
+
+Starting training...
+Epoch 01 | train_loss=2.9754 | val_loss=3.0310 | val_rmse=4.3141 | val_mae=1.6942 | val_mape=69.2599 | val_r2=0.7787
+Epoch 02 | train_loss=2.9727 | val_loss=3.0160 | val_rmse=4.3007 | val_mae=1.6845 | val_mape=68.9986 | val_r2=0.7801
+Epoch 03 | train_loss=2.9710 | val_loss=3.0267 | val_rmse=4.3167 | val_mae=1.6903 | val_mape=69.3304 | val_r2=0.7784
+Epoch 04 | train_loss=2.9687 | val_loss=3.0244 | val_rmse=4.2745 | val_mae=1.6876 | val_mape=69.6025 | val_r2=0.7827
+Epoch 05 | train_loss=2.9683 | val_loss=3.0204 | val_rmse=4.2972 | val_mae=1.6886 | val_mape=70.5761 | val_r2=0.7804
+Epoch 06 | train_loss=2.9657 | val_loss=3.0182 | val_rmse=4.2794 | val_mae=1.6832 | val_mape=68.6649 | val_r2=0.7822
+Epoch 07 | train_loss=2.9649 | val_loss=3.0290 | val_rmse=4.2938 | val_mae=1.6936 | val_mape=70.9651 | val_r2=0.7808
+Epoch 08 | train_loss=2.9626 | val_loss=3.0272 | val_rmse=4.2730 | val_mae=1.6912 | val_mape=69.8037 | val_r2=0.7829
+Epoch 09 | train_loss=2.9444 | val_loss=3.0098 | val_rmse=4.2581 | val_mae=1.6814 | val_mape=69.2974 | val_r2=0.7844
+Epoch 10 | train_loss=2.9413 | val_loss=3.0097 | val_rmse=4.2679 | val_mae=1.6812 | val_mape=69.0813 | val_r2=0.7834
+Epoch 11 | train_loss=2.9392 | val_loss=3.0108 | val_rmse=4.2647 | val_mae=1.6819 | val_mape=69.9095 | val_r2=0.7837
+Epoch 12 | train_loss=2.9379 | val_loss=3.0127 | val_rmse=4.2604 | val_mae=1.6839 | val_mape=70.5419 | val_r2=0.7842
+Epoch 13 | train_loss=2.9367 | val_loss=3.0084 | val_rmse=4.2625 | val_mae=1.6816 | val_mape=70.5336 | val_r2=0.7840
+Epoch 14 | train_loss=2.9355 | val_loss=3.0110 | val_rmse=4.2629 | val_mae=1.6838 | val_mape=70.2842 | val_r2=0.7839
+Epoch 15 | train_loss=2.9333 | val_loss=3.0156 | val_rmse=4.2691 | val_mae=1.6849 | val_mape=69.2769 | val_r2=0.7833
+Epoch 16 | train_loss=2.9325 | val_loss=3.0183 | val_rmse=4.2759 | val_mae=1.6856 | val_mape=70.0587 | val_r2=0.7826
+Epoch 17 | train_loss=2.9314 | val_loss=3.0092 | val_rmse=4.2786 | val_mae=1.6834 | val_mape=70.0578 | val_r2=0.7823
+Epoch 18 | train_loss=2.9305 | val_loss=3.0129 | val_rmse=4.2763 | val_mae=1.6851 | val_mape=69.0885 | val_r2=0.7826
+Epoch 19 | train_loss=2.9288 | val_loss=3.0097 | val_rmse=4.2661 | val_mae=1.6841 | val_mape=70.5518 | val_r2=0.7836
+Epoch 20 | train_loss=2.9182 | val_loss=3.0120 | val_rmse=4.2724 | val_mae=1.6845 | val_mape=70.0141 | val_r2=0.7829
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0084 at epoch 13
+
+search_stage2_0 training completed in 2452.13 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.0184 | val_loss=3.0555 | val_rmse=4.3311 | val_mae=1.7085 | val_mape=71.1818 | val_r2=0.7769
+Epoch 02 | train_loss=3.0148 | val_loss=3.0426 | val_rmse=4.3369 | val_mae=1.6989 | val_mape=69.0250 | val_r2=0.7764
+Epoch 03 | train_loss=3.0121 | val_loss=3.0575 | val_rmse=4.3089 | val_mae=1.7108 | val_mape=70.3489 | val_r2=0.7792
+Epoch 04 | train_loss=2.9909 | val_loss=3.0351 | val_rmse=4.3126 | val_mae=1.6950 | val_mape=70.4801 | val_r2=0.7789
+Epoch 05 | train_loss=2.9881 | val_loss=3.0365 | val_rmse=4.2921 | val_mae=1.6967 | val_mape=69.3130 | val_r2=0.7809
+Epoch 06 | train_loss=2.9866 | val_loss=3.0283 | val_rmse=4.3028 | val_mae=1.6908 | val_mape=69.2405 | val_r2=0.7799
+Epoch 07 | train_loss=2.9846 | val_loss=3.0293 | val_rmse=4.2832 | val_mae=1.6929 | val_mape=70.0301 | val_r2=0.7819
+Epoch 08 | train_loss=2.9833 | val_loss=3.0224 | val_rmse=4.2956 | val_mae=1.6912 | val_mape=69.6392 | val_r2=0.7806
+Epoch 09 | train_loss=2.9812 | val_loss=3.0236 | val_rmse=4.2946 | val_mae=1.6903 | val_mape=69.0385 | val_r2=0.7807
+Epoch 10 | train_loss=2.9807 | val_loss=3.0283 | val_rmse=4.2914 | val_mae=1.6917 | val_mape=70.4828 | val_r2=0.7810
+Epoch 11 | train_loss=2.9792 | val_loss=3.0294 | val_rmse=4.2792 | val_mae=1.6937 | val_mape=70.8746 | val_r2=0.7823
+Epoch 12 | train_loss=2.9785 | val_loss=3.0189 | val_rmse=4.2959 | val_mae=1.6871 | val_mape=68.9146 | val_r2=0.7806
+Epoch 13 | train_loss=2.9779 | val_loss=3.0281 | val_rmse=4.2824 | val_mae=1.6908 | val_mape=70.1059 | val_r2=0.7819
+Epoch 14 | train_loss=2.9761 | val_loss=3.0299 | val_rmse=4.2917 | val_mae=1.6914 | val_mape=69.9687 | val_r2=0.7810
+Epoch 15 | train_loss=2.9752 | val_loss=3.0277 | val_rmse=4.2819 | val_mae=1.6896 | val_mape=69.7983 | val_r2=0.7820
+Epoch 16 | train_loss=2.9747 | val_loss=3.0251 | val_rmse=4.2945 | val_mae=1.6878 | val_mape=68.2797 | val_r2=0.7807
+Epoch 17 | train_loss=2.9733 | val_loss=3.0361 | val_rmse=4.3012 | val_mae=1.6963 | val_mape=68.9233 | val_r2=0.7800
+Epoch 18 | train_loss=2.9732 | val_loss=3.0188 | val_rmse=4.2972 | val_mae=1.6882 | val_mape=69.8944 | val_r2=0.7804
+Epoch 19 | train_loss=2.9622 | val_loss=3.0167 | val_rmse=4.2736 | val_mae=1.6850 | val_mape=69.6631 | val_r2=0.7828
+Epoch 20 | train_loss=2.9612 | val_loss=3.0122 | val_rmse=4.2739 | val_mae=1.6828 | val_mape=68.8493 | val_r2=0.7828
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0122 at epoch 20
+
+search_stage2_1 training completed in 2409.89 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.0291 | val_loss=3.0532 | val_rmse=4.3353 | val_mae=1.6977 | val_mape=68.0135 | val_r2=0.7765
+Epoch 02 | train_loss=3.0277 | val_loss=3.0401 | val_rmse=4.3281 | val_mae=1.6949 | val_mape=69.9755 | val_r2=0.7773
+Epoch 03 | train_loss=3.0243 | val_loss=3.0496 | val_rmse=4.3283 | val_mae=1.6975 | val_mape=70.1296 | val_r2=0.7772
+Epoch 04 | train_loss=3.0215 | val_loss=3.0590 | val_rmse=4.3088 | val_mae=1.7104 | val_mape=72.1639 | val_r2=0.7792
+Epoch 05 | train_loss=3.0196 | val_loss=3.0518 | val_rmse=4.3245 | val_mae=1.7003 | val_mape=70.9276 | val_r2=0.7776
+Epoch 06 | train_loss=3.0180 | val_loss=3.0412 | val_rmse=4.3003 | val_mae=1.6943 | val_mape=70.9698 | val_r2=0.7801
+Epoch 07 | train_loss=3.0157 | val_loss=3.0420 | val_rmse=4.3187 | val_mae=1.6939 | val_mape=69.8170 | val_r2=0.7782
+Epoch 08 | train_loss=3.0163 | val_loss=3.0707 | val_rmse=4.2990 | val_mae=1.7191 | val_mape=72.2748 | val_r2=0.7802
+Epoch 09 | train_loss=2.9956 | val_loss=3.0341 | val_rmse=4.3004 | val_mae=1.6895 | val_mape=69.3721 | val_r2=0.7801
+Epoch 10 | train_loss=2.9926 | val_loss=3.0366 | val_rmse=4.3118 | val_mae=1.6936 | val_mape=69.4388 | val_r2=0.7789
+Epoch 11 | train_loss=2.9908 | val_loss=3.0265 | val_rmse=4.3021 | val_mae=1.6893 | val_mape=69.7258 | val_r2=0.7799
+Epoch 12 | train_loss=2.9902 | val_loss=3.0249 | val_rmse=4.2789 | val_mae=1.6871 | val_mape=70.3444 | val_r2=0.7823
+Epoch 13 | train_loss=2.9889 | val_loss=3.0283 | val_rmse=4.2892 | val_mae=1.6895 | val_mape=70.9625 | val_r2=0.7812
+Epoch 14 | train_loss=2.9891 | val_loss=3.0239 | val_rmse=4.2901 | val_mae=1.6872 | val_mape=68.8603 | val_r2=0.7811
+Epoch 15 | train_loss=2.9876 | val_loss=3.0290 | val_rmse=4.2928 | val_mae=1.6910 | val_mape=70.4427 | val_r2=0.7809
+Epoch 16 | train_loss=2.9855 | val_loss=3.0268 | val_rmse=4.2889 | val_mae=1.6900 | val_mape=71.1510 | val_r2=0.7813
+Epoch 17 | train_loss=2.9854 | val_loss=3.0382 | val_rmse=4.3025 | val_mae=1.6966 | val_mape=68.3882 | val_r2=0.7799
+Epoch 18 | train_loss=2.9848 | val_loss=3.0238 | val_rmse=4.3071 | val_mae=1.6879 | val_mape=68.5504 | val_r2=0.7794
+Epoch 19 | train_loss=2.9839 | val_loss=3.0350 | val_rmse=4.3035 | val_mae=1.6954 | val_mape=70.6240 | val_r2=0.7798
+Epoch 20 | train_loss=2.9841 | val_loss=3.0277 | val_rmse=4.2995 | val_mae=1.6893 | val_mape=69.4845 | val_r2=0.7802
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0239 at epoch 14
+
+search_stage2_2 training completed in 2388.20 seconds
+Pruned to 1 models
+
+Hyperparameter search summary saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_quantile_gru/baseline_quantile_gru_search.json
+Best baseline_quantile_gru configuration:
+{'epochs': 60, 'seed': 42, 'horizon': 28, 'seq_len': 28, 'autoregressive': True, 'use_normalise': False, 'feature_set': 'sales_hierarchy_dow', 'early_stopping_patience': 8, 'early_stopping_min_delta': 0.0005, 'optimiser': 'adamw', 'optimiser_params': {'lr': 0.0012608128455662401, 'weight_decay': 1.5935045875315136e-07}, 'scheduler': 'plateau', 'scheduler_params': {'patience': 5, 'factor': 0.5}, 'clip_grad_norm': 1.8895504745121914, 'hidden': 127.93111696762176, 'layers': 1.836027585079952, 'dropout': 0.29069887718542536, 'quantiles': [0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975], 'n_features': 6}
+[config] Best config written → /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/configs/models/baseline_quantile_gru.yml
+
+  Best config for baseline_quantile_gru:
+    epochs: 60
+    seed: 42
+    horizon: 28
+    seq_len: 28
+    autoregressive: True
+    use_normalise: False
+    feature_set: sales_hierarchy_dow
+    early_stopping_patience: 8
+    early_stopping_min_delta: 0.0005
+    optimiser: adamw
+    optimiser_params.lr: 0.0012608128455662401
+    optimiser_params.weight_decay: 1.5935045875315136e-07
+    scheduler: plateau
+    scheduler_params.patience: 5
+    scheduler_params.factor: 0.5
+    clip_grad_norm: 1.8895504745121914
+    hidden: 127.93111696762176
+    layers: 1.836027585079952
+    dropout: 0.29069887718542536
+    quantiles: [0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975]
+    n_features: 6
+
+============================================================
+  SEARCH: baseline_wquantile_gru
+============================================================
+
+Starting baseline_wquantile_gru hyperparameter search
+
+Stage 0: training 10 models for 10 epochs
+
+Starting training...
+Epoch 01 | train_loss=6.9063 | val_loss=5.3163 | val_rmse=6.8592 | val_mae=2.3019 | val_mape=75.7254 | val_r2=0.4406
+Epoch 02 | train_loss=4.4420 | val_loss=4.3870 | val_rmse=6.2487 | val_mae=2.1080 | val_mape=75.0835 | val_r2=0.5357
+Epoch 03 | train_loss=3.8199 | val_loss=3.9506 | val_rmse=5.8486 | val_mae=2.0060 | val_mape=73.7806 | val_r2=0.5933
+Epoch 04 | train_loss=3.4842 | val_loss=3.7110 | val_rmse=5.5752 | val_mae=1.9423 | val_mape=74.1796 | val_r2=0.6304
+Epoch 05 | train_loss=3.2947 | val_loss=3.5698 | val_rmse=5.3883 | val_mae=1.9014 | val_mape=73.7322 | val_r2=0.6548
+Epoch 06 | train_loss=3.1837 | val_loss=3.4874 | val_rmse=5.2700 | val_mae=1.8767 | val_mape=72.6602 | val_r2=0.6698
+Epoch 07 | train_loss=3.1135 | val_loss=3.4312 | val_rmse=5.1605 | val_mae=1.8556 | val_mape=73.0747 | val_r2=0.6833
+Epoch 08 | train_loss=3.0640 | val_loss=3.3915 | val_rmse=5.0932 | val_mae=1.8416 | val_mape=71.5876 | val_r2=0.6915
+Epoch 09 | train_loss=3.0286 | val_loss=3.3592 | val_rmse=5.0315 | val_mae=1.8291 | val_mape=71.6577 | val_r2=0.6990
+Epoch 10 | train_loss=2.9998 | val_loss=3.3377 | val_rmse=4.9608 | val_mae=1.8191 | val_mape=73.0165 | val_r2=0.7074
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.3377 at epoch 10
+
+search_stage0_0 training completed in 1391.58 seconds
+
+Starting training...
+Epoch 01 | train_loss=8.3697 | val_loss=6.6503 | val_rmse=7.4160 | val_mae=2.5456 | val_mape=72.4992 | val_r2=0.3460
+Epoch 02 | train_loss=5.3644 | val_loss=5.1681 | val_rmse=6.7647 | val_mae=2.2774 | val_mape=75.9306 | val_r2=0.4559
+Epoch 03 | train_loss=4.4598 | val_loss=4.5022 | val_rmse=6.3419 | val_mae=2.1391 | val_mape=75.0190 | val_r2=0.5218
+Epoch 04 | train_loss=3.9697 | val_loss=4.1242 | val_rmse=6.0355 | val_mae=2.0544 | val_mape=74.6661 | val_r2=0.5668
+Epoch 05 | train_loss=3.6697 | val_loss=3.8921 | val_rmse=5.8085 | val_mae=1.9948 | val_mape=74.2214 | val_r2=0.5988
+Epoch 06 | train_loss=3.4778 | val_loss=3.7437 | val_rmse=5.6348 | val_mae=1.9537 | val_mape=74.5950 | val_r2=0.6225
+Epoch 07 | train_loss=3.3497 | val_loss=3.6404 | val_rmse=5.5060 | val_mae=1.9243 | val_mape=74.6657 | val_r2=0.6395
+Epoch 08 | train_loss=3.2612 | val_loss=3.5669 | val_rmse=5.4100 | val_mae=1.9020 | val_mape=74.1804 | val_r2=0.6520
+Epoch 09 | train_loss=3.1973 | val_loss=3.5119 | val_rmse=5.3231 | val_mae=1.8850 | val_mape=74.2867 | val_r2=0.6631
+Epoch 10 | train_loss=3.1483 | val_loss=3.4750 | val_rmse=5.2467 | val_mae=1.8739 | val_mape=75.0135 | val_r2=0.6727
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.4750 at epoch 10
+
+search_stage0_1 training completed in 1389.32 seconds
+
+Starting training...
+Epoch 01 | train_loss=4.7101 | val_loss=3.8248 | val_rmse=5.6708 | val_mae=1.9680 | val_mape=71.7101 | val_r2=0.6176
+Epoch 02 | train_loss=3.2759 | val_loss=3.4544 | val_rmse=5.1529 | val_mae=1.8536 | val_mape=72.1033 | val_r2=0.6843
+Epoch 03 | train_loss=3.0444 | val_loss=3.3250 | val_rmse=4.9402 | val_mae=1.8149 | val_mape=72.5416 | val_r2=0.7098
+Epoch 04 | train_loss=2.9418 | val_loss=3.2510 | val_rmse=4.8004 | val_mae=1.7817 | val_mape=71.4808 | val_r2=0.7260
+Epoch 05 | train_loss=2.8875 | val_loss=3.2096 | val_rmse=4.7000 | val_mae=1.7684 | val_mape=71.5859 | val_r2=0.7373
+Epoch 06 | train_loss=2.8521 | val_loss=3.1811 | val_rmse=4.6362 | val_mae=1.7510 | val_mape=70.9516 | val_r2=0.7444
+Epoch 07 | train_loss=2.8268 | val_loss=3.1608 | val_rmse=4.5827 | val_mae=1.7408 | val_mape=71.5302 | val_r2=0.7503
+Epoch 08 | train_loss=2.8084 | val_loss=3.1537 | val_rmse=4.5492 | val_mae=1.7394 | val_mape=71.0676 | val_r2=0.7539
+Epoch 09 | train_loss=2.7928 | val_loss=3.1418 | val_rmse=4.5333 | val_mae=1.7378 | val_mape=71.8622 | val_r2=0.7556
+Epoch 10 | train_loss=2.7801 | val_loss=3.1263 | val_rmse=4.5180 | val_mae=1.7310 | val_mape=71.1992 | val_r2=0.7573
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.1263 at epoch 10
+
+search_stage0_2 training completed in 1399.20 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.6251 | val_loss=3.3662 | val_rmse=4.9116 | val_mae=1.8401 | val_mape=74.1983 | val_r2=0.7131
+Epoch 02 | train_loss=2.9173 | val_loss=3.2140 | val_rmse=4.6646 | val_mae=1.7744 | val_mape=68.2703 | val_r2=0.7413
+Epoch 03 | train_loss=2.8225 | val_loss=3.1388 | val_rmse=4.5204 | val_mae=1.7348 | val_mape=69.6708 | val_r2=0.7570
+Epoch 04 | train_loss=2.7777 | val_loss=3.1250 | val_rmse=4.4482 | val_mae=1.7269 | val_mape=71.7744 | val_r2=0.7647
+Epoch 05 | train_loss=2.7514 | val_loss=3.1167 | val_rmse=4.4427 | val_mae=1.7417 | val_mape=67.3994 | val_r2=0.7653
+Epoch 06 | train_loss=2.7342 | val_loss=3.1016 | val_rmse=4.4076 | val_mae=1.7206 | val_mape=70.2815 | val_r2=0.7690
+Epoch 07 | train_loss=2.7201 | val_loss=3.0899 | val_rmse=4.3798 | val_mae=1.7226 | val_mape=69.0387 | val_r2=0.7719
+Epoch 08 | train_loss=2.7099 | val_loss=3.0828 | val_rmse=4.3537 | val_mae=1.7145 | val_mape=70.9848 | val_r2=0.7746
+Epoch 09 | train_loss=2.7004 | val_loss=3.0782 | val_rmse=4.3441 | val_mae=1.7228 | val_mape=72.3461 | val_r2=0.7756
+Epoch 10 | train_loss=2.6941 | val_loss=3.0696 | val_rmse=4.3478 | val_mae=1.7105 | val_mape=70.2799 | val_r2=0.7752
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0696 at epoch 10
+
+search_stage0_3 training completed in 1397.49 seconds
+
+Starting training...
+Epoch 01 | train_loss=8.6561 | val_loss=6.8393 | val_rmse=7.5406 | val_mae=2.5979 | val_mape=72.6005 | val_r2=0.3239
+Epoch 02 | train_loss=5.4781 | val_loss=5.2366 | val_rmse=6.8317 | val_mae=2.2995 | val_mape=72.9502 | val_r2=0.4450
+Epoch 03 | train_loss=4.5243 | val_loss=4.5625 | val_rmse=6.3929 | val_mae=2.1571 | val_mape=72.8272 | val_r2=0.5140
+Epoch 04 | train_loss=4.0193 | val_loss=4.1738 | val_rmse=6.0649 | val_mae=2.0670 | val_mape=73.6709 | val_r2=0.5626
+Epoch 05 | train_loss=3.7068 | val_loss=3.9208 | val_rmse=5.8255 | val_mae=2.0003 | val_mape=73.5403 | val_r2=0.5965
+Epoch 06 | train_loss=3.5011 | val_loss=3.7617 | val_rmse=5.6463 | val_mae=1.9562 | val_mape=73.3168 | val_r2=0.6209
+Epoch 07 | train_loss=3.3639 | val_loss=3.6528 | val_rmse=5.5063 | val_mae=1.9241 | val_mape=73.1773 | val_r2=0.6395
+Epoch 08 | train_loss=3.2680 | val_loss=3.5723 | val_rmse=5.3824 | val_mae=1.9004 | val_mape=74.1832 | val_r2=0.6555
+Epoch 09 | train_loss=3.1988 | val_loss=3.5154 | val_rmse=5.2957 | val_mae=1.8814 | val_mape=73.8667 | val_r2=0.6665
+Epoch 10 | train_loss=3.1480 | val_loss=3.4730 | val_rmse=5.2166 | val_mae=1.8662 | val_mape=73.9989 | val_r2=0.6764
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.4730 at epoch 10
+
+search_stage0_4 training completed in 1392.69 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.5672 | val_loss=3.3164 | val_rmse=4.8464 | val_mae=1.7956 | val_mape=72.1392 | val_r2=0.7207
+Epoch 02 | train_loss=2.9018 | val_loss=3.1828 | val_rmse=4.5961 | val_mae=1.7512 | val_mape=70.6197 | val_r2=0.7488
+Epoch 03 | train_loss=2.8076 | val_loss=3.1430 | val_rmse=4.4996 | val_mae=1.7437 | val_mape=71.1259 | val_r2=0.7593
+Epoch 04 | train_loss=2.7659 | val_loss=3.1158 | val_rmse=4.4525 | val_mae=1.7375 | val_mape=71.4747 | val_r2=0.7643
+Epoch 05 | train_loss=2.7416 | val_loss=3.1084 | val_rmse=4.4490 | val_mae=1.7319 | val_mape=67.5320 | val_r2=0.7646
+Epoch 06 | train_loss=2.7252 | val_loss=3.1107 | val_rmse=4.3981 | val_mae=1.7380 | val_mape=68.9160 | val_r2=0.7700
+Epoch 07 | train_loss=2.7134 | val_loss=3.0959 | val_rmse=4.3528 | val_mae=1.7234 | val_mape=72.6973 | val_r2=0.7747
+Epoch 08 | train_loss=2.7032 | val_loss=3.0911 | val_rmse=4.3557 | val_mae=1.7200 | val_mape=72.2574 | val_r2=0.7744
+Epoch 09 | train_loss=2.6960 | val_loss=3.0998 | val_rmse=4.3387 | val_mae=1.7218 | val_mape=71.0641 | val_r2=0.7762
+Epoch 10 | train_loss=2.6900 | val_loss=3.0722 | val_rmse=4.3410 | val_mae=1.7131 | val_mape=71.0935 | val_r2=0.7759
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0722 at epoch 10
+
+search_stage0_5 training completed in 1395.83 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.4398 | val_loss=3.3177 | val_rmse=4.7885 | val_mae=1.8274 | val_mape=69.6054 | val_r2=0.7273
+Epoch 02 | train_loss=2.8811 | val_loss=3.1743 | val_rmse=4.5593 | val_mae=1.7640 | val_mape=68.3888 | val_r2=0.7528
+Epoch 03 | train_loss=2.7998 | val_loss=3.1654 | val_rmse=4.4783 | val_mae=1.7434 | val_mape=69.8835 | val_r2=0.7615
+Epoch 04 | train_loss=2.7649 | val_loss=3.1291 | val_rmse=4.4261 | val_mae=1.7372 | val_mape=69.3567 | val_r2=0.7671
+Epoch 05 | train_loss=2.7466 | val_loss=3.1046 | val_rmse=4.4016 | val_mae=1.7248 | val_mape=70.0805 | val_r2=0.7696
+Epoch 06 | train_loss=2.7334 | val_loss=3.1164 | val_rmse=4.4135 | val_mae=1.7382 | val_mape=70.6500 | val_r2=0.7684
+Epoch 07 | train_loss=2.7251 | val_loss=3.0974 | val_rmse=4.3853 | val_mae=1.7229 | val_mape=70.5345 | val_r2=0.7713
+Epoch 08 | train_loss=2.7173 | val_loss=3.0919 | val_rmse=4.4017 | val_mae=1.7227 | val_mape=70.2267 | val_r2=0.7696
+Epoch 09 | train_loss=2.7114 | val_loss=3.0942 | val_rmse=4.4003 | val_mae=1.7205 | val_mape=70.9572 | val_r2=0.7698
+Epoch 10 | train_loss=2.7068 | val_loss=3.1193 | val_rmse=4.3612 | val_mae=1.7377 | val_mape=74.0247 | val_r2=0.7738
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0919 at epoch 8
+
+search_stage0_6 training completed in 1384.57 seconds
+
+Starting training...
+Epoch 01 | train_loss=3.7208 | val_loss=3.3990 | val_rmse=4.9993 | val_mae=1.8492 | val_mape=74.4504 | val_r2=0.7028
+Epoch 02 | train_loss=2.9522 | val_loss=3.2238 | val_rmse=4.7065 | val_mae=1.7679 | val_mape=70.3917 | val_r2=0.7366
+Epoch 03 | train_loss=2.8442 | val_loss=3.1981 | val_rmse=4.5816 | val_mae=1.7548 | val_mape=71.7944 | val_r2=0.7504
+Epoch 04 | train_loss=2.7914 | val_loss=3.1802 | val_rmse=4.4738 | val_mae=1.7675 | val_mape=75.8402 | val_r2=0.7620
+Epoch 05 | train_loss=2.7620 | val_loss=3.1159 | val_rmse=4.4610 | val_mae=1.7293 | val_mape=70.7956 | val_r2=0.7634
+Epoch 06 | train_loss=2.7422 | val_loss=3.0934 | val_rmse=4.4110 | val_mae=1.7211 | val_mape=70.8309 | val_r2=0.7686
+Epoch 07 | train_loss=2.7285 | val_loss=3.0948 | val_rmse=4.3968 | val_mae=1.7188 | val_mape=69.9130 | val_r2=0.7701
+Epoch 08 | train_loss=2.7175 | val_loss=3.0937 | val_rmse=4.3775 | val_mae=1.7258 | val_mape=72.4236 | val_r2=0.7721
+Epoch 09 | train_loss=2.7081 | val_loss=3.1114 | val_rmse=4.3849 | val_mae=1.7345 | val_mape=69.6039 | val_r2=0.7714
+Epoch 10 | train_loss=2.7011 | val_loss=3.0890 | val_rmse=4.3587 | val_mae=1.7195 | val_mape=71.9956 | val_r2=0.7741
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0890 at epoch 10
+
+search_stage0_7 training completed in 1388.93 seconds
+
+Starting training...
+Epoch 01 | train_loss=6.5802 | val_loss=5.0037 | val_rmse=6.6102 | val_mae=2.2346 | val_mape=73.9314 | val_r2=0.4804
+Epoch 02 | train_loss=4.1934 | val_loss=4.1828 | val_rmse=6.0053 | val_mae=2.0603 | val_mape=72.5641 | val_r2=0.5712
+Epoch 03 | train_loss=3.6431 | val_loss=3.8172 | val_rmse=5.6513 | val_mae=1.9703 | val_mape=73.3987 | val_r2=0.6202
+Epoch 04 | train_loss=3.3665 | val_loss=3.6212 | val_rmse=5.4183 | val_mae=1.9169 | val_mape=73.1421 | val_r2=0.6509
+Epoch 05 | train_loss=3.2122 | val_loss=3.5061 | val_rmse=5.2580 | val_mae=1.8796 | val_mape=73.4744 | val_r2=0.6713
+Epoch 06 | train_loss=3.1234 | val_loss=3.4416 | val_rmse=5.1375 | val_mae=1.8559 | val_mape=74.4172 | val_r2=0.6862
+Epoch 07 | train_loss=3.0659 | val_loss=3.3925 | val_rmse=5.0416 | val_mae=1.8368 | val_mape=74.2921 | val_r2=0.6978
+Epoch 08 | train_loss=3.0249 | val_loss=3.3557 | val_rmse=4.9819 | val_mae=1.8221 | val_mape=73.3414 | val_r2=0.7049
+Epoch 09 | train_loss=2.9933 | val_loss=3.3274 | val_rmse=4.9325 | val_mae=1.8103 | val_mape=73.0404 | val_r2=0.7107
+Epoch 10 | train_loss=2.9673 | val_loss=3.3018 | val_rmse=4.8816 | val_mae=1.8002 | val_mape=72.5140 | val_r2=0.7166
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.3018 at epoch 10
+
+search_stage0_8 training completed in 1392.27 seconds
+
+Starting training...
+Epoch 01 | train_loss=7.5945 | val_loss=5.7632 | val_rmse=7.0235 | val_mae=2.3832 | val_mape=74.3729 | val_r2=0.4134
+Epoch 02 | train_loss=4.7137 | val_loss=4.5830 | val_rmse=6.3730 | val_mae=2.1506 | val_mape=73.7305 | val_r2=0.5170
+Epoch 03 | train_loss=3.9713 | val_loss=4.0766 | val_rmse=5.9615 | val_mae=2.0357 | val_mape=74.1134 | val_r2=0.5774
+Epoch 04 | train_loss=3.5969 | val_loss=3.8069 | val_rmse=5.7063 | val_mae=1.9681 | val_mape=73.1141 | val_r2=0.6128
+Epoch 05 | train_loss=3.3841 | val_loss=3.6552 | val_rmse=5.5158 | val_mae=1.9292 | val_mape=73.5741 | val_r2=0.6382
+Epoch 06 | train_loss=3.2557 | val_loss=3.5533 | val_rmse=5.3787 | val_mae=1.8993 | val_mape=73.1546 | val_r2=0.6560
+Epoch 07 | train_loss=3.1742 | val_loss=3.4907 | val_rmse=5.2609 | val_mae=1.8760 | val_mape=73.7584 | val_r2=0.6709
+Epoch 08 | train_loss=3.1189 | val_loss=3.4416 | val_rmse=5.1803 | val_mae=1.8575 | val_mape=72.6256 | val_r2=0.6809
+Epoch 09 | train_loss=3.0784 | val_loss=3.4058 | val_rmse=5.1195 | val_mae=1.8439 | val_mape=73.0591 | val_r2=0.6884
+Epoch 10 | train_loss=3.0457 | val_loss=3.3737 | val_rmse=5.0533 | val_mae=1.8300 | val_mape=72.7295 | val_r2=0.6964
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.3737 at epoch 10
+
+search_stage0_9 training completed in 1392.01 seconds
+Pruned to 5 models
+
+Stage 1: training 5 models for 10 epochs
+
+Starting training...
+Epoch 01 | train_loss=2.6881 | val_loss=3.0667 | val_rmse=4.3316 | val_mae=1.7166 | val_mape=69.7744 | val_r2=0.7769
+Epoch 02 | train_loss=2.6823 | val_loss=3.0592 | val_rmse=4.3717 | val_mae=1.7056 | val_mape=69.4839 | val_r2=0.7727
+Epoch 03 | train_loss=2.6769 | val_loss=3.0761 | val_rmse=4.3286 | val_mae=1.7146 | val_mape=70.3499 | val_r2=0.7772
+Epoch 04 | train_loss=2.6730 | val_loss=3.0599 | val_rmse=4.3510 | val_mae=1.7074 | val_mape=69.6299 | val_r2=0.7749
+Epoch 05 | train_loss=2.6695 | val_loss=3.0593 | val_rmse=4.3323 | val_mae=1.7048 | val_mape=70.1864 | val_r2=0.7768
+Epoch 06 | train_loss=2.6651 | val_loss=3.0678 | val_rmse=4.3465 | val_mae=1.7083 | val_mape=70.2752 | val_r2=0.7754
+Epoch 07 | train_loss=2.6619 | val_loss=3.0598 | val_rmse=4.3574 | val_mae=1.7121 | val_mape=69.4952 | val_r2=0.7742
+Epoch 08 | train_loss=2.6572 | val_loss=3.0596 | val_rmse=4.3120 | val_mae=1.7068 | val_mape=70.9975 | val_r2=0.7789
+Epoch 09 | train_loss=2.6399 | val_loss=3.0429 | val_rmse=4.3260 | val_mae=1.6965 | val_mape=70.0880 | val_r2=0.7775
+Epoch 10 | train_loss=2.6358 | val_loss=3.0434 | val_rmse=4.3154 | val_mae=1.6989 | val_mape=69.9506 | val_r2=0.7786
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0429 at epoch 9
+
+search_stage1_0 training completed in 1392.07 seconds
+
+Starting training...
+Epoch 01 | train_loss=2.6843 | val_loss=3.0785 | val_rmse=4.3562 | val_mae=1.7228 | val_mape=72.8408 | val_r2=0.7744
+Epoch 02 | train_loss=2.6795 | val_loss=3.0659 | val_rmse=4.3333 | val_mae=1.7154 | val_mape=71.0133 | val_r2=0.7767
+Epoch 03 | train_loss=2.6747 | val_loss=3.0836 | val_rmse=4.3501 | val_mae=1.7167 | val_mape=72.2793 | val_r2=0.7750
+Epoch 04 | train_loss=2.6701 | val_loss=3.0688 | val_rmse=4.3629 | val_mae=1.7143 | val_mape=70.3429 | val_r2=0.7737
+Epoch 05 | train_loss=2.6673 | val_loss=3.0640 | val_rmse=4.3481 | val_mae=1.7085 | val_mape=71.0593 | val_r2=0.7752
+Epoch 06 | train_loss=2.6651 | val_loss=3.0679 | val_rmse=4.3428 | val_mae=1.7107 | val_mape=70.2799 | val_r2=0.7757
+Epoch 07 | train_loss=2.6624 | val_loss=3.0721 | val_rmse=4.3474 | val_mae=1.7176 | val_mape=71.3460 | val_r2=0.7753
+Epoch 08 | train_loss=2.6593 | val_loss=3.0758 | val_rmse=4.3269 | val_mae=1.7114 | val_mape=71.3800 | val_r2=0.7774
+Epoch 09 | train_loss=2.6559 | val_loss=3.0614 | val_rmse=4.3450 | val_mae=1.7116 | val_mape=71.0503 | val_r2=0.7755
+Epoch 10 | train_loss=2.6551 | val_loss=3.0634 | val_rmse=4.3311 | val_mae=1.7064 | val_mape=70.4823 | val_r2=0.7769
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0614 at epoch 9
+
+search_stage1_1 training completed in 1390.21 seconds
+
+Starting training...
+Epoch 01 | train_loss=2.6944 | val_loss=3.0814 | val_rmse=4.3509 | val_mae=1.7165 | val_mape=71.3341 | val_r2=0.7749
+Epoch 02 | train_loss=2.6892 | val_loss=3.0741 | val_rmse=4.3723 | val_mae=1.7114 | val_mape=70.0456 | val_r2=0.7727
+Epoch 03 | train_loss=2.6841 | val_loss=3.0775 | val_rmse=4.3635 | val_mae=1.7176 | val_mape=72.1133 | val_r2=0.7736
+Epoch 04 | train_loss=2.6794 | val_loss=3.0560 | val_rmse=4.3396 | val_mae=1.7033 | val_mape=69.8874 | val_r2=0.7761
+Epoch 05 | train_loss=2.6752 | val_loss=3.0595 | val_rmse=4.3356 | val_mae=1.7097 | val_mape=70.7070 | val_r2=0.7765
+Epoch 06 | train_loss=2.6715 | val_loss=3.0679 | val_rmse=4.3298 | val_mae=1.7134 | val_mape=71.6908 | val_r2=0.7771
+Epoch 07 | train_loss=2.6671 | val_loss=3.0890 | val_rmse=4.3369 | val_mae=1.7298 | val_mape=73.6391 | val_r2=0.7763
+Epoch 08 | train_loss=2.6640 | val_loss=3.0541 | val_rmse=4.3495 | val_mae=1.7043 | val_mape=70.5751 | val_r2=0.7750
+Epoch 09 | train_loss=2.6603 | val_loss=3.0536 | val_rmse=4.3450 | val_mae=1.7063 | val_mape=70.1682 | val_r2=0.7755
+Epoch 10 | train_loss=2.6576 | val_loss=3.0644 | val_rmse=4.3398 | val_mae=1.7108 | val_mape=70.5573 | val_r2=0.7760
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0541 at epoch 8
+
+search_stage1_2 training completed in 1388.62 seconds
+
+Starting training...
+Epoch 01 | train_loss=2.7103 | val_loss=3.1095 | val_rmse=4.3777 | val_mae=1.7237 | val_mape=70.6396 | val_r2=0.7721
+Epoch 02 | train_loss=2.7080 | val_loss=3.0861 | val_rmse=4.3886 | val_mae=1.7217 | val_mape=70.7981 | val_r2=0.7710
+Epoch 03 | train_loss=2.7056 | val_loss=3.0987 | val_rmse=4.4026 | val_mae=1.7277 | val_mape=69.7982 | val_r2=0.7695
+Epoch 04 | train_loss=2.6998 | val_loss=3.0917 | val_rmse=4.3836 | val_mae=1.7208 | val_mape=70.3378 | val_r2=0.7715
+Epoch 05 | train_loss=2.6982 | val_loss=3.0853 | val_rmse=4.3586 | val_mae=1.7233 | val_mape=69.5735 | val_r2=0.7741
+Epoch 06 | train_loss=2.6959 | val_loss=3.0796 | val_rmse=4.3315 | val_mae=1.7152 | val_mape=73.3138 | val_r2=0.7769
+Epoch 07 | train_loss=2.6914 | val_loss=3.0984 | val_rmse=4.3352 | val_mae=1.7322 | val_mape=72.5737 | val_r2=0.7765
+Epoch 08 | train_loss=2.6888 | val_loss=3.0930 | val_rmse=4.3313 | val_mae=1.7198 | val_mape=71.6002 | val_r2=0.7769
+Epoch 09 | train_loss=2.6865 | val_loss=3.0798 | val_rmse=4.3623 | val_mae=1.7203 | val_mape=70.4729 | val_r2=0.7737
+Epoch 10 | train_loss=2.6844 | val_loss=3.0873 | val_rmse=4.4136 | val_mae=1.7198 | val_mape=69.5466 | val_r2=0.7684
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0796 at epoch 6
+
+search_stage1_3 training completed in 1340.19 seconds
+
+Starting training...
+Epoch 01 | train_loss=2.7698 | val_loss=3.1253 | val_rmse=4.4953 | val_mae=1.7307 | val_mape=71.1360 | val_r2=0.7597
+Epoch 02 | train_loss=2.7609 | val_loss=3.1211 | val_rmse=4.4970 | val_mae=1.7338 | val_mape=71.3873 | val_r2=0.7595
+Epoch 03 | train_loss=2.7523 | val_loss=3.1155 | val_rmse=4.4596 | val_mae=1.7289 | val_mape=70.7814 | val_r2=0.7635
+Epoch 04 | train_loss=2.7454 | val_loss=3.1029 | val_rmse=4.4531 | val_mae=1.7229 | val_mape=72.1036 | val_r2=0.7642
+Epoch 05 | train_loss=2.7382 | val_loss=3.0932 | val_rmse=4.4335 | val_mae=1.7158 | val_mape=70.8471 | val_r2=0.7663
+Epoch 06 | train_loss=2.7332 | val_loss=3.0903 | val_rmse=4.4334 | val_mae=1.7174 | val_mape=70.8715 | val_r2=0.7663
+Epoch 07 | train_loss=2.7277 | val_loss=3.0865 | val_rmse=4.4155 | val_mae=1.7190 | val_mape=71.5417 | val_r2=0.7682
+Epoch 08 | train_loss=2.7233 | val_loss=3.0913 | val_rmse=4.4152 | val_mae=1.7137 | val_mape=71.0814 | val_r2=0.7682
+Epoch 09 | train_loss=2.7188 | val_loss=3.0926 | val_rmse=4.3955 | val_mae=1.7172 | val_mape=71.3540 | val_r2=0.7703
+Epoch 10 | train_loss=2.7152 | val_loss=3.0772 | val_rmse=4.3936 | val_mae=1.7109 | val_mape=71.3169 | val_r2=0.7705
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0772 at epoch 10
+
+search_stage1_4 training completed in 1338.41 seconds
+Pruned to 3 models
+
+Stage 2: training 3 models for 20 epochs
+
+Starting training...
+Epoch 01 | train_loss=2.6357 | val_loss=3.0424 | val_rmse=4.3102 | val_mae=1.6965 | val_mape=70.7230 | val_r2=0.7791
+Epoch 02 | train_loss=2.6334 | val_loss=3.0427 | val_rmse=4.3082 | val_mae=1.6961 | val_mape=70.3802 | val_r2=0.7793
+Epoch 03 | train_loss=2.6311 | val_loss=3.0436 | val_rmse=4.3023 | val_mae=1.6972 | val_mape=70.6128 | val_r2=0.7799
+Epoch 04 | train_loss=2.6294 | val_loss=3.0442 | val_rmse=4.3029 | val_mae=1.7012 | val_mape=69.0542 | val_r2=0.7798
+Epoch 05 | train_loss=2.6266 | val_loss=3.0404 | val_rmse=4.3032 | val_mae=1.6998 | val_mape=68.8507 | val_r2=0.7798
+Epoch 06 | train_loss=2.6251 | val_loss=3.0446 | val_rmse=4.3167 | val_mae=1.6975 | val_mape=70.1743 | val_r2=0.7784
+Epoch 07 | train_loss=2.6225 | val_loss=3.0438 | val_rmse=4.2957 | val_mae=1.6967 | val_mape=71.2438 | val_r2=0.7806
+Epoch 08 | train_loss=2.6204 | val_loss=3.0439 | val_rmse=4.3277 | val_mae=1.7028 | val_mape=68.5767 | val_r2=0.7773
+Epoch 09 | train_loss=2.6189 | val_loss=3.0483 | val_rmse=4.2963 | val_mae=1.7037 | val_mape=70.6080 | val_r2=0.7805
+Epoch 10 | train_loss=2.6170 | val_loss=3.0482 | val_rmse=4.2963 | val_mae=1.7006 | val_mape=71.7354 | val_r2=0.7805
+Epoch 11 | train_loss=2.6152 | val_loss=3.0448 | val_rmse=4.3253 | val_mae=1.7012 | val_mape=69.5850 | val_r2=0.7775
+Epoch 12 | train_loss=2.6030 | val_loss=3.0376 | val_rmse=4.3107 | val_mae=1.6955 | val_mape=70.1881 | val_r2=0.7790
+Epoch 13 | train_loss=2.6012 | val_loss=3.0411 | val_rmse=4.3088 | val_mae=1.6984 | val_mape=70.6222 | val_r2=0.7792
+Epoch 14 | train_loss=2.5997 | val_loss=3.0383 | val_rmse=4.3160 | val_mae=1.6948 | val_mape=69.3148 | val_r2=0.7785
+Epoch 15 | train_loss=2.5982 | val_loss=3.0438 | val_rmse=4.3127 | val_mae=1.6978 | val_mape=69.7066 | val_r2=0.7788
+Epoch 16 | train_loss=2.5969 | val_loss=3.0427 | val_rmse=4.3078 | val_mae=1.6970 | val_mape=70.1860 | val_r2=0.7793
+Epoch 17 | train_loss=2.5960 | val_loss=3.0419 | val_rmse=4.3125 | val_mae=1.6964 | val_mape=69.3599 | val_r2=0.7789
+Epoch 18 | train_loss=2.5946 | val_loss=3.0409 | val_rmse=4.3138 | val_mae=1.6979 | val_mape=70.3542 | val_r2=0.7787
+Epoch 19 | train_loss=2.5882 | val_loss=3.0354 | val_rmse=4.3035 | val_mae=1.6947 | val_mape=69.9706 | val_r2=0.7798
+Epoch 20 | train_loss=2.5868 | val_loss=3.0372 | val_rmse=4.3024 | val_mae=1.6944 | val_mape=69.5864 | val_r2=0.7799
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0354 at epoch 19
+
+search_stage2_0 training completed in 2591.67 seconds
+
+Starting training...
+Epoch 01 | train_loss=2.6601 | val_loss=3.0580 | val_rmse=4.3505 | val_mae=1.7052 | val_mape=70.1443 | val_r2=0.7749
+Epoch 02 | train_loss=2.6573 | val_loss=3.0659 | val_rmse=4.3315 | val_mae=1.7110 | val_mape=71.6878 | val_r2=0.7769
+Epoch 03 | train_loss=2.6539 | val_loss=3.0577 | val_rmse=4.3402 | val_mae=1.7078 | val_mape=70.8537 | val_r2=0.7760
+Epoch 04 | train_loss=2.6514 | val_loss=3.0539 | val_rmse=4.3319 | val_mae=1.7049 | val_mape=69.8571 | val_r2=0.7769
+Epoch 05 | train_loss=2.6491 | val_loss=3.0653 | val_rmse=4.3218 | val_mae=1.7138 | val_mape=71.4778 | val_r2=0.7779
+Epoch 06 | train_loss=2.6316 | val_loss=3.0436 | val_rmse=4.3261 | val_mae=1.6979 | val_mape=71.2715 | val_r2=0.7775
+Epoch 07 | train_loss=2.6283 | val_loss=3.0454 | val_rmse=4.3155 | val_mae=1.6983 | val_mape=71.0684 | val_r2=0.7786
+Epoch 08 | train_loss=2.6265 | val_loss=3.0481 | val_rmse=4.3116 | val_mae=1.7044 | val_mape=71.6895 | val_r2=0.7789
+Epoch 09 | train_loss=2.6248 | val_loss=3.0350 | val_rmse=4.2954 | val_mae=1.6939 | val_mape=70.9725 | val_r2=0.7806
+Epoch 10 | train_loss=2.6232 | val_loss=3.0480 | val_rmse=4.3225 | val_mae=1.7030 | val_mape=71.4230 | val_r2=0.7778
+Epoch 11 | train_loss=2.6216 | val_loss=3.0450 | val_rmse=4.3049 | val_mae=1.6991 | val_mape=71.4612 | val_r2=0.7796
+Epoch 12 | train_loss=2.6195 | val_loss=3.0484 | val_rmse=4.3307 | val_mae=1.7021 | val_mape=70.3447 | val_r2=0.7770
+Epoch 13 | train_loss=2.6181 | val_loss=3.0514 | val_rmse=4.3409 | val_mae=1.7040 | val_mape=69.8636 | val_r2=0.7759
+Epoch 14 | train_loss=2.6168 | val_loss=3.0391 | val_rmse=4.3065 | val_mae=1.6973 | val_mape=70.7306 | val_r2=0.7795
+Epoch 15 | train_loss=2.6147 | val_loss=3.0454 | val_rmse=4.3187 | val_mae=1.7017 | val_mape=70.8528 | val_r2=0.7782
+Epoch 16 | train_loss=2.6044 | val_loss=3.0376 | val_rmse=4.3192 | val_mae=1.6966 | val_mape=70.9013 | val_r2=0.7782
+Early stopping triggered at epoch 17
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0350 at epoch 9
+
+search_stage2_1 training completed in 2201.82 seconds
+
+Starting training...
+Epoch 01 | train_loss=2.6553 | val_loss=3.0580 | val_rmse=4.3393 | val_mae=1.7108 | val_mape=70.5790 | val_r2=0.7761
+Epoch 02 | train_loss=2.6537 | val_loss=3.0662 | val_rmse=4.3469 | val_mae=1.7131 | val_mape=71.0572 | val_r2=0.7753
+Epoch 03 | train_loss=2.6505 | val_loss=3.0665 | val_rmse=4.3517 | val_mae=1.7156 | val_mape=70.7994 | val_r2=0.7748
+Epoch 04 | train_loss=2.6488 | val_loss=3.0683 | val_rmse=4.3693 | val_mae=1.7182 | val_mape=69.5755 | val_r2=0.7730
+Epoch 05 | train_loss=2.6464 | val_loss=3.0657 | val_rmse=4.3346 | val_mae=1.7157 | val_mape=69.1743 | val_r2=0.7766
+Epoch 06 | train_loss=2.6450 | val_loss=3.0583 | val_rmse=4.3689 | val_mae=1.7080 | val_mape=70.5590 | val_r2=0.7730
+Epoch 07 | train_loss=2.6437 | val_loss=3.0547 | val_rmse=4.3274 | val_mae=1.7037 | val_mape=71.2396 | val_r2=0.7773
+Epoch 08 | train_loss=2.6415 | val_loss=3.0654 | val_rmse=4.3208 | val_mae=1.7116 | val_mape=71.7312 | val_r2=0.7780
+Epoch 09 | train_loss=2.6412 | val_loss=3.0774 | val_rmse=4.3204 | val_mae=1.7174 | val_mape=72.5417 | val_r2=0.7780
+Epoch 10 | train_loss=2.6389 | val_loss=3.0716 | val_rmse=4.3565 | val_mae=1.7225 | val_mape=71.5774 | val_r2=0.7743
+Epoch 11 | train_loss=2.6392 | val_loss=3.0677 | val_rmse=4.3243 | val_mae=1.7145 | val_mape=71.4521 | val_r2=0.7777
+Epoch 12 | train_loss=2.6363 | val_loss=3.0555 | val_rmse=4.3128 | val_mae=1.7085 | val_mape=70.7568 | val_r2=0.7788
+Epoch 13 | train_loss=2.6359 | val_loss=3.0683 | val_rmse=4.3181 | val_mae=1.7110 | val_mape=71.0825 | val_r2=0.7783
+Epoch 14 | train_loss=2.6172 | val_loss=3.0480 | val_rmse=4.2930 | val_mae=1.7025 | val_mape=71.8719 | val_r2=0.7809
+Epoch 15 | train_loss=2.6141 | val_loss=3.0492 | val_rmse=4.3339 | val_mae=1.7028 | val_mape=71.0338 | val_r2=0.7767
+Epoch 16 | train_loss=2.6118 | val_loss=3.0490 | val_rmse=4.3103 | val_mae=1.7034 | val_mape=71.7594 | val_r2=0.7791
+Epoch 17 | train_loss=2.6101 | val_loss=3.0484 | val_rmse=4.3190 | val_mae=1.7052 | val_mape=71.5510 | val_r2=0.7782
+Epoch 18 | train_loss=2.6090 | val_loss=3.0468 | val_rmse=4.2993 | val_mae=1.7053 | val_mape=72.1434 | val_r2=0.7802
+Epoch 19 | train_loss=2.6067 | val_loss=3.0501 | val_rmse=4.3156 | val_mae=1.7041 | val_mape=71.4966 | val_r2=0.7785
+Epoch 20 | train_loss=2.6059 | val_loss=3.0551 | val_rmse=4.3083 | val_mae=1.7088 | val_mape=71.5093 | val_r2=0.7793
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.0468 at epoch 18
+
+search_stage2_2 training completed in 2590.28 seconds
+Pruned to 1 models
+
+Hyperparameter search summary saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_wquantile_gru/baseline_wquantile_gru_search.json
+Best baseline_wquantile_gru configuration:
+{'epochs': 60, 'seed': 42, 'horizon': 28, 'seq_len': 28, 'autoregressive': True, 'use_normalise': False, 'feature_set': 'sales_hierarchy_dow', 'early_stopping_patience': 8, 'early_stopping_min_delta': 0.0005, 'optimiser': 'adamw', 'optimiser_params': {'lr': 0.0009401491526141911, 'weight_decay': 1.1164031410813544e-06}, 'scheduler': 'plateau', 'scheduler_params': {'patience': 5, 'factor': 0.5}, 'clip_grad_norm': 0.26208712451042493, 'hidden': 103.15816720140135, 'layers': 1.5516804211263913, 'dropout': 0.1283060756942038, 'quantiles': [0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975], 'n_features': 6}
+[config] Best config written → /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/configs/models/baseline_wquantile_gru.yml
+
+  Best config for baseline_wquantile_gru:
+    epochs: 60
+    seed: 42
+    horizon: 28
+    seq_len: 28
+    autoregressive: True
+    use_normalise: False
+    feature_set: sales_hierarchy_dow
+    early_stopping_patience: 8
+    early_stopping_min_delta: 0.0005
+    optimiser: adamw
+    optimiser_params.lr: 0.0009401491526141911
+    optimiser_params.weight_decay: 1.1164031410813544e-06
+    scheduler: plateau
+    scheduler_params.patience: 5
+    scheduler_params.factor: 0.5
+    clip_grad_norm: 0.26208712451042493
+    hidden: 103.15816720140135
+    layers: 1.5516804211263913
+    dropout: 0.1283060756942038
+    quantiles: [0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975]
+    n_features: 6
+
+[search] Done — 5 model(s) searched.
+
+[train] Search complete — proceeding to full training.
+
+
+[train] Loading data once for all experiments...
+[train] sampling    : all
+[train] top_k       : 30490
+[train] feature_set : sales_hierarchy_dow
+[train] batch_size  : 2048
+Random seed set to 42
+[data] Found local sales
+[data] Found local calendar
+[data] Found local prices
+[data] Sales    : (30490, 1947)
+[data] Calendar : (1969, 14)
+[data] Prices   : (6841121, 4)
+[data] Original items: 30490 | Using full dataset (sampling=all)
+[data] Trimmed shape : (30490, 1947)
+[data] After melt  : (59181090, 8)
+[data] After hierarchy encoding : (59181090, 15)
+[data] Hierarchy pipeline (sales_hierarchy_dow): (59181090, 15)
+[data] Train : 2011-01-29 -> 2016-02-28  (56,619,930 rows)
+[data] Val   : 2016-02-29 -> 2016-04-24  (1,707,440 rows)
+[data] Test  : 2016-04-25 -> 2016-05-22  (853,720 rows)
+[data] No normalisation — using raw sales counts
+[data] train: 54,942,980 windows  (autoregressive=True)
+[data] val: 884,210 windows  (autoregressive=True)
+[data] test: 30,490 windows  (autoregressive=True)
+
+[data] Feature set  : sales_hierarchy_dow  (6 features)
+[data] Input shape  : (seq_len=28, n_features=6)
+[data] Autoregressive: True
+[data] Train batches: 26828
+[data] Val batches  : 432
+[data] Test batches : 15
+[DEBUG] Train windows: 54,942,980
+[DEBUG] Val windows  : 884,210
+[DEBUG] Test windows : 30,490
+Random seed set to 42
+[data] Found local sales
+[data] Found local calendar
+[data] Found local prices
+[data] Sales    : (30490, 1947)
+[data] Calendar : (1969, 14)
+[data] Prices   : (6841121, 4)
+[data] Original items: 30490 | Using full dataset (sampling=all)
+[data] Trimmed shape : (30490, 1947)
+[data] After melt  : (59181090, 8)
+[data] After hierarchy encoding : (59181090, 15)
+[data] Hierarchy pipeline (sales_hierarchy_dow): (59181090, 15)
+[data] Train : 2011-01-29 -> 2016-02-28  (56,619,930 rows)
+[data] Val   : 2016-02-29 -> 2016-04-24  (1,707,440 rows)
+[data] Test  : 2016-04-25 -> 2016-05-22  (853,720 rows)
+[data] No normalisation — using raw sales counts
+[data] Revenue weights computed (30490 series)
+[data] train: 54,942,980 windows  (autoregressive=True)
+[data] val: 884,210 windows  (autoregressive=True)
+[data] test: 30,490 windows  (autoregressive=True)
+
+[data] Feature set  : sales_hierarchy_dow  (6 features)
+[data] Input shape  : (seq_len=28, n_features=6)
+[data] Autoregressive: True
+[data] Train batches: 26828
+[data] Val batches  : 432
+[data] Test batches : 15
+[DEBUG] Train windows: 54,942,980
+[DEBUG] Val windows  : 884,210
+[DEBUG] Test windows : 30,490
+[train] Data loaded. Starting training loop.
+
+
+============================================================
+  TRAINING: baseline_gru_det
+============================================================
+Random seed set to 42
+
+Starting training...
+/workspace/comp0197-experiments/utils/common.py:126: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler() if use_amp else None
+Epoch 01 | train_loss=4.6237 | val_loss=3.9875 | val_rmse=1.9969 | val_mae=0.9668 | val_mape=57.8754 | val_r2=0.6968
+Epoch 02 | train_loss=4.3760 | val_loss=3.9840 | val_rmse=1.9960 | val_mae=0.9310 | val_mape=59.3528 | val_r2=0.6971
+Epoch 03 | train_loss=4.3430 | val_loss=3.9910 | val_rmse=1.9977 | val_mae=0.9441 | val_mape=57.2673 | val_r2=0.6965
+Epoch 04 | train_loss=4.3179 | val_loss=3.9738 | val_rmse=1.9934 | val_mae=1.0221 | val_mape=55.2233 | val_r2=0.6978
+Epoch 05 | train_loss=4.3145 | val_loss=3.9441 | val_rmse=1.9860 | val_mae=0.9725 | val_mape=55.7446 | val_r2=0.7001
+Epoch 06 | train_loss=4.2981 | val_loss=3.9509 | val_rmse=1.9877 | val_mae=0.9752 | val_mape=55.9122 | val_r2=0.6996
+Epoch 07 | train_loss=4.3024 | val_loss=3.9903 | val_rmse=1.9976 | val_mae=1.0308 | val_mape=53.9423 | val_r2=0.6966
+Epoch 08 | train_loss=4.2943 | val_loss=3.9448 | val_rmse=1.9861 | val_mae=0.9656 | val_mape=55.3509 | val_r2=0.7000
+Epoch 09 | train_loss=4.2981 | val_loss=3.9728 | val_rmse=1.9932 | val_mae=0.9563 | val_mape=57.5450 | val_r2=0.6979
+Epoch 10 | train_loss=4.2928 | val_loss=3.9327 | val_rmse=1.9831 | val_mae=0.9593 | val_mape=56.2124 | val_r2=0.7010
+Epoch 11 | train_loss=4.2675 | val_loss=3.9667 | val_rmse=1.9917 | val_mae=0.9602 | val_mape=55.6392 | val_r2=0.6984
+Epoch 12 | train_loss=4.2593 | val_loss=3.9634 | val_rmse=1.9908 | val_mae=0.9730 | val_mape=55.1702 | val_r2=0.6986
+Epoch 13 | train_loss=4.2791 | val_loss=4.0184 | val_rmse=2.0046 | val_mae=0.9496 | val_mape=55.9170 | val_r2=0.6944
+Epoch 14 | train_loss=4.2744 | val_loss=3.9361 | val_rmse=1.9840 | val_mae=0.9795 | val_mape=54.0251 | val_r2=0.7007
+Epoch 15 | train_loss=4.2788 | val_loss=3.9932 | val_rmse=1.9983 | val_mae=0.9730 | val_mape=56.4047 | val_r2=0.6964
+Epoch 16 | train_loss=4.2669 | val_loss=3.9507 | val_rmse=1.9876 | val_mae=1.0037 | val_mape=54.4517 | val_r2=0.6996
+Epoch 17 | train_loss=4.1950 | val_loss=3.9100 | val_rmse=1.9774 | val_mae=0.9504 | val_mape=56.5641 | val_r2=0.7027
+Epoch 18 | train_loss=4.1922 | val_loss=3.9101 | val_rmse=1.9774 | val_mae=0.9545 | val_mape=55.7786 | val_r2=0.7027
+Epoch 19 | train_loss=4.1860 | val_loss=3.9396 | val_rmse=1.9848 | val_mae=0.9676 | val_mape=57.4557 | val_r2=0.7004
+Epoch 20 | train_loss=4.1879 | val_loss=3.9842 | val_rmse=1.9960 | val_mae=1.0282 | val_mape=52.9097 | val_r2=0.6970
+Epoch 21 | train_loss=4.1729 | val_loss=3.9305 | val_rmse=1.9826 | val_mae=0.9897 | val_mape=53.9113 | val_r2=0.7011
+Epoch 22 | train_loss=4.1687 | val_loss=3.9023 | val_rmse=1.9754 | val_mae=0.9561 | val_mape=56.9483 | val_r2=0.7033
+Epoch 23 | train_loss=4.1661 | val_loss=3.9015 | val_rmse=1.9752 | val_mae=0.9637 | val_mape=55.7641 | val_r2=0.7033
+Epoch 24 | train_loss=4.1688 | val_loss=3.9318 | val_rmse=1.9829 | val_mae=0.9664 | val_mape=56.8703 | val_r2=0.7010
+Epoch 25 | train_loss=4.1592 | val_loss=3.9209 | val_rmse=1.9801 | val_mae=0.9646 | val_mape=54.6162 | val_r2=0.7019
+Epoch 26 | train_loss=4.1608 | val_loss=3.9108 | val_rmse=1.9776 | val_mae=0.9533 | val_mape=56.2167 | val_r2=0.7026
+Epoch 27 | train_loss=4.1698 | val_loss=3.9258 | val_rmse=1.9814 | val_mae=0.9674 | val_mape=55.1414 | val_r2=0.7015
+Epoch 28 | train_loss=4.1654 | val_loss=3.9143 | val_rmse=1.9785 | val_mae=0.9494 | val_mape=57.3229 | val_r2=0.7024
+Epoch 29 | train_loss=4.1651 | val_loss=3.9221 | val_rmse=1.9804 | val_mae=0.9364 | val_mape=57.6708 | val_r2=0.7018
+Epoch 30 | train_loss=4.1423 | val_loss=3.8865 | val_rmse=1.9714 | val_mae=0.9468 | val_mape=57.7950 | val_r2=0.7045
+Epoch 31 | train_loss=4.1310 | val_loss=3.8806 | val_rmse=1.9699 | val_mae=0.9535 | val_mape=56.7288 | val_r2=0.7049
+Epoch 32 | train_loss=4.1280 | val_loss=3.8968 | val_rmse=1.9740 | val_mae=0.9636 | val_mape=55.2530 | val_r2=0.7037
+Epoch 33 | train_loss=4.1228 | val_loss=3.8822 | val_rmse=1.9703 | val_mae=0.9593 | val_mape=55.7268 | val_r2=0.7048
+Epoch 34 | train_loss=4.1276 | val_loss=3.8978 | val_rmse=1.9743 | val_mae=0.9388 | val_mape=58.1907 | val_r2=0.7036
+Epoch 35 | train_loss=4.1268 | val_loss=3.9099 | val_rmse=1.9774 | val_mae=0.9536 | val_mape=56.6293 | val_r2=0.7027
+Epoch 36 | train_loss=4.1242 | val_loss=3.8916 | val_rmse=1.9727 | val_mae=0.9625 | val_mape=55.6928 | val_r2=0.7041
+Epoch 37 | train_loss=4.1135 | val_loss=3.9111 | val_rmse=1.9777 | val_mae=0.9656 | val_mape=56.0329 | val_r2=0.7026
+Epoch 38 | train_loss=4.0989 | val_loss=3.8700 | val_rmse=1.9672 | val_mae=0.9517 | val_mape=56.3077 | val_r2=0.7057
+Epoch 39 | train_loss=4.0950 | val_loss=3.8801 | val_rmse=1.9698 | val_mae=0.9401 | val_mape=58.0849 | val_r2=0.7050
+Epoch 40 | train_loss=4.0904 | val_loss=3.8784 | val_rmse=1.9694 | val_mae=0.9697 | val_mape=55.7829 | val_r2=0.7051
+Epoch 41 | train_loss=4.0893 | val_loss=3.8844 | val_rmse=1.9709 | val_mae=0.9490 | val_mape=57.1331 | val_r2=0.7046
+Epoch 42 | train_loss=4.0921 | val_loss=3.8854 | val_rmse=1.9711 | val_mae=0.9721 | val_mape=56.1225 | val_r2=0.7046
+Epoch 43 | train_loss=4.0916 | val_loss=3.8878 | val_rmse=1.9717 | val_mae=0.9514 | val_mape=57.2481 | val_r2=0.7044
+Epoch 44 | train_loss=4.0876 | val_loss=3.8859 | val_rmse=1.9713 | val_mae=0.9429 | val_mape=57.5418 | val_r2=0.7045
+Epoch 45 | train_loss=4.0796 | val_loss=3.8667 | val_rmse=1.9664 | val_mae=0.9496 | val_mape=56.7558 | val_r2=0.7060
+Epoch 46 | train_loss=4.0788 | val_loss=3.8659 | val_rmse=1.9662 | val_mae=0.9583 | val_mape=56.2598 | val_r2=0.7060
+Epoch 47 | train_loss=4.0779 | val_loss=3.8751 | val_rmse=1.9685 | val_mae=0.9605 | val_mape=56.4069 | val_r2=0.7053
+Epoch 48 | train_loss=4.0759 | val_loss=3.8754 | val_rmse=1.9686 | val_mae=0.9494 | val_mape=57.0626 | val_r2=0.7053
+Epoch 49 | train_loss=4.0771 | val_loss=3.8733 | val_rmse=1.9681 | val_mae=0.9553 | val_mape=56.2324 | val_r2=0.7055
+Epoch 50 | train_loss=4.0761 | val_loss=3.8721 | val_rmse=1.9678 | val_mae=0.9625 | val_mape=55.7105 | val_r2=0.7056
+Epoch 51 | train_loss=4.0744 | val_loss=3.8671 | val_rmse=1.9665 | val_mae=0.9486 | val_mape=56.9031 | val_r2=0.7060
+Epoch 52 | train_loss=4.0742 | val_loss=3.8732 | val_rmse=1.9680 | val_mae=0.9573 | val_mape=56.4664 | val_r2=0.7055
+Epoch 53 | train_loss=4.0688 | val_loss=3.8743 | val_rmse=1.9683 | val_mae=0.9533 | val_mape=56.8213 | val_r2=0.7054
+Early stopping triggered at epoch 54
+Training finished.
+Restored best model from early stopping.
+Best validation loss 3.8659 at epoch 46
+Model saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_det/baseline_gru_det_model.pt
+History saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_det/baseline_gru_det_train_history.json
+
+baseline_gru_det training completed in 11059.45 seconds
+
+baseline_gru_det model:
+BaselineGRU(
+  (gru): GRU(6, 58, batch_first=True)
+  (fc): Linear(in_features=58, out_features=1, bias=True)
+)
+
+baseline_gru_det final epoch metrics:
+{'epoch': 54, 'train_loss': 4.066769599914551, 'validation_loss': 3.8722039089535913, 'validation_accuracy': None, 'val_rmse': 1.9677916765213013, 'val_mae': 0.956518828868866, 'val_mape': 56.412023305892944, 'val_r2': 0.7055656313896179}
+
+  [DONE] baseline_gru_det — artifacts in /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_det
+
+============================================================
+  TRAINING: baseline_gru_prob
+============================================================
+Random seed set to 42
+
+Starting training...
+Epoch 01 | train_loss=1.4190 | val_loss=1.7762 | val_rmse=2.0404 | val_mae=0.9458 | val_mape=56.4950 | val_r2=0.6834
+Epoch 02 | train_loss=1.3382 | val_loss=1.7809 | val_rmse=2.0395 | val_mae=0.9857 | val_mape=56.4097 | val_r2=0.6837
+Epoch 03 | train_loss=1.3022 | val_loss=1.7760 | val_rmse=2.0376 | val_mae=0.9656 | val_mape=56.4149 | val_r2=0.6843
+Epoch 04 | train_loss=1.3141 | val_loss=1.8167 | val_rmse=2.0640 | val_mae=0.9778 | val_mape=57.5016 | val_r2=0.6761
+Epoch 05 | train_loss=1.3324 | val_loss=1.7627 | val_rmse=2.0451 | val_mae=0.9881 | val_mape=58.1371 | val_r2=0.6820
+Epoch 06 | train_loss=1.2840 | val_loss=2.0644 | val_rmse=2.0696 | val_mae=0.9841 | val_mape=57.1919 | val_r2=0.6743
+Epoch 07 | train_loss=1.3434 | val_loss=2.0844 | val_rmse=2.0367 | val_mae=0.9765 | val_mape=56.0515 | val_r2=0.6846
+Epoch 08 | train_loss=1.3148 | val_loss=1.7069 | val_rmse=2.0928 | val_mae=0.9763 | val_mape=55.1136 | val_r2=0.6670
+Epoch 09 | train_loss=1.5139 | val_loss=1.7167 | val_rmse=2.0743 | val_mae=0.9768 | val_mape=57.1878 | val_r2=0.6728
+Epoch 10 | train_loss=1.3071 | val_loss=1.7733 | val_rmse=2.0695 | val_mae=0.9705 | val_mape=56.0802 | val_r2=0.6744
+Epoch 11 | train_loss=1.2531 | val_loss=1.8191 | val_rmse=2.0878 | val_mae=0.9767 | val_mape=55.9937 | val_r2=0.6686
+Epoch 12 | train_loss=1.2617 | val_loss=1.7647 | val_rmse=2.0599 | val_mae=0.9635 | val_mape=57.0201 | val_r2=0.6774
+Epoch 13 | train_loss=1.2721 | val_loss=1.6204 | val_rmse=2.0506 | val_mae=0.9653 | val_mape=55.9966 | val_r2=0.6803
+Epoch 14 | train_loss=1.2688 | val_loss=1.6977 | val_rmse=2.0638 | val_mae=0.9730 | val_mape=56.5906 | val_r2=0.6761
+Epoch 15 | train_loss=1.2982 | val_loss=1.7378 | val_rmse=2.0666 | val_mae=0.9597 | val_mape=57.0237 | val_r2=0.6752
+Epoch 16 | train_loss=1.2926 | val_loss=1.7081 | val_rmse=2.0919 | val_mae=0.9933 | val_mape=58.5120 | val_r2=0.6673
+Epoch 17 | train_loss=1.2718 | val_loss=1.7208 | val_rmse=2.0645 | val_mae=0.9754 | val_mape=56.5478 | val_r2=0.6759
+Epoch 18 | train_loss=1.2702 | val_loss=1.8576 | val_rmse=2.0568 | val_mae=1.0053 | val_mape=57.1238 | val_r2=0.6783
+Epoch 19 | train_loss=1.2646 | val_loss=1.8330 | val_rmse=2.0961 | val_mae=0.9751 | val_mape=54.9834 | val_r2=0.6659
+Epoch 20 | train_loss=1.2752 | val_loss=1.7708 | val_rmse=2.0504 | val_mae=0.9704 | val_mape=56.6229 | val_r2=0.6803
+Early stopping triggered at epoch 21
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.6204 at epoch 13
+Model saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_prob/baseline_gru_prob_model.pt
+History saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_prob/baseline_gru_prob_train_history.json
+
+baseline_gru_prob training completed in 4976.86 seconds
+
+baseline_gru_prob model:
+BaselineProbGRU(
+  (gru): GRU(6, 57, batch_first=True)
+  (mu_head): Linear(in_features=57, out_features=1, bias=True)
+  (sigma_head): Sequential(
+    (0): Linear(in_features=57, out_features=1, bias=True)
+    (1): Softplus(beta=1.0, threshold=20.0)
+  )
+)
+
+baseline_gru_prob final epoch metrics:
+{'epoch': 21, 'train_loss': 1.3218368291854858, 'validation_loss': 1.6655868087622614, 'validation_accuracy': None, 'val_rmse': 2.1342484951019287, 'val_mae': 1.0076899528503418, 'val_mape': 57.60235786437988, 'val_r2': 0.653645932674408}
+
+  [DONE] baseline_gru_prob — artifacts in /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_prob
+
+============================================================
+  TRAINING: baseline_gru_nb
+============================================================
+Random seed set to 42
+
+Starting training...
+Epoch 01 | train_loss=0.8819 | val_loss=1.1517 | val_rmse=2.2369 | val_mae=0.9767 | val_mape=56.2878 | val_r2=0.6195
+Epoch 02 | train_loss=0.8717 | val_loss=1.1512 | val_rmse=2.1719 | val_mae=0.9588 | val_mape=57.1139 | val_r2=0.6413
+Epoch 03 | train_loss=0.8704 | val_loss=1.1499 | val_rmse=2.1406 | val_mae=0.9740 | val_mape=57.1044 | val_r2=0.6516
+Epoch 04 | train_loss=0.8697 | val_loss=1.1484 | val_rmse=2.1180 | val_mae=0.9687 | val_mape=56.5363 | val_r2=0.6589
+Epoch 05 | train_loss=0.8692 | val_loss=1.1473 | val_rmse=2.1021 | val_mae=0.9670 | val_mape=56.3174 | val_r2=0.6640
+Epoch 06 | train_loss=0.8688 | val_loss=1.1476 | val_rmse=2.0910 | val_mae=0.9593 | val_mape=56.2737 | val_r2=0.6675
+Epoch 07 | train_loss=0.8685 | val_loss=1.1472 | val_rmse=2.0814 | val_mae=0.9606 | val_mape=56.3595 | val_r2=0.6706
+Epoch 08 | train_loss=0.8682 | val_loss=1.1463 | val_rmse=2.0757 | val_mae=0.9527 | val_mape=56.2228 | val_r2=0.6724
+Epoch 09 | train_loss=0.8680 | val_loss=1.1460 | val_rmse=2.0675 | val_mae=0.9601 | val_mape=56.1771 | val_r2=0.6750
+Epoch 10 | train_loss=0.8678 | val_loss=1.1463 | val_rmse=2.0633 | val_mae=0.9577 | val_mape=56.4159 | val_r2=0.6763
+Epoch 11 | train_loss=0.8677 | val_loss=1.1467 | val_rmse=2.0568 | val_mae=0.9597 | val_mape=56.6412 | val_r2=0.6783
+Epoch 12 | train_loss=0.8675 | val_loss=1.1461 | val_rmse=2.0524 | val_mae=0.9571 | val_mape=56.0088 | val_r2=0.6797
+Epoch 13 | train_loss=0.8674 | val_loss=1.1462 | val_rmse=2.0496 | val_mae=0.9608 | val_mape=56.4079 | val_r2=0.6806
+Epoch 14 | train_loss=0.8672 | val_loss=1.1462 | val_rmse=2.0448 | val_mae=0.9539 | val_mape=56.9253 | val_r2=0.6821
+Epoch 15 | train_loss=0.8671 | val_loss=1.1465 | val_rmse=2.0419 | val_mae=0.9567 | val_mape=57.0085 | val_r2=0.6830
+Early stopping triggered at epoch 16
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.1463 at epoch 8
+Model saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_nb/baseline_gru_nb_model.pt
+History saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_nb/baseline_gru_nb_train_history.json
+
+baseline_gru_nb training completed in 3766.93 seconds
+
+baseline_gru_nb model:
+BaselineProbGRU_NB(
+  (gru): GRU(6, 114, batch_first=True)
+  (softplus): Softplus(beta=1.0, threshold=20.0)
+  (mu_head): Linear(in_features=114, out_features=1, bias=True)
+  (alpha_head): Linear(in_features=114, out_features=1, bias=True)
+)
+
+baseline_gru_nb final epoch metrics:
+{'epoch': 16, 'train_loss': 0.8667662739753723, 'validation_loss': 1.145838304203867, 'validation_accuracy': None, 'val_rmse': 2.039809226989746, 'val_mae': 0.9550489783287048, 'val_mape': 56.62590265274048, 'val_r2': 0.6836196780204773}
+
+  [DONE] baseline_gru_nb — artifacts in /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_gru_nb
+
+============================================================
+  TRAINING: baseline_quantile_gru
+============================================================
+Random seed set to 42
+
+Starting training...
+Epoch 01 | train_loss=1.2895 | val_loss=1.5476 | val_rmse=2.0517 | val_mae=0.8691 | val_mape=65.6657 | val_r2=0.6799
+Epoch 02 | train_loss=1.2478 | val_loss=1.5446 | val_rmse=2.0631 | val_mae=0.8691 | val_mape=68.1454 | val_r2=0.6764
+Epoch 03 | train_loss=1.2431 | val_loss=1.5398 | val_rmse=2.0580 | val_mae=0.8659 | val_mape=67.6629 | val_r2=0.6780
+Epoch 04 | train_loss=1.2409 | val_loss=1.5404 | val_rmse=2.0493 | val_mae=0.8656 | val_mape=66.8008 | val_r2=0.6807
+Epoch 05 | train_loss=1.2397 | val_loss=1.5400 | val_rmse=2.0398 | val_mae=0.8661 | val_mape=66.6721 | val_r2=0.6836
+Epoch 06 | train_loss=1.2391 | val_loss=1.5367 | val_rmse=2.0384 | val_mae=0.8638 | val_mape=66.9259 | val_r2=0.6841
+Epoch 07 | train_loss=1.2385 | val_loss=1.5373 | val_rmse=2.0393 | val_mae=0.8642 | val_mape=67.3916 | val_r2=0.6838
+Epoch 08 | train_loss=1.2380 | val_loss=1.5371 | val_rmse=2.0449 | val_mae=0.8641 | val_mape=67.3539 | val_r2=0.6820
+Epoch 09 | train_loss=1.2381 | val_loss=1.5374 | val_rmse=2.0398 | val_mae=0.8638 | val_mape=67.3633 | val_r2=0.6836
+Epoch 10 | train_loss=1.2377 | val_loss=1.5421 | val_rmse=2.0464 | val_mae=0.8660 | val_mape=67.1670 | val_r2=0.6816
+Epoch 11 | train_loss=1.2379 | val_loss=1.5379 | val_rmse=2.0515 | val_mae=0.8646 | val_mape=65.9040 | val_r2=0.6800
+Epoch 12 | train_loss=1.2374 | val_loss=1.5365 | val_rmse=2.0490 | val_mae=0.8642 | val_mape=67.5544 | val_r2=0.6808
+Epoch 13 | train_loss=1.2373 | val_loss=1.5372 | val_rmse=2.0402 | val_mae=0.8631 | val_mape=65.3222 | val_r2=0.6835
+Early stopping triggered at epoch 14
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.5367 at epoch 6
+Model saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_quantile_gru/baseline_quantile_gru_model.pt
+History saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_quantile_gru/baseline_quantile_gru_train_history.json
+
+baseline_quantile_gru training completed in 2931.69 seconds
+
+baseline_quantile_gru model:
+BaselineQuantileGRU(
+  (gru): GRU(6, 127, batch_first=True)
+  (fc): Linear(in_features=127, out_features=7, bias=True)
+)
+
+baseline_quantile_gru final epoch metrics:
+{'epoch': 14, 'train_loss': 1.2371798753738403, 'validation_loss': 1.539102605338567, 'validation_accuracy': None, 'val_rmse': 2.036271333694458, 'val_mae': 0.8647135496139526, 'val_mape': 66.58570170402527, 'val_r2': 0.6847162246704102}
+
+  [DONE] baseline_quantile_gru — artifacts in /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_quantile_gru
+
+============================================================
+  TRAINING: baseline_wquantile_gru
+============================================================
+Random seed set to 42
+
+Starting training...
+Epoch 01 | train_loss=0.1004 | val_loss=1.5623 | val_rmse=2.0932 | val_mae=0.8778 | val_mape=68.6707 | val_r2=0.6669
+Epoch 02 | train_loss=0.0966 | val_loss=1.5494 | val_rmse=2.0514 | val_mae=0.8708 | val_mape=68.2939 | val_r2=0.6800
+Epoch 03 | train_loss=0.0961 | val_loss=1.5485 | val_rmse=2.0550 | val_mae=0.8693 | val_mape=64.5332 | val_r2=0.6789
+Epoch 04 | train_loss=0.0958 | val_loss=1.5503 | val_rmse=2.0375 | val_mae=0.8705 | val_mape=66.5943 | val_r2=0.6843
+Epoch 05 | train_loss=0.0957 | val_loss=1.5470 | val_rmse=2.0523 | val_mae=0.8687 | val_mape=66.1558 | val_r2=0.6797
+Epoch 06 | train_loss=0.0956 | val_loss=1.5446 | val_rmse=2.0506 | val_mae=0.8675 | val_mape=66.2372 | val_r2=0.6803
+Epoch 07 | train_loss=0.0955 | val_loss=1.5427 | val_rmse=2.0455 | val_mae=0.8667 | val_mape=66.1056 | val_r2=0.6819
+Epoch 08 | train_loss=0.0954 | val_loss=1.5438 | val_rmse=2.0443 | val_mae=0.8676 | val_mape=66.8500 | val_r2=0.6822
+Epoch 09 | train_loss=0.0954 | val_loss=1.5423 | val_rmse=2.0363 | val_mae=0.8667 | val_mape=65.8803 | val_r2=0.6847
+Epoch 10 | train_loss=0.0954 | val_loss=1.5419 | val_rmse=2.0530 | val_mae=0.8668 | val_mape=66.6367 | val_r2=0.6795
+Epoch 11 | train_loss=0.0954 | val_loss=1.5420 | val_rmse=2.0370 | val_mae=0.8658 | val_mape=66.6113 | val_r2=0.6845
+Epoch 12 | train_loss=0.0954 | val_loss=1.5439 | val_rmse=2.0526 | val_mae=0.8674 | val_mape=66.9783 | val_r2=0.6796
+Epoch 13 | train_loss=0.0953 | val_loss=1.5441 | val_rmse=2.0483 | val_mae=0.8672 | val_mape=65.9552 | val_r2=0.6810
+Epoch 14 | train_loss=0.0953 | val_loss=1.5406 | val_rmse=2.0397 | val_mae=0.8649 | val_mape=66.2875 | val_r2=0.6836
+Epoch 15 | train_loss=0.0953 | val_loss=1.5434 | val_rmse=2.0453 | val_mae=0.8663 | val_mape=65.9446 | val_r2=0.6819
+Epoch 16 | train_loss=0.0953 | val_loss=1.5413 | val_rmse=2.0479 | val_mae=0.8652 | val_mape=66.4150 | val_r2=0.6811
+Epoch 17 | train_loss=0.0953 | val_loss=1.5407 | val_rmse=2.0310 | val_mae=0.8649 | val_mape=65.1515 | val_r2=0.6864
+Epoch 18 | train_loss=0.0953 | val_loss=1.5403 | val_rmse=2.0417 | val_mae=0.8656 | val_mape=65.7314 | val_r2=0.6830
+Epoch 19 | train_loss=0.0953 | val_loss=1.5447 | val_rmse=2.0415 | val_mae=0.8672 | val_mape=65.2668 | val_r2=0.6831
+Epoch 20 | train_loss=0.0952 | val_loss=1.5409 | val_rmse=2.0424 | val_mae=0.8651 | val_mape=65.5226 | val_r2=0.6828
+Epoch 21 | train_loss=0.0952 | val_loss=1.5423 | val_rmse=2.0499 | val_mae=0.8663 | val_mape=66.1188 | val_r2=0.6805
+Early stopping triggered at epoch 22
+Training finished.
+Restored best model from early stopping.
+Best validation loss 1.5406 at epoch 14
+Model saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_wquantile_gru/baseline_wquantile_gru_model.pt
+History saved to: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_wquantile_gru/baseline_wquantile_gru_train_history.json
+
+baseline_wquantile_gru training completed in 5327.36 seconds
+
+baseline_wquantile_gru model:
+BaselineQuantileGRU(
+  (gru): GRU(6, 103, batch_first=True)
+  (fc): Linear(in_features=103, out_features=7, bias=True)
+)
+
+baseline_wquantile_gru final epoch metrics:
+{'epoch': 22, 'train_loss': 0.09529269486665726, 'validation_loss': 1.5428225204997217, 'validation_accuracy': None, 'val_rmse': 2.0473592281341553, 'val_mae': 0.8664265275001526, 'val_mape': 67.70399808883667, 'val_r2': 0.681273341178894}
+
+  [DONE] baseline_wquantile_gru — artifacts in /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow/models/baseline_wquantile_gru
+
+============================================================
+  ALL TRAINING COMPLETE
+  Run folder: /workspace/comp0197-experiments/runs/baseline_ablation_sales_hierarchy_dow
+============================================================
