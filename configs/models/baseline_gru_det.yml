@@ -14,7 +14,7 @@ train_config:
   seq_len: 28
   autoregressive: true
   use_normalise: false
-  feature_set: sales_hierarchy_dow
+  feature_set: sales_yen_hierarchy
   early_stopping_patience: 8
   early_stopping_min_delta: 0.0005
   optimiser: adamw

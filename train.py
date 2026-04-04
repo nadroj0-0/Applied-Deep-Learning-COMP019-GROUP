@@ -85,6 +85,8 @@ def _load_train_data(exp_train: dict, first_train_cfg: dict,
         stats_det/gauss/nb
     """
     use_norm = bool(first_train_cfg.get("use_normalise", False))
+    split_protocol = exp_train.get("split_protocol", "default")
+    weight_protocol = exp_train.get("weight_protocol", "default")
 
     data_kwargs = dict(
         data_dir       = exp_train.get("data_dir",        "./data"),
@@ -99,6 +101,8 @@ def _load_train_data(exp_train: dict, first_train_cfg: dict,
         max_series     = first_train_cfg.get("max_series"),
         num_workers    = int(num_workers_override or exp_train.get("num_workers",  4)),
         seed           = int(first_train_cfg.get("seed",         42)),
+        split_protocol=split_protocol,
+        weight_protocol=weight_protocol,
     )
 
     print("\n[train] Loading data once for all experiments...")
@@ -109,27 +113,27 @@ def _load_train_data(exp_train: dict, first_train_cfg: dict,
 
     if not use_norm:
         # single loader — all models share it (raw counts, no zscore)
-        train_loader, val_loader, test_loader, stats, vocab_sizes = build_dataloaders(**data_kwargs)
+        train_loader, val_loader, test_loader, stats, vocab_sizes, feature_index = build_dataloaders(**data_kwargs)
         # weighted train loader — same data, include_weights=True for wquantile model
         # val/test are shared with det — they always return (x, y)
-        train_loader_w, _, _, _, _ = build_dataloaders(**data_kwargs, include_weights=True)
+        train_loader_w, _, _, _, _, _ = build_dataloaders(**data_kwargs, include_weights=True)
         return dict(
             train_loader_det       = train_loader,   val_loader_det   = val_loader,  test_loader_det   = test_loader,  stats_det   = stats,
             train_loader_gauss     = train_loader,   val_loader_gauss = val_loader,  test_loader_gauss = test_loader,  stats_gauss = stats,
             train_loader_nb        = train_loader,   val_loader_nb    = val_loader,  test_loader_nb    = test_loader,  stats_nb    = stats,
-            train_loader_wquantile = train_loader_w, vocab_sizes      = vocab_sizes,
+            train_loader_wquantile = train_loader_w, vocab_sizes      = vocab_sizes, feature_index = feature_index,
         )
     else:
         # three loaders — det gets zscore, prob and NB get raw log1p
-        tl_det,   vl_det,   tel_det,   s_det, vocab_sizes   = build_dataloaders(**data_kwargs, zscore_target=True)
-        tl_gauss, vl_gauss, tel_gauss, s_gauss, _ = build_dataloaders(**data_kwargs, zscore_target=False)
-        tl_nb,    vl_nb,    tel_nb,    s_nb, _    = build_dataloaders(**data_kwargs, zscore_target=False)
-        tl_w,     _,        _,         _, _       = build_dataloaders(**data_kwargs, zscore_target=True, include_weights=True)
+        tl_det,   vl_det,   tel_det,   s_det, vocab_sizes, feature_index   = build_dataloaders(**data_kwargs, zscore_target=True)
+        tl_gauss, vl_gauss, tel_gauss, s_gauss, _, _ = build_dataloaders(**data_kwargs, zscore_target=False)
+        tl_nb,    vl_nb,    tel_nb,    s_nb, _, _    = build_dataloaders(**data_kwargs, zscore_target=False)
+        tl_w,     _,        _,         _, _, _       = build_dataloaders(**data_kwargs, zscore_target=True, include_weights=True)
         return dict(
             train_loader_det       = tl_det,   val_loader_det   = vl_det,   test_loader_det   = tel_det,   stats_det   = s_det,
             train_loader_gauss     = tl_gauss, val_loader_gauss = vl_gauss, test_loader_gauss = tel_gauss, stats_gauss = s_gauss,
             train_loader_nb        = tl_nb,    val_loader_nb    = vl_nb,    test_loader_nb    = tel_nb,    stats_nb    = s_nb,
-            train_loader_wquantile = tl_w,     vocab_sizes      = vocab_sizes,
+            train_loader_wquantile = tl_w,     vocab_sizes      = vocab_sizes, feature_index = feature_index,
         )
 
 
@@ -223,6 +227,7 @@ def main():
         # inject vocab_sizes for hierarchical models — builders require this
         # baseline models ignore it safely (they don't read the key)
         train_cfg["vocab_sizes"] = loaders.get("vocab_sizes", {})
+        train_cfg["feature_index"] = loaders.get("feature_index", {})
 
         # propagate CLI overrides
         if args.batch_size   is not None: train_cfg["batch_size"]  = args.batch_size

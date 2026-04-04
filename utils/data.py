@@ -18,6 +18,13 @@ FEATURE_SETS = {
                              "cat_id_int", "dept_id_int"],
     "sales_hierarchy_dow":  ["sales", "state_id_int", "store_id_int",
                              "cat_id_int", "dept_id_int", "day_of_week"],
+    "sales_yen":            ["sales","sell_price","is_available","wday",
+                             "month","year","snap_CA","snap_TX","snap_WI",
+                             "has_event"],
+    "sales_yen_hierarchy":  ["sales", "sell_price", "is_available", "wday",
+                             "month", "year", "snap_CA", "snap_TX", "snap_WI",
+                             "has_event", "state_id_int", "store_id_int", "cat_id_int",
+                             "dept_id_int"],
 }
 TARGET_COL = "sales"
 
@@ -231,8 +238,8 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
 
 def split_data(
     df: pd.DataFrame,
-    val_days:  int = 56,
-    test_days: int = 28,
+    val_days:  int = 112,
+    test_days: int = 56,
 ) -> tuple:
     all_dates  = sorted(df["date"].unique())
     test_start = all_dates[-test_days]
@@ -307,6 +314,7 @@ class WindowedM5Dataset(Dataset):
         autoregressive: bool = True,
         max_series: int = None,
         item_weights: np.ndarray = None,
+        series_ids=None
     ):
         self.seq_len        = seq_len
         self.horizon        = horizon
@@ -321,8 +329,12 @@ class WindowedM5Dataset(Dataset):
         # build once for O(1) lookup in __getitem__ when weights are used
         self._series_idx_map: dict = {}
 
-        grouped    = df.groupby("id")
-        series_ids = list(grouped.groups.keys())
+        grouped = df.groupby("id")
+
+        if series_ids is None:
+            series_ids = list(grouped.groups.keys())
+
+        self.series_ids = series_ids
         if max_series is not None:
             series_ids = series_ids[:int(max_series)]
 
@@ -362,7 +374,7 @@ class WindowedM5Dataset(Dataset):
               f"(autoregressive={autoregressive})")
 
         # build series index map once — used by __getitem__ for weight lookup
-        self._series_idx_map = {sid: i for i, sid in enumerate(self.series_data.keys())}
+        self._series_idx_map = {sid: i for i, sid in enumerate(self.series_ids)}
 
     def __len__(self):
         return len(self.samples)
@@ -427,6 +439,8 @@ def build_dataloaders(
     seed:           int  = 42,
     sampling:       str  = "top",
     include_weights: bool = False,
+    split_protocol: str = "default",
+    weight_protocol: str = "default",
 ) -> tuple:
     """
     Main data pipeline for V3.
@@ -455,6 +469,7 @@ def build_dataloaders(
     """
     generator, _ = set_seed(seed)
     feature_cols  = get_feature_cols(feature_set)
+    feature_index = {col: i for i, col in enumerate(feature_cols)}
     n_features    = len(feature_cols)
 
     # ------------------------------------------------------------------
@@ -487,14 +502,51 @@ def build_dataloaders(
         featured = featured.sort_values(["id", "date"]).reset_index(drop=True)
         print(f"[data] Hierarchy pipeline ({feature_set}): {featured.shape}")
 
+
+    elif feature_set in ("sales_yen", "sales_yen_hierarchy"):
+        include_hierarchy = "hierarchy" in feature_set
+        # 1. Merge calendar
+        featured = merge_calendar(long_df, calendar_df)
+        # 2. Merge prices (no fill yet)
+        featured = featured.merge(prices_df, on=["store_id", "item_id", "wm_yr_wk"], how="left")
+        # 3. Create availability BEFORE filling
+        featured["is_available"] = featured["sell_price"].notna().astype(np.float32)
+        # 4. Create event feature BEFORE filling
+        featured["has_event"] = (~featured["event_name_1"].isna()).astype(np.float32)
+        # 5. Add hierarchy (if needed)
+        if include_hierarchy:
+            featured = encode_hierarchy(featured, include_dow=False)
+        # 6. Sort before group ops
+        featured = featured.sort_values(["id", "date"]).reset_index(drop=True)
+        # 7. Forward fill prices per series
+        featured["sell_price"] = (featured.groupby("id")["sell_price"].transform(lambda x: x.ffill()))
+        # 8. Fill remaining missing prices
+        featured["sell_price"] = featured["sell_price"].fillna(0.0)
+        # 9. Fill event columns AFTER has_event
+        for col in ["event_name_1", "event_type_1", "event_name_2", "event_type_2"]:
+            featured[col] = featured[col].fillna("none")
+        print(f"[data] Yen-style pipeline ({feature_set}): {featured.shape}")
+
     else:
         raise ValueError(f"Unknown feature_set: {feature_set}")
+
+    series_ids = featured["id"].drop_duplicates().tolist()
 
     # ------------------------------------------------------------------
     # 3. Temporal split boundaries
     # ------------------------------------------------------------------
+    # Protocol-controlled split boundaries.
+    # "yen_v1" matches Yen's shared group protocol (112/56) for cross-model
+    # comparability. "default" uses a window equal to the forecast horizon (28/28).
+    if split_protocol == "yen_v1":
+        _val_days, _test_days = 112, 56
+        print(f"[data] Protocol: yen_v1 — val=112 days, test=56 days")
+    else:
+        _val_days, _test_days = 28, 28
+        print(f"[data] Protocol: default — val=28 days, test=28 days")
+
     train_df_raw, val_df_raw, test_df_raw = split_data(
-        featured, val_days=56, test_days=28
+        featured, val_days=_val_days, test_days=_test_days
     )
     val_start_date  = val_df_raw["date"].values.astype("datetime64[ns]")[0]
     test_start_date = test_df_raw["date"].values.astype("datetime64[ns]")[0]
@@ -515,23 +567,66 @@ def build_dataloaders(
     # ------------------------------------------------------------------
     train_item_weights = None
     if include_weights:
-        # Compute volume * avg_price per series, normalised to sum to 1
-        # Matches teammate's revenue weight methodology exactly
-        prices_df_w = prices_df.copy()
-        avg_prices   = (
-            prices_df_w.groupby(["item_id", "store_id"])["sell_price"]
-            .mean().reset_index()
-        )
-        sales_w = sales_df.merge(avg_prices, on=["item_id", "store_id"], how="left")
-        sales_w["sell_price"] = sales_w["sell_price"].fillna(
-            prices_df_w["sell_price"].median()
-        )
-        day_cols_w   = [c for c in sales_df.columns if c.startswith("d_")]
-        train_day_cols = day_cols_w[:-28]   # exclude test 28 days, same as teammate
-        item_vols    = sales_w[train_day_cols].sum(axis=1).values
-        item_revs    = item_vols * sales_w["sell_price"].values
+
+        if weight_protocol == "yen_v1":
+            # --- Daily revenue weights (M5 / Yen) ---
+            dates = train_df_raw["date"].unique()
+            dates.sort()
+            last28_cutoff = dates[-28]
+            last28_df = train_df_raw[train_df_raw["date"] >= last28_cutoff].copy()
+
+            last28_df = last28_df.merge(
+                calendar_df[["d", "wm_yr_wk"]], on="d", how="left"
+            )
+
+            last28_df = last28_df.merge(
+                prices_df[["store_id", "item_id", "wm_yr_wk", "sell_price"]],
+                on=["store_id", "item_id", "wm_yr_wk"], how="left"
+            )
+
+            last28_df["sell_price"] = (
+                last28_df.groupby("id")["sell_price"]
+                .transform(lambda x: x.ffill().fillna(0.0))
+            )
+
+            train_rev = (
+                (last28_df["sales"] * last28_df["sell_price"])
+                .groupby(last28_df["id"]).sum()
+            )
+
+            train_rev = train_rev.reindex(series_ids).fillna(0.0)
+
+            item_revs = train_rev.values.astype(np.float32)
+
+        else:
+            # --- Original avg price × volume ---
+            prices_df_w = prices_df.copy()
+
+            avg_prices = (
+                prices_df_w.groupby(["item_id", "store_id"])["sell_price"]
+                .mean().reset_index()
+            )
+
+            sales_w = sales_df.merge(
+                avg_prices, on=["item_id", "store_id"], how="left"
+            )
+
+            sales_w["sell_price"] = sales_w["sell_price"].fillna(
+                prices_df_w["sell_price"].median()
+            )
+
+            day_cols_w = [c for c in sales_df.columns if c.startswith("d_")]
+            train_day_cols = day_cols_w[:-28]
+
+            item_vols = sales_w[train_day_cols].sum(axis=1).values
+            item_revs = item_vols * sales_w["sell_price"].values
+
         train_item_weights = (item_revs / item_revs.sum()).astype(np.float32)
-        print(f"[data] Revenue weights computed ({len(train_item_weights)} series)")
+
+        print(
+            f"[data] Revenue weights computed "
+            f"({len(train_item_weights)} series, protocol={weight_protocol})"
+        )
 
     # ------------------------------------------------------------------
     # 6. Build windowed datasets
@@ -547,7 +642,7 @@ def build_dataloaders(
     )
     # weights only on train — val and test always return (x, y)
     train_ds = WindowedM5Dataset(featured, split="train",
-                                 item_weights=train_item_weights, **shared)
+                                 item_weights=train_item_weights, series_ids=series_ids, **shared)
     val_ds   = WindowedM5Dataset(featured, split="val",   **shared)
     test_ds  = WindowedM5Dataset(featured, split="test",  **shared)
 
@@ -590,4 +685,4 @@ def build_dataloaders(
     else:
         vocab_sizes = {}
 
-    return train_loader, val_loader, test_loader, stats, vocab_sizes
+    return train_loader, val_loader, test_loader, stats, vocab_sizes, feature_index

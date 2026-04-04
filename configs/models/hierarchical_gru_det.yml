@@ -10,7 +10,7 @@ train_config:
   seq_len: 28
   autoregressive: true          # update to false if seq2seq wins AR vs S2S comparison
   use_normalise: false
-  feature_set: sales_hierarchy_dow
+  feature_set: sales_yen_hierarchy
   early_stopping_patience: 8
   early_stopping_min_delta: 0.0005
   optimiser: adamw

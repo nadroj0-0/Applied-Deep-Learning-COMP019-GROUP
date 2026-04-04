@@ -783,23 +783,31 @@ class _HierarchyEmbedder(nn.Module):
         Tensor: Shape (B, T, 2 + 4 * embed_dim) — embedded input ready
                 for the GRU encoder.
     """
-    def __init__(self, vocab_sizes: dict, embed_dim: int = 8):
+    def __init__(self, vocab_sizes: dict, feature_index: dict, embed_dim: int = 8):
         super().__init__()
-        self.embed_dim = embed_dim
+        self.idx = feature_index
         self.state_emb = nn.Embedding(vocab_sizes['state_id_int'], embed_dim)
         self.store_emb = nn.Embedding(vocab_sizes['store_id_int'], embed_dim)
         self.cat_emb   = nn.Embedding(vocab_sizes['cat_id_int'],   embed_dim)
         self.dept_emb  = nn.Embedding(vocab_sizes['dept_id_int'],  embed_dim)
-        self.output_dim = 2 + 4 * embed_dim
+        self.embed_dim = embed_dim
+        self.cat_cols = ["state_id_int", "store_id_int", "cat_id_int", "dept_id_int"]
+        # determine continuous indices dynamically
+        self.cont_indices = [
+            i for name, i in self.idx.items()
+            if name not in self.cat_cols
+        ]
+        self.output_dim = len(self.cont_indices) + 4 * embed_dim
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        sales = x[:, :, 0:1]
-        state = self.state_emb(x[:, :, 1].long())
-        store = self.store_emb(x[:, :, 2].long())
-        cat   = self.cat_emb(  x[:, :, 3].long())
-        dept  = self.dept_emb( x[:, :, 4].long())
-        dow   = x[:, :, 5:6]
-        return torch.cat([sales, state, store, cat, dept, dow], dim=-1)
+        # continuous features
+        x_cont = x[:, :, self.cont_indices]
+        # categorical embeddings
+        state = self.state_emb(x[:, :, self.idx["state_id_int"]].long())
+        store = self.store_emb(x[:, :, self.idx["store_id_int"]].long())
+        cat   = self.cat_emb(  x[:, :, self.idx["cat_id_int"]].long())
+        dept  = self.dept_emb( x[:, :, self.idx["dept_id_int"]].long())
+        return torch.cat([x_cont, state, store, cat, dept], dim=-1)
 
 
 # -----------------------------------------------------------------------------
@@ -827,7 +835,7 @@ class HierarchicalGRU(nn.Module):
         Tensor: Shape (B, output_size).
     """
     def __init__(self, hidden_size, num_layers, dropout,
-                 output_size, vocab_sizes, embed_dim=8):
+                 output_size, vocab_sizes, feature_index, embed_dim=8):
         super().__init__()
         self.embedder = _HierarchyEmbedder(vocab_sizes, embed_dim)
         self.gru = nn.GRU(
@@ -859,6 +867,7 @@ def build_hierarchical_gru(cfg: dict):
         output_size = _output_size(cfg),
         vocab_sizes = cfg['vocab_sizes'],
         embed_dim   = int(cfg.get('embed_dim', 8)),
+        feature_index=cfg['feature_index'],
     ).to(device)
     criterion = nn.MSELoss()
     optimiser = OptimisationConfig.configure_optimiser(model, cfg)
@@ -895,7 +904,7 @@ class HierarchicalProbGRU(nn.Module):
         tuple[Tensor, Tensor]: mu and sigma, each shape (B, horizon).
     """
     def __init__(self, hidden_size, num_layers, dropout,
-                 horizon, vocab_sizes, embed_dim=8):
+                 horizon, vocab_sizes, feature_index, embed_dim=8):
         super().__init__()
         self.embedder   = _HierarchyEmbedder(vocab_sizes, embed_dim)
         self.gru = nn.GRU(
@@ -934,6 +943,7 @@ def build_hierarchical_prob_gru(cfg: dict):
         horizon     = _output_size(cfg),
         vocab_sizes = cfg['vocab_sizes'],
         embed_dim   = int(cfg.get('embed_dim', 8)),
+        feature_index=cfg['feature_index'],
     ).to(device)
     criterion = gaussian_nll_loss
     optimiser = OptimisationConfig.configure_optimiser(model, cfg)
@@ -973,7 +983,7 @@ class HierarchicalProbGRU_NB(nn.Module):
         tuple[Tensor, Tensor]: mu and alpha, each shape (B, horizon).
     """
     def __init__(self, hidden_size, num_layers, dropout,
-                 horizon, vocab_sizes, embed_dim=8):
+                 horizon, vocab_sizes, feature_index, embed_dim=8):
         super().__init__()
         self.embedder    = _HierarchyEmbedder(vocab_sizes, embed_dim)
         self.gru = nn.GRU(
@@ -1011,6 +1021,7 @@ def build_hierarchical_prob_gru_nb(cfg: dict):
         horizon     = _output_size(cfg),
         vocab_sizes = cfg['vocab_sizes'],
         embed_dim   = int(cfg.get('embed_dim', 8)),
+        feature_index=cfg['feature_index'],
     ).to(device)
     criterion = nb_nll_loss
     optimiser = OptimisationConfig.configure_optimiser(model, cfg)
@@ -1049,7 +1060,7 @@ class HierarchicalQuantileGRU(nn.Module):
         Tensor: Shape (B, n_quantiles).
     """
     def __init__(self, hidden_size, num_layers, dropout,
-                 n_quantiles, vocab_sizes, embed_dim=8, horizon=1):
+                 n_quantiles, vocab_sizes, feature_index, embed_dim=8, horizon=1):
         super().__init__()
         self.embedder = _HierarchyEmbedder(vocab_sizes, embed_dim)
         self.n_quantiles = n_quantiles
@@ -1088,6 +1099,7 @@ def build_hierarchical_quantile_gru(cfg: dict):
         vocab_sizes = cfg['vocab_sizes'],
         embed_dim   = int(cfg.get('embed_dim', 8)),
         horizon=_output_size(cfg),
+        feature_index=cfg['feature_index'],
     ).to(device)
     criterion = pinball_loss
     optimiser = OptimisationConfig.configure_optimiser(model, cfg)
@@ -1128,7 +1140,7 @@ class HierarchicalWQuantileGRU(nn.Module):
         Tensor: Shape (B, n_quantiles).
     """
     def __init__(self, hidden_size, num_layers, dropout,
-                 n_quantiles, vocab_sizes, embed_dim=8, horizon=1):
+                 n_quantiles, vocab_sizes, feature_index, embed_dim=8, horizon=1):
         super().__init__()
         self.embedder = _HierarchyEmbedder(vocab_sizes, embed_dim)
         self.n_quantiles = n_quantiles
@@ -1169,6 +1181,7 @@ def build_hierarchical_wquantile_gru(cfg: dict):
         vocab_sizes = cfg['vocab_sizes'],
         embed_dim   = int(cfg.get('embed_dim', 8)),
         horizon=_output_size(cfg),
+        feature_index=cfg['feature_index'],
     ).to(device)
     criterion = weighted_pinball_loss
     optimiser = OptimisationConfig.configure_optimiser(model, cfg)

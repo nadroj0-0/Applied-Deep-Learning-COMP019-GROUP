@@ -7,7 +7,7 @@
 # Comment/uncomment models to control what trains and evaluates.
 # =============================================================================
 
-run_name: baseline_ablation_sales_hierarchy_dow_embedded_seq2seq
+run_name: test
 
 # =============================================================================
 # SEARCH — hyperparameter search settings
@@ -30,10 +30,12 @@ search:
 # TRAIN — full training settings (Phase 2)
 # =============================================================================
 train:
+  split_protocol: yen_v1
+  weight_protocol: yen_v1
   data_dir: ./data
-  sampling: all             # full dataset
-  top_k_series: 30490       # ignored when sampling=all, kept for reference
-  feature_set: sales_hierarchy_dow   # sales_only | sales_hierarchy | sales_hierarchy_dow
+  sampling: top             # full dataset
+  top_k_series: 10       # ignored when sampling=all, kept for reference
+  feature_set: sales_yen_hierarchy   # sales_only | sales_hierarchy | sales_hierarchy_dow | sales_yen | sales_yen_hierarchy_dow
   seq_len: 28
   horizon: 28
   autoregressive: true
@@ -50,7 +52,7 @@ eval:
   data_dir: ./data
   sampling: all
   top_k_series: 30490
-  feature_set: sales_hierarchy_dow   # must match train feature_set
+  feature_set: sales_yen_hierarchy   # must match train feature_set
 
 # =============================================================================
 # MODELS — comment out to skip, uncomment to include
@@ -73,3 +75,4 @@ models:
   # - lstm_prob
   # - transformer_det
   # - transformer_prob
+
