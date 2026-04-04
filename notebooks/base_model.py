@@ -51,6 +51,20 @@ class BaseModel(ABC):
     #   1. Set self.model
     #   2. Save weights → output_dir/{model_name}.pth (or .pkl for LGBM)
 
+    @abstractmethod
+    def predict(self): ...
+    # Input: self.test_processed, self.output_dir
+    # Must: 
+    # 1. Load model (weights) from: output_dir/{model_name}.pth/pkl 
+    # 2. Only use d_1886-d_1913 as context (if needed)
+    # 3. Predict 9 quantiles for d_1914-d_1941
+    # 4. Sort predictions by id, day_ahead
+    # 5. Make sure quantiles are non-decreasing and >= 0
+    # Output: DataFrame (N_series * 28 rows) with columns:
+    #     id | day_ahead (1-28) | q0.025 | q0.05 | q0.1 | q0.25 | q0.5 | q0.75 | q0.9 | q0.95 | q0.975
+
+    # Shared methods
+
     def load_and_split_data(self):
         """
         Downloads (or loads from cache) M5 data and processes it into long-format dataframes (1 row per item and day). 
