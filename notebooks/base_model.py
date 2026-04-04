@@ -55,13 +55,13 @@ class BaseModel(ABC):
     def predict(self): ...
     # Input: self.test_processed, self.output_dir
     # Must: 
-    # 1. Load model (weights) from: output_dir/{model_name}.pth/pkl 
+    # 1. Load model from: output_dir/{model_name}.pth/pkl 
     # 2. Only use d_1886-d_1913 as context (if needed)
-    # 3. Predict 9 quantiles for d_1914-d_1941
+    # 3. Predict 9 quantiles for d_1914-d_1941 in a DataFrame (30490 * 28 rows) with columns:
+    #     id | day_ahead (1-28) | q0.025 | q0.05 | q0.1 | q0.25 | q0.5 | q0.75 | q0.9 | q0.95 | q0.975
     # 4. Sort predictions by id, day_ahead
     # 5. Make sure quantiles are non-decreasing and >= 0
-    # Output: DataFrame (N_series * 28 rows) with columns:
-    #     id | day_ahead (1-28) | q0.025 | q0.05 | q0.1 | q0.25 | q0.5 | q0.75 | q0.9 | q0.95 | q0.975
+    # 6. Save predictions → output_dir/{model_name}_predictions.csv
 
     # Shared methods
 
