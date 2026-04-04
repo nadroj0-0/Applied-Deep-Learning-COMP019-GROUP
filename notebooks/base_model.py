@@ -147,4 +147,13 @@ class BaseModel(ABC):
         return self.train_raw, self.val_raw, self.test_raw, self.item_weights
 
     def evaluate(self):           pass
-    def run(self):                pass
+
+    def run_training_pipeline(self):
+    # Combines loading and splitting data, preprocessing, and training into a single pipeline
+        self.load_and_split_data()
+        self.preprocess()
+        self.train()
+
+    def run_inference_pipeline(self):
+    # Combines loading processed test data and trained model, inference and evaluation into a single pipeline
+        self.evaluate()
