@@ -116,11 +116,15 @@ def main():
     # go to the right place and configs are frozen at start time.
     # ------------------------------------------------------------------
     run_dir = create_run_dir(PROJECT_DIR, run_name)
+    # derive models_cfg_dir from the experiment path, not the project default
+    experiment_path = Path(args.experiment)
+    models_cfg_dir = experiment_path.parent / "models"
     snapshot_configs(
         run_dir        = run_dir,
         experiment_yml = args.experiment,
         model_names    = models,
-        models_cfg_dir = MODELS_CFG_DIR,
+        #models_cfg_dir = MODELS_CFG_DIR,
+        models_cfg_dir = models_cfg_dir,
     )
 
     # ------------------------------------------------------------------
