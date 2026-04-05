@@ -77,6 +77,8 @@ def parse_args():
                    help="Path to experiment.yml (default: configs/experiment.yml)")
     p.add_argument("--run_name",   type=str, default=None,
                    help="Override run_name from experiment.yml")
+    p.add_argument("--num_workers", type=int, default=None,
+                   help="Override num_workers from experiment.yml")
     return p.parse_args()
 
 
@@ -149,6 +151,7 @@ def main():
                 output_dir = "./outputs",
                 run_name   = run_name,
                 do_search  = do_search,
+                num_workers=args.num_workers,
             )
             # run_training_pipeline = load_and_split_data → preprocess → train
             # matches Yen's BaseModel interface exactly

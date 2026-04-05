@@ -131,6 +131,8 @@ def _preprocess_from_base_model(self_model, model_name: str,
     batch_size     = int(train_cfg.get("batch_size",    1024))
     autoregressive = bool(train_cfg.get("autoregressive", True))
     num_workers    = int(train_cfg.get("num_workers",      0))
+    if self_model._num_workers is not None:
+        num_workers = self_model._num_workers
     seed           = int(train_cfg.get("seed",            42))
 
     generator, _ = set_seed(seed)
@@ -367,10 +369,11 @@ class BaselineGRUDet(BaseModel):
     model_name = "baseline_gru_det"
 
     def __init__(self, data_dir="./data", output_dir="./outputs",
-                 run_name=None, do_search=False):
+                 run_name=None, do_search=False, num_workers=None):
         super().__init__(data_dir=data_dir, output_dir=output_dir)
         self._run_name  = run_name or self.model_name + "_run"
         self._do_search = do_search
+        self._num_workers = num_workers
         self._exp       = None
 
     def preprocess(self):
@@ -406,10 +409,11 @@ class BaselineGRUProb(BaseModel):
     model_name = "baseline_gru_prob"
 
     def __init__(self, data_dir="./data", output_dir="./outputs",
-                 run_name=None, do_search=False):
+                 run_name=None, do_search=False, num_workers=None):
         super().__init__(data_dir=data_dir, output_dir=output_dir)
         self._run_name  = run_name or self.model_name + "_run"
         self._do_search = do_search
+        self._num_workers = num_workers
 
     def preprocess(self):
         _preprocess_from_base_model(self, self.model_name, self._run_name,
@@ -441,10 +445,11 @@ class BaselineGRUNB(BaseModel):
     model_name = "baseline_gru_nb"
 
     def __init__(self, data_dir="./data", output_dir="./outputs",
-                 run_name=None, do_search=False):
+                 run_name=None, do_search=False, num_workers=None):
         super().__init__(data_dir=data_dir, output_dir=output_dir)
         self._run_name  = run_name or self.model_name + "_run"
         self._do_search = do_search
+        self._num_workers = num_workers
 
     def preprocess(self):
         _preprocess_from_base_model(self, self.model_name, self._run_name,
@@ -476,10 +481,11 @@ class BaselineQuantileGRU(BaseModel):
     model_name = "baseline_quantile_gru"
 
     def __init__(self, data_dir="./data", output_dir="./outputs",
-                 run_name=None, do_search=False):
+                 run_name=None, do_search=False, num_workers=None):
         super().__init__(data_dir=data_dir, output_dir=output_dir)
         self._run_name  = run_name or self.model_name + "_run"
         self._do_search = do_search
+        self._num_workers = num_workers
 
     def preprocess(self):
         _preprocess_from_base_model(self, self.model_name, self._run_name,
@@ -511,10 +517,11 @@ class BaselineWQuantileGRU(BaseModel):
     model_name = "baseline_wquantile_gru"
 
     def __init__(self, data_dir="./data", output_dir="./outputs",
-                 run_name=None, do_search=False):
+                 run_name=None, do_search=False, num_workers=None):
         super().__init__(data_dir=data_dir, output_dir=output_dir)
         self._run_name  = run_name or self.model_name + "_run"
         self._do_search = do_search
+        self._num_workers = num_workers
 
     def preprocess(self):
         # include_weights=True — train loader returns (x, y, weight) triples
@@ -551,10 +558,11 @@ class HierarchicalGRUDet(BaseModel):
     model_name = "hierarchical_gru_det"
 
     def __init__(self, data_dir="./data", output_dir="./outputs",
-                 run_name=None, do_search=False):
+                 run_name=None, do_search=False, num_workers=None):
         super().__init__(data_dir=data_dir, output_dir=output_dir)
         self._run_name  = run_name or self.model_name + "_run"
         self._do_search = do_search
+        self._num_workers = num_workers
 
     def preprocess(self):
         _preprocess_from_base_model(self, self.model_name, self._run_name,
@@ -586,10 +594,11 @@ class HierarchicalGRUProb(BaseModel):
     model_name = "hierarchical_gru_prob"
 
     def __init__(self, data_dir="./data", output_dir="./outputs",
-                 run_name=None, do_search=False):
+                 run_name=None, do_search=False, num_workers=None):
         super().__init__(data_dir=data_dir, output_dir=output_dir)
         self._run_name  = run_name or self.model_name + "_run"
         self._do_search = do_search
+        self._num_workers = num_workers
 
     def preprocess(self):
         _preprocess_from_base_model(self, self.model_name, self._run_name,
@@ -621,10 +630,11 @@ class HierarchicalGRUNB(BaseModel):
     model_name = "hierarchical_gru_nb"
 
     def __init__(self, data_dir="./data", output_dir="./outputs",
-                 run_name=None, do_search=False):
+                 run_name=None, do_search=False, num_workers=None):
         super().__init__(data_dir=data_dir, output_dir=output_dir)
         self._run_name  = run_name or self.model_name + "_run"
         self._do_search = do_search
+        self._num_workers = num_workers
 
     def preprocess(self):
         _preprocess_from_base_model(self, self.model_name, self._run_name,
@@ -656,10 +666,11 @@ class HierarchicalQuantileGRU(BaseModel):
     model_name = "hierarchical_quantile_gru"
 
     def __init__(self, data_dir="./data", output_dir="./outputs",
-                 run_name=None, do_search=False):
+                 run_name=None, do_search=False, num_workers=None):
         super().__init__(data_dir=data_dir, output_dir=output_dir)
         self._run_name  = run_name or self.model_name + "_run"
         self._do_search = do_search
+        self._num_workers = num_workers
 
     def preprocess(self):
         _preprocess_from_base_model(self, self.model_name, self._run_name,
@@ -691,10 +702,11 @@ class HierarchicalWQuantileGRU(BaseModel):
     model_name = "hierarchical_wquantile_gru"
 
     def __init__(self, data_dir="./data", output_dir="./outputs",
-                 run_name=None, do_search=False):
+                 run_name=None, do_search=False, num_workers=None):
         super().__init__(data_dir=data_dir, output_dir=output_dir)
         self._run_name  = run_name or self.model_name + "_run"
         self._do_search = do_search
+        self._num_workers = num_workers
 
     def preprocess(self):
         _preprocess_from_base_model(self, self.model_name, self._run_name,

@@ -837,7 +837,7 @@ class HierarchicalGRU(nn.Module):
     def __init__(self, hidden_size, num_layers, dropout,
                  output_size, vocab_sizes, feature_index, embed_dim=8):
         super().__init__()
-        self.embedder = _HierarchyEmbedder(vocab_sizes, embed_dim)
+        self.embedder = _HierarchyEmbedder(vocab_sizes, feature_index, embed_dim)
         self.gru = nn.GRU(
             input_size  = self.embedder.output_dim,
             hidden_size = hidden_size,
@@ -906,7 +906,7 @@ class HierarchicalProbGRU(nn.Module):
     def __init__(self, hidden_size, num_layers, dropout,
                  horizon, vocab_sizes, feature_index, embed_dim=8):
         super().__init__()
-        self.embedder   = _HierarchyEmbedder(vocab_sizes, embed_dim)
+        self.embedder   = _HierarchyEmbedder(vocab_sizes, feature_index, embed_dim)
         self.gru = nn.GRU(
             input_size  = self.embedder.output_dim,
             hidden_size = hidden_size,
@@ -985,7 +985,7 @@ class HierarchicalProbGRU_NB(nn.Module):
     def __init__(self, hidden_size, num_layers, dropout,
                  horizon, vocab_sizes, feature_index, embed_dim=8):
         super().__init__()
-        self.embedder    = _HierarchyEmbedder(vocab_sizes, embed_dim)
+        self.embedder    = _HierarchyEmbedder(vocab_sizes, feature_index, embed_dim)
         self.gru = nn.GRU(
             input_size  = self.embedder.output_dim,
             hidden_size = hidden_size,
@@ -1062,7 +1062,7 @@ class HierarchicalQuantileGRU(nn.Module):
     def __init__(self, hidden_size, num_layers, dropout,
                  n_quantiles, vocab_sizes, feature_index, embed_dim=8, horizon=1):
         super().__init__()
-        self.embedder = _HierarchyEmbedder(vocab_sizes, embed_dim)
+        self.embedder = _HierarchyEmbedder(vocab_sizes, feature_index, embed_dim)
         self.n_quantiles = n_quantiles
         self.horizon = horizon
         self.gru = nn.GRU(
@@ -1142,7 +1142,7 @@ class HierarchicalWQuantileGRU(nn.Module):
     def __init__(self, hidden_size, num_layers, dropout,
                  n_quantiles, vocab_sizes, feature_index, embed_dim=8, horizon=1):
         super().__init__()
-        self.embedder = _HierarchyEmbedder(vocab_sizes, embed_dim)
+        self.embedder = _HierarchyEmbedder(vocab_sizes, feature_index, embed_dim)
         self.n_quantiles = n_quantiles
         self.horizon = horizon
         self.gru = nn.GRU(
