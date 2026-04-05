@@ -1,5 +1,5 @@
 \subsubsection{GRU Baseline Ablation Study}
-This section presents a controlled ablation study on GRU-based models, including both methodological setup and corresponding results, to isolate the effect of predictive objective under fixed architectural conditions.\\\\
+We conduct a controlled ablation study of GRU-based forecasting models to isolate the effect of predictive objective under a fixed architecture.\\\\
 We implement five GRU-based baseline variants to isolate the effect of predictive objective on forecasting performance while controlling for model architecture. All models share a common backbone consisting of a single GRU layer with the final hidden state passed to a linear output head, ensuring that differences in performance arise from the loss formulation rather than architectural complexity. The variants include: a deterministic baseline trained with MSE, a Gaussian probabilistic model outputting $(\mu, \sigma)$ trained via negative log-likelihood, a Negative Binomial model parameterised by $(\mu, \alpha)$ to account for overdispersed count data, a quantile regression model trained using pinball loss across seven quantiles $[0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975]$, and a revenue-weighted quantile model where per-series losses are scaled by volume $\times$ average sell price. 
 
 To further disentangle modelling choices, we conducted controlled experiments to evaluate the impact of forecasting strategy and feature representation. Each model was trained under identical settings while varying only the decoding regime (autoregressive versus direct multi-step/seq2seq) and the treatment of hierarchical information (flat encoded features versus learned hierarchical representations). Hyperparameters were selected using successive halving on a stratified subset of 3,000 series, with final models trained on the full dataset of 30,490 series. This setup allows us to isolate the contribution of loss function, forecasting strategy, and hierarchy modelling independently of architectural changes.
@@ -12,9 +12,11 @@ bound. State which probabilistic variant performed best on point accuracy and
 whether it matched or beat the baseline. One sentence on best calibration
 result (coverage closest to 0.95).}
 
+For clarity, Table~\ref{tab:gru_results} reports only the deterministic baseline, the best-performing parametric model (Gaussian or Negative Binomial), and the best-performing non-parametric model (quantile-based) for each regime–hierarchy combination. Full results for all variants are available in the appendix.
+
 \begin{table}[h]
 \centering
-\caption{\textbf{GRU baseline comparison across forecasting regimes and hierarchy representations on the M5 test set (d1914--d1941, 30,490 series).} Best per column in \textbf{bold}. AR = autoregressive; S2S = direct multi-step.}
+\caption{\textbf{GRU baseline comparison across forecasting regimes and hierarchy representations on the M5 test set (d1914--d1941, 30,490 series).} Best performing model within each regime–hierarchy group is highlighted in \textbf{bold}. AR = autoregressive; S2S = direct multi-step.}
 \label{tab:gru_results}
 
 \renewcommand{\arraystretch}{1.5} 
@@ -25,40 +27,51 @@ result (coverage closest to 0.95).}
 \textbf{Model} & \textbf{Regime} & \textbf{Hierarchy}
     & \textbf{RMSE} & \textbf{W-RMSE}
     & \textbf{MAE}  & \textbf{W-MAE}
-    & \textbf{$R^2$} & \textbf{Cov@95\%} & \textbf{Width} \\
+    & \textbf{$R^2$} & \textbf{Cov@95\%} & \textbf{Width} & \textbf{CRPS}\\
 \midrule
 
 Deterministic (MSE)  & AR  & Flat 
-& 2.74 & 0.01781 
-& 1.14 & 0.000045 
-& 0.434 & -- & -- \\
-
+& 2.1274 & 0.02641 
+& 1.0413 & 0.0000737 
+& 0.6585 & \textemdash & \textemdash & \textemdash \\
 Gaussian (NLL)       & AR  & Flat 
-& 2.78 & 0.01777 
-& 1.20 & 0.000046 
-& 0.419 & 0.824 & 2.40 \\
-
+& 2.2959 & 0.03518 
+& 1.0687 & 0.0000857 
+& 0.6023 & 0.9128 & 3.5295 & 0.7789\\
 Quantile (Pinball)   & AR  & Flat 
-& \textbf{2.29} & \textbf{0.01518} 
-& \textbf{0.97} & \textbf{0.000039} 
-& \textbf{0.605} & \textbf{0.892} & 3.36 \\
+& $\mathbf{2.2162}$ & $\mathbf{0.02749}$ 
+& $\mathbf{0.9615}$ & $\mathbf{0.0000732}$ 
+& $\mathbf{0.6294}$ & $\mathbf{0.8849}$ & $\mathbf{3.4413}$ & $\mathbf{0.3817}$\\
 \midrule
 
-Deterministic (MSE) & S2S & Flat & XX.XX & XX.XX & XX.XX & XX.XX & X.XXX & XX.X & XX.X \\
+Deterministic (MSE) & S2S & Flat 
+& 2.1530 & 0.02765 
+& 1.0531 & 0.0000756 
+& 0.6503 & \textemdash & \textemdash & \textemdash \\
+Gaussian (NLL) & S2S & Flat 
+& 2.2098 & 0.02999 
+& 1.0595 & 0.0000791 
+& 0.6316 & 0.9487 & 4.2328 & 0.7753 \\
+Quantile (Pinball) & S2S & Flat 
+& $\mathbf{2.2388}$ & $\mathbf{0.02887}$ 
+& $\mathbf{0.9629}$ & $\mathbf{0.0000750}$ 
+& $\mathbf{0.6218}$ & $\mathbf{0.9528}$ & $\mathbf{4.9457}$ & $\mathbf{0.3545}$\\
 
-Best Parametric & S2S & Flat & XX.XX & XX.XX & XX.XX & XX.XX & X.XXX & XX.X & XX.X \\
-
-Best Non-Parametric & S2S & Flat & XX.XX & XX.XX & XX.XX & XX.XX & X.XXX & XX.X & XX.X \\
 \midrule
 
-Hierarchical Deterministic & S2S & Hierarchical & XX.XX & XX.XX & XX.XX & XX.XX & X.XXX & XX.X & XX.X \\
+Deterministic (MSE) & AR & Embedded & 2.1350 & 0.0265 & 1.0167 & 0.0000729 & 0.6561 & \textemdash & \textemdash & \textemdash \\
 
-Best Hierarchical Parametric & S2S & Hierarchical & XX.XX & XX.XX & XX.XX & XX.XX & X.XXX & XX.X & XX.X \\
+Gaussian (NLL) & AR & Embedded & 2.2094 & 0.0295 & 1.0515 & 0.0000783 & 0.6317 & 0.9114 & 3.4243 & 0.7769 \\
 
-Best Hierarchical Non-Parametric & S2S & Hierarchical & XX.XX & XX.XX & XX.XX & XX.XX & X.XXX & XX.X & XX.X \\
+Quantile (Pinball) & AR & Embedded & $\mathbf{2.2249}$ & $\mathbf{0.0271}$ & $\mathbf{0.9595}$ & $\mathbf{0.0000723}$ & $\mathbf{0.6265}$ & $\mathbf{0.8908}$ & $\mathbf{3.3434}$ & $\mathbf{0.3818}$ \\
+
 \midrule
 
-Best Hierarchical & AR  & Hierarchical & XX.XX & XX.XX & XX.XX & XX.XX & X.XXX & XX.X & XX.X \\
+Deterministic (MSE) & S2S & Embedded & 2.1303 & 0.0271 & 1.0467 & 0.0000740 & 0.6576 & \textemdash & \textemdash & \textemdash \\
+
+Gaussian (NLL) & S2S & Embedded & 2.1737 & 0.0291 & 1.0590 & 0.0000775 & 0.6435 & 0.9463 & 3.9797 & 0.7718 \\
+
+Quantile (Pinball) & S2S & Embedded & $\mathbf{2.2185}$ & $\mathbf{0.0273}$ & $\mathbf{0.9544}$ & $\mathbf{0.0000725}$ & $\mathbf{0.6287}$ & $\mathbf{0.9514}$ & $\mathbf{4.8064}$ & $\mathbf{0.3511}$ \\
 
 \bottomrule
 \end{tabular}

@@ -13,6 +13,7 @@ class BaseModel(ABC):
     QUANTILES   = [0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975]
     PRED_LENGTH = 28
     SEED        = 25
+    TARGET_START = 1914
 
     def __init__(self, data_dir="data", output_dir="outputs"):
         random.seed(self.SEED)
@@ -50,6 +51,21 @@ class BaseModel(ABC):
     # Must:
     #   1. Set self.model
     #   2. Save weights → output_dir/{model_name}.pth (or .pkl for LGBM)
+
+    @abstractmethod
+    def predict(self): ...
+    # Input: self.test_processed, self.output_dir
+    # Must: 
+    # 1. Load model from: output_dir/{model_name}.pth/pkl 
+    # 2. Only use d_1886-d_1913 as context (if needed)
+    # 3. Predict 9 quantiles for d_1914-d_1941 in preds_df: a DataFrame (30490 * 28 rows) with columns:
+    #     id | day_ahead (1-28) | q0.025 | q0.05 | q0.1 | q0.25 | q0.5 | q0.75 | q0.9 | q0.95 | q0.975
+    # 4. Sort predictions by id, day_ahead
+    # 5. Make sure quantiles are non-decreasing and >= 0
+    # 6. Save predictions → output_dir/{model_name}_predictions.csv
+    # Output: preds_df
+
+    # Shared methods
 
     def load_and_split_data(self):
         """
@@ -142,9 +158,23 @@ class BaseModel(ABC):
         self.val_raw      = d["val_raw"]
         self.test_raw     = d["test_raw"]
         self.item_weights = d["item_weights"]
-        print("Finished data processing.")
 
         return self.train_raw, self.val_raw, self.test_raw, self.item_weights
 
     def evaluate(self):           pass
-    def run(self):                pass
+
+    def run_training_pipeline(self):
+    # Combines loading and splitting data, preprocessing, and training into a single pipeline
+        self.load_and_split_data()
+        self.preprocess()
+        print("Finished data processing.")
+        self.train()
+        print("Finished model training.")
+
+    def run_inference_pipeline(self):
+    # Combines inference and evaluation into a single pipeline
+        preds_df = self.predict()
+        print("Finished model inference.")
+        results = self.evaluate(preds_df)
+        print("Finished model evaluation.")
+        return results
