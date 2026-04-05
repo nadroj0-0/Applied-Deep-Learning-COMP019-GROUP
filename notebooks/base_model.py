@@ -103,8 +103,9 @@ class BaseModel(ABC):
                 calendar[col] = calendar[col].fillna('none').astype('category')
             calendar['weekday'] = calendar['weekday'].astype('category')
             calendar['date']    = pd.to_datetime(calendar['date'])
-            for col in ['wday', 'month', 'year', 'snap_CA', 'snap_TX', 'snap_WI']:
+            for col in ['snap_CA', 'snap_TX', 'snap_WI', 'wday', 'month']:
                 calendar[col] = calendar[col].astype('int8')
+            calendar['year'] = calendar['year'].astype('int16')  # fix year encoding to handle years 2011-2016
             sales_long = sales_long.merge(calendar, on='d', how='left')
 
             # Step 4: merge daily prices
@@ -161,18 +162,156 @@ class BaseModel(ABC):
 
         return self.train_raw, self.val_raw, self.test_raw, self.item_weights
 
-    def evaluate(self):           pass
+    # Evaluation
+
+    def _build_pinball_tensor(self, preds_df: pd.DataFrame):
+        """
+        Shared setup for WSPL and CRPS. Requires self.train_raw, self.test_raw.
+        Returns y_mat (N,28), q_arr (N,9,28), ids, scale.
+        """
+        q_cols  = [f"q{q}" for q in self.QUANTILES]
+        
+        # Extract test targets for d_1914-d_1941 (28 days)
+        test_targets = (
+            self.test_raw[self.test_raw['d_num'] >= self.TARGET_START]
+            .pivot(index='id', columns='d_num', values='sales')
+            .sort_index()
+        )
+        ids = test_targets.index.tolist()
+        y_mat = test_targets.values.astype(np.float32)  # Shape: (N_series, 28)
+        
+        # Reshape predictions to match
+        preds_pivot = (
+            preds_df.set_index(['id', 'day_ahead'])[q_cols]
+            .unstack('day_ahead')
+            .sort_index(axis=1) 
+            .loc[ids]
+)
+        q_arr = preds_pivot.values.reshape(len(ids), len(self.QUANTILES), self.PRED_LENGTH)
+        
+        # Scale from train
+        train_s = self.train_raw.sort_values(['id', 'd_num']).copy()
+        train_s['prev'] = train_s.groupby('id')['sales'].shift(1)
+        scale = (
+            train_s.dropna(subset=['prev'])
+            .assign(abs_diff=lambda df: (df['sales'] - df['prev']).abs())
+            .groupby('id')['abs_diff']
+            .mean()
+            .reindex(ids)  # Align scale to test data IDs
+            .clip(lower=1e-8)
+        )
+        
+        # Checks for debugging
+        assert y_mat.shape == (len(ids), 28), f"y_mat shape mismatch: {y_mat.shape}"
+        assert q_arr.shape == (len(ids), 9, 28), f"q_arr shape mismatch: {q_arr.shape}"
+        
+        return y_mat, q_arr, ids, scale
+ 
+    def compute_wspl(self, y_mat, q_arr, ids, scale) -> float:
+        """Weighted scaled pinball loss across 9 quantiles and 28 forecast days."""
+        q_vals  = np.array(self.QUANTILES)
+        errors  = y_mat[:, None, :] - q_arr
+        pinball = np.maximum(q_vals[None, :, None] * errors,
+                             (q_vals[None, :, None] - 1) * errors)
+        wspl_per_series = pinball.mean(axis=(1, 2)) / scale.reindex(ids).values
+        weights         = self.item_weights.reindex(ids).fillna(0).values
+        return float(np.dot(weights, wspl_per_series))
+ 
+    def compute_crps(self, y_mat, q_arr, ids) -> float:
+        """Weighted CRPS approximated as 2x mean pinball loss across quantiles and forecast days."""
+        q_vals  = np.array(self.QUANTILES)
+        errors  = y_mat[:, None, :] - q_arr
+        pinball = np.maximum(q_vals[None, :, None] * errors,
+                            (q_vals[None, :, None] - 1) * errors)
+        crps_per_series = 2 * pinball.mean(axis=(1, 2))
+        weights = self.item_weights.reindex(ids).fillna(0).values
+        return float(np.dot(weights, crps_per_series))
+ 
+    def compute_coverage(self, preds_df: pd.DataFrame, y_mat, ids) -> dict:
+        """
+        Coverage error (actual - nominal) for 4 prediction intervals.
+        Positive = over-coverage, negative = under-coverage.
+        """
+        intervals = {
+            0.50: ("q0.25",  "q0.75"),
+            0.80: ("q0.1",   "q0.9"),
+            0.90: ("q0.05",  "q0.95"),
+            0.95: ("q0.025", "q0.975"),
+        }
+        preds_indexed = (
+            preds_df.set_index(['id', 'day_ahead'])
+            .reindex(pd.MultiIndex.from_product(
+                [ids, range(1, self.PRED_LENGTH + 1)],
+                names=['id', 'day_ahead']))
+        )
+        coverage_errors = {}
+        for nominal, (lower_col, upper_col) in intervals.items():
+            lower   = preds_indexed[lower_col].values.reshape(len(ids), self.PRED_LENGTH)
+            upper   = preds_indexed[upper_col].values.reshape(len(ids), self.PRED_LENGTH)
+            covered = ((y_mat >= lower) & (y_mat <= upper)).mean()
+            coverage_errors[f"coverage_error_{int(nominal*100)}pct"] = round(
+                float(covered - nominal), 6)
+        return coverage_errors
+    
+    def _validate_preds(self, preds_df):
+        """
+        Validate predictions for easier debugging of inference pipeline.
+        """
+        expected_ids = self.test_raw['id'].unique()
+        q_cols = [f"q{q}" for q in self.QUANTILES]
+        assert set(expected_ids).issubset(set(preds_df['id'])), "Missing IDs"
+        assert set(preds_df['day_ahead'].unique()) == set(range(1, 29)), "day_ahead must be 1-28"
+        assert all(c in preds_df.columns for c in q_cols), "Missing quantile columns"
+        assert (preds_df[q_cols].diff(axis=1).iloc[:, 1:] >= 0).all().all(), "Quantiles non-monotonic"
+        assert (preds_df[q_cols] >= 0).all().all(), "Negative quantile predictions"
+
+    def evaluate(self, preds_df: pd.DataFrame) -> dict:
+        """
+        Compute WSPL, CRPS and coverage error from a predictions DataFrame.
+        Saves results to output_dir/{model_name}_results.json.
+        Requires: raw_split.pkl in data_dir. Run load_and_split_data() first.
+        """
+        self._validate_preds(preds_df)
+        # Step 1: load data and weights
+        cache = os.path.join(self.data_dir, "raw_split.pkl")
+        assert os.path.exists(cache), "Run load_and_split_data() first."
+        with open(cache, "rb") as f:
+            d = pickle.load(f)
+        self.train_raw    = d["train_raw"]
+        self.test_raw     = d["test_raw"]
+        self.item_weights = d["item_weights"]
+
+        # Step 2: build pinball tensor
+        y_mat, q_arr, ids, scale = self._build_pinball_tensor(preds_df)
+    
+        # Step 3: compute evaluation metrics
+        results = {
+            "model" : self.model_name,
+            "wspl"  : round(self.compute_wspl(y_mat, q_arr, ids, scale), 6),
+            "crps"  : round(self.compute_crps(y_mat, q_arr, ids), 6),
+            **self.compute_coverage(preds_df, y_mat, ids),
+        }
+
+        # Step 4: save results to json
+        out_path = os.path.join(self.output_dir, f"{self.model_name}_results.json")
+        with open(out_path, "w") as f:
+            json.dump(results, f, indent=2)
+        return results
+
+    # Pipelines
 
     def run_training_pipeline(self):
     # Combines loading and splitting data, preprocessing, and training into a single pipeline
         self.load_and_split_data()
+        print("Finished shared data processing.")
         self.preprocess()
-        print("Finished data processing.")
+        print("Finished model-specific data processing.")
         self.train()
         print("Finished model training.")
 
     def run_inference_pipeline(self):
     # Combines inference and evaluation into a single pipeline
+        self.load_and_split_data()  # needs train_raw and test_raw, if training pipeline was not run before this
         preds_df = self.predict()
         print("Finished model inference.")
         results = self.evaluate(preds_df)
