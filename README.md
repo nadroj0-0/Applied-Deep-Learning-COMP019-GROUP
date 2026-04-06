@@ -46,6 +46,3 @@ The pipeline produces "Fan Charts" for the top-weighted items to show how the mo
 
 If the black line stays inside the blue cloud, the model is successfully capturing the true uncertainty of the market.
 ---
-
-### 🛠 Deployment
-This code is ready for **Railway**. It uses **FastAPI** to serve predictions and **Docker** to keep the environment consistent. When deployed, you can use the `predict()` method to get real-time, monotonic forecasts for any item.
