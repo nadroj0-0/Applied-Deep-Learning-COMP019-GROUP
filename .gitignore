@@ -1,0 +1,17 @@
+data/raw_split.pkl
+data/*.csv
+
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+venv/
+env/
+.venv/
+.ipynb_checkpoints/
+
+# --- IDE & OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

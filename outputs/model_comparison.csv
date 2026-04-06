@@ -1,0 +1,3 @@
+model,wspl,crps,coverage_error_50pct,coverage_error_80pct,coverage_error_90pct,coverage_error_95pct
+hierarchical_lstm,0.398112,1.001573,0.187386,0.074734,0.041942,0.019134
+linear,1.604414,5.188051,-0.376648,-0.676648,-0.776648,-0.826648
