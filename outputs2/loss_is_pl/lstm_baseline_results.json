@@ -1,0 +1,9 @@
+{
+  "model": "lstm_baseline",
+  "wspl": 0.687176,
+  "crps": 3.359375,
+  "coverage_error_50pct": -0.227326,
+  "coverage_error_80pct": -0.038135,
+  "coverage_error_90pct": -0.038016,
+  "coverage_error_95pct": -0.038713
+}
