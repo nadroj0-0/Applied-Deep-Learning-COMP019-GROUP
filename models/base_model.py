@@ -3,19 +3,18 @@ import random
 import pickle
 import json
 import torch
-
 from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
 
 class BaseModel(ABC):
-
-    QUANTILES   = [0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975]
-    PRED_LENGTH = 28
-    SEED        = 25
+    QUANTILES    = [0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975]
+    PRED_LENGTH  = 28
+    SEED         = 25
     TARGET_START = 1914
 
     def __init__(self, data_dir="data", output_dir="outputs"):
+        # Set seeds for reproducibility
         random.seed(self.SEED)
         np.random.seed(self.SEED)
         torch.manual_seed(self.SEED)
@@ -26,9 +25,13 @@ class BaseModel(ABC):
 
         self.device     = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.data_dir   = data_dir
-        self.output_dir = output_dir
-        os.makedirs(data_dir,   exist_ok=True)
-        os.makedirs(output_dir, exist_ok=True)
+        
+        # --- UPDATE: Organize outputs into model-specific subfolders ---
+        # This automatically creates "outputs/HierarchicalLSTM", "outputs/TFT", etc.
+        self.output_dir = os.path.join(output_dir, self.model_name)
+        
+        os.makedirs(self.data_dir,   exist_ok=True)
+        os.makedirs(self.output_dir, exist_ok=True)
 
         self.train_raw = self.val_raw = self.test_raw = None
         self.calendar  = self.prices  = self.item_weights = None

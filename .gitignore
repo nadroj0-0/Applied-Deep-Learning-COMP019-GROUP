@@ -1,5 +1,9 @@
 data/raw_split.pkl
 data/*.csv
+data/
+lightning_logs/
+
+models/*.csv
 
 __pycache__/
 *.py[cod]
