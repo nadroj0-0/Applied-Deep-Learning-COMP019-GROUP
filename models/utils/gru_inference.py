@@ -8,6 +8,7 @@ import pandas as pd
 import torch
 
 from ..base_model import BaseModel
+from .forecast_metrics import compute_extra_forecast_metrics, finalise_quantiles
 from utils.configs.config_loader import (
     get_model_run_dir,
     load_effective_train_config,
@@ -83,17 +84,7 @@ def _coerce_to_target_quantiles(pred_q, source_quantiles, target_quantiles):
 
 
 def _finalise_quantiles(q_preds):
-    q_preds = np.clip(np.asarray(q_preds, dtype=np.float32), 0.0, None)
-    return np.maximum.accumulate(q_preds, axis=-1)
-
-
-def _crps_from_quantiles(y, q_preds, quantiles):
-    y_exp = y[:, :, np.newaxis]
-    q = np.array(quantiles, dtype=np.float32)[np.newaxis, np.newaxis, :]
-    diff = y_exp - q_preds
-    loss = np.maximum(q * diff, (q - 1) * diff)
-    weights = np.diff(np.concatenate(([0.0], np.array(quantiles, dtype=np.float32))))
-    return float((loss * weights[np.newaxis, np.newaxis, :]).sum(axis=2).mean())
+    return finalise_quantiles(q_preds)
 
 
 def _plot_quantile_forecast(historical_y, true_y, pred_quantiles, quantiles_list,
@@ -429,79 +420,13 @@ def evaluate_predictions(self_model, model_name: str, run_name: str, preds_df: p
     is_quantile = resolved["is_quantile"]
 
     self_model.load_and_split_data()
-    forecast_start = int(self_model.test_raw["d_num"].min()) + BaseModel.PRED_LENGTH
-    forecast_end = forecast_start + BaseModel.PRED_LENGTH - 1
-
-    future_truth = (
-        self_model.test_raw[
-            (self_model.test_raw["d_num"] >= forecast_start) &
-            (self_model.test_raw["d_num"] <= forecast_end)
-        ][["id", "d_num", "sales"]]
-        .copy()
-    )
-    future_truth["day_ahead"] = future_truth["d_num"] - forecast_start + 1
-
-    merged = preds_df.merge(
-        future_truth[["id", "day_ahead", "sales"]],
-        on=["id", "day_ahead"],
-        how="inner",
-    ).sort_values(["id", "day_ahead"]).reset_index(drop=True)
-
-    series_ids = merged["id"].drop_duplicates().tolist()
-    quantiles = list(BaseModel.QUANTILES)
-    q_cols = [f"q{q}" for q in quantiles]
-
-    pred_q = merged[["id", "day_ahead"] + q_cols].pivot(index="id", columns="day_ahead", values=q_cols)
-    q_preds = np.stack([
-        pred_q[f"q{q}"].reindex(series_ids).values.astype(np.float32)
-        for q in quantiles
-    ], axis=2)
-
-    targets = (
-        merged[["id", "day_ahead", "sales"]]
-        .pivot(index="id", columns="day_ahead", values="sales")
-        .reindex(series_ids)
-        .values.astype(np.float32)
-    )
-
-    median_col = "q0.5"
-    preds = (
-        merged[["id", "day_ahead", median_col]]
-        .pivot(index="id", columns="day_ahead", values=median_col)
-        .reindex(series_ids)
-        .values.astype(np.float32)
-    )
-
-    preds = np.clip(preds, 0, 1e6)
-    targets = np.clip(targets, 0, 1e6)
-    q_preds = _finalise_quantiles(q_preds)
-
-    rmse = float(np.sqrt(((preds - targets) ** 2).mean()))
-    mae = float(np.abs(preds - targets).mean())
-    mask = targets > 0
-    mape = float(np.abs((preds[mask] - targets[mask]) / targets[mask]).mean() * 100) if mask.any() else float("nan")
-    ss_res = float(((targets - preds) ** 2).sum())
-    ss_tot = float(((targets - targets.mean()) ** 2).sum())
-    r2 = float(1 - ss_res / ss_tot) if ss_tot > 0 else float("nan")
-
-    weights = self_model.item_weights.reindex(series_ids).fillna(0.0).values.astype(np.float32)
-    total_w = weights.sum()
-    if total_w > 0:
-        weights /= total_w
-
-    per_series_mse = ((preds - targets) ** 2).mean(axis=1)
-    per_series_mae = np.abs(preds - targets).mean(axis=1)
-    w_rmse = float(np.sqrt((weights * per_series_mse).sum()))
-    w_mae = float((weights * per_series_mae).sum())
-
     metrics = {
         "model": model_name,
-        "rmse": rmse,
-        "mae": mae,
-        "mape": mape,
-        "r2": r2,
-        "w_rmse": w_rmse,
-        "w_mae": w_mae,
+        **compute_extra_forecast_metrics(
+            self_model,
+            preds_df,
+            probabilistic_override=(is_prob or is_nb or is_quantile),
+        ),
     }
 
     self_model._validate_preds(preds_df)
@@ -513,15 +438,6 @@ def evaluate_predictions(self_model, model_name: str, run_name: str, preds_df: p
         **self_model.compute_coverage(preds_df, y_mat, group_ids),
     }
     metrics.update(group_metrics)
-
-    if is_prob or is_nb or is_quantile:
-        idx_025 = quantiles.index(0.025)
-        idx_975 = quantiles.index(0.975)
-        lower = q_preds[:, :, idx_025]
-        upper = q_preds[:, :, idx_975]
-        metrics["coverage_95"] = float(((targets >= lower) & (targets <= upper)).mean())
-        metrics["interval_width"] = float((upper - lower).mean())
-        metrics["quantile_crps"] = _crps_from_quantiles(targets, q_preds, quantiles)
 
     legacy_plots_dir = model_dir / "plots"
     if legacy_plots_dir.exists():
@@ -539,8 +455,13 @@ def evaluate_predictions(self_model, model_name: str, run_name: str, preds_df: p
     with open(model_dir / f"{model_name}_basemodel_metrics.json", "w") as f:
         json.dump(group_metrics, f, indent=2)
 
-    print(f"  RMSE={rmse:.4f}  MAE={mae:.4f}  MAPE={mape:.2f}%  R²={r2:.4f}")
-    print(f"  W-RMSE={w_rmse:.4f}  W-MAE={w_mae:.4f}")
+    print(
+        f"  RMSE={metrics['rmse']:.4f}  "
+        f"MAE={metrics['mae']:.4f}  "
+        f"MAPE={metrics['mape']:.2f}%  "
+        f"R²={metrics['r2']:.4f}"
+    )
+    print(f"  W-RMSE={metrics['w_rmse']:.4f}  W-MAE={metrics['w_mae']:.4f}")
     print(
         f"  WSPL={metrics['wspl']:.4f}  "
         f"CRPS={metrics['crps']:.4f}  "

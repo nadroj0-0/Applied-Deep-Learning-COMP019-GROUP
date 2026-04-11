@@ -4,6 +4,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 from models_config import MODEL_REGISTRY
+from models.utils.forecast_metrics import compute_extra_forecast_metrics
 
 def plot_individual_model(item_id, actual_series, name, preds, output_dir):
     """Generates a detailed visualization for a single model's performance."""
@@ -93,7 +94,10 @@ def main():
             preds_df = m.predict() 
         
         all_predictions[name] = preds_df
-        summary_stats.append(m.evaluate(preds_df)) 
+        results = m.evaluate(preds_df)
+        for key, value in compute_extra_forecast_metrics(m, preds_df).items():
+            results.setdefault(key, value)
+        summary_stats.append(results)
         
         if actual_data is None:
             actual_data = m.test_raw[m.test_raw['d_num'] >= m.TARGET_START]
@@ -112,9 +116,14 @@ def main():
         plot_model_comparison(item_id, item_actuals, all_predictions, main_output_dir)
 
     df_compare = pd.DataFrame(summary_stats)
+    float_formatter = lambda x: f"{x:.6f}"
     print("\n" + "="*50 + "\n FINAL MODEL COMPARISON\n" + "="*50)
-    print(df_compare.to_string(index=False))
-    df_compare.to_csv(os.path.join(main_output_dir, "model_comparison.csv"), index=False)
+    print(df_compare.to_string(index=False, float_format=float_formatter))
+    df_compare.to_csv(
+        os.path.join(main_output_dir, "model_comparison.csv"),
+        index=False,
+        float_format="%.6f",
+    )
 
 if __name__ == "__main__":
     main()
