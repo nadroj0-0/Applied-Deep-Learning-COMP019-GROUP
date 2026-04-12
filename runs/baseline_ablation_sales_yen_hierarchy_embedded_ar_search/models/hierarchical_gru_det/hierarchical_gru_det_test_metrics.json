@@ -1,0 +1,15 @@
+{
+  "model": "hierarchical_gru_det",
+  "rmse": 2.289024591445923,
+  "mae": 1.076417326927185,
+  "mape": 62.27606964111328,
+  "r2": 0.6046811713586464,
+  "w_rmse": 5.616392135620117,
+  "w_mae": 2.572877883911133,
+  "wspl": 0.9739649134152788,
+  "crps": 2.5728780042361277,
+  "coverage_error_50pct": -0.5,
+  "coverage_error_80pct": -0.8,
+  "coverage_error_90pct": -0.9,
+  "coverage_error_95pct": -0.95
+}

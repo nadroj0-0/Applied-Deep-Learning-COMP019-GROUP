@@ -1,0 +1,9 @@
+{
+  "model": "hierarchical_gru_prob",
+  "wspl": 0.5102277536480739,
+  "crps": 1.450153062800833,
+  "coverage_error_50pct": 0.169723,
+  "coverage_error_80pct": 0.096208,
+  "coverage_error_90pct": 0.029366,
+  "coverage_error_95pct": 0.002728
+}

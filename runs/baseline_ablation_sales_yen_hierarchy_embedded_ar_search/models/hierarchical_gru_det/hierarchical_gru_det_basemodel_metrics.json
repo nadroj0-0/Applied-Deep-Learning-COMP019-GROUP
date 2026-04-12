@@ -1,0 +1,9 @@
+{
+  "model": "hierarchical_gru_det",
+  "wspl": 0.9739649134152788,
+  "crps": 2.5728780042361277,
+  "coverage_error_50pct": -0.5,
+  "coverage_error_80pct": -0.8,
+  "coverage_error_90pct": -0.9,
+  "coverage_error_95pct": -0.95
+}

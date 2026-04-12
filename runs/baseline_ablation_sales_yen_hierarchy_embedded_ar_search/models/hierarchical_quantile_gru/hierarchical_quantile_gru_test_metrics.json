@@ -1,0 +1,18 @@
+{
+  "model": "hierarchical_quantile_gru",
+  "rmse": 2.359262704849243,
+  "mae": 0.9970345497131348,
+  "mape": 73.68949127197266,
+  "r2": 0.5800484880171427,
+  "w_rmse": 5.577970027923584,
+  "w_mae": 2.4887447357177734,
+  "wspl": 0.4910714799772524,
+  "crps": 1.2896692368403868,
+  "coverage_error_50pct": -0.095249,
+  "coverage_error_80pct": -0.25523,
+  "coverage_error_90pct": -0.014936,
+  "coverage_error_95pct": -0.024,
+  "coverage_95": 0.9260003279763857,
+  "interval_width": 3.847109317779541,
+  "quantile_crps": 0.38524234823065057
+}

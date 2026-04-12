@@ -1,0 +1,9 @@
+{
+  "model": "hierarchical_quantile_gru",
+  "wspl": 0.4910714799772524,
+  "crps": 1.2896692368403868,
+  "coverage_error_50pct": -0.095249,
+  "coverage_error_80pct": -0.25523,
+  "coverage_error_90pct": -0.014936,
+  "coverage_error_95pct": -0.024
+}
