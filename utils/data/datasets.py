@@ -1,3 +1,4 @@
+import pandas as pd
 import torch
 from torch.utils.data import Dataset
 
@@ -38,7 +39,11 @@ class WindowedM5Dataset(Dataset):
         self.item_weights = item_weights
         self._series_idx_map = {}
 
-        grouped = df.groupby("id")
+        needed_cols = list(dict.fromkeys(["id", "date", TARGET_COL, *feature_cols]))
+        df_small = df.loc[:, needed_cols].copy()
+        df_small["id"] = df_small["id"].astype(pd.StringDtype(storage="python"))
+
+        grouped = df_small.groupby("id")
 
         if series_ids is None:
             series_ids = list(grouped.groups.keys())
