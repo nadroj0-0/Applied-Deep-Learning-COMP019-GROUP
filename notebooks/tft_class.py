@@ -453,6 +453,101 @@ class TFTModel(BaseModel):
         print(f"Predictions saved to {out_path}")
 
         return preds_df
+
+    def predict_ood_unseen(self) -> pd.DataFrame:
+        """
+        Run inference on CA_3 series excluded during subsampling.
+        Maps each unseen series_id to a seen series from the same dept_id.
+        """
+        checkpoint_path = self._checkpoint_path()
+        assert os.path.exists(checkpoint_path), f"Checkpoint not found: {checkpoint_path}"
+    
+        cache = os.path.join(self.data_dir, "raw_split.pkl")
+        with open(cache, "rb") as f:
+            d = pickle.load(f)
+    
+        all_ca3_test = d["test_raw"].copy()
+        seen_ids = set(self.test_raw["id"].unique())
+        unseen_test = all_ca3_test[~all_ca3_test["id"].isin(seen_ids)].copy()
+    
+        assert len(unseen_test) > 0, "No unseen series found — was subsampling applied?"
+        print(f"Unseen series count: {unseen_test['id'].nunique()}")
+    
+        # Build dept_id -> list of seen series_ids mapping
+        seen_meta = self.train_raw.drop_duplicates("id")[["id", "dept_id"]]
+        dept_to_seen = seen_meta.groupby("dept_id")["id"].apply(list).to_dict()
+    
+        # Map each unseen id to a random seen id from same dept
+        unseen_meta = unseen_test.drop_duplicates("id")[["id", "dept_id"]]
+        id_map = {}
+        for _, row in unseen_meta.iterrows():
+            candidates = dept_to_seen.get(row["dept_id"], [])
+            assert len(candidates) > 0, f"No seen series for dept {row['dept_id']}"
+            id_map[row["id"]] = np.random.choice(candidates)
+    
+        unseen_test["original_id"] = unseen_test["id"]
+        unseen_test["id"] = unseen_test["id"].map(id_map)
+        unseen_test["series_id"] = unseen_test["id"].astype(str)
+    
+        # Temporarily swap test_raw
+        original_test_raw = self.test_raw
+        self.test_raw = unseen_test.drop(columns=["original_id"])
+    
+        full_df = self._prepare_full_dataframe()
+        full_df["series_id"] = full_df["id"].map(id_map).fillna(full_df["id"]).astype(str)
+    
+        test_prediction_start = self.TARGET_START
+        test_context_start = test_prediction_start - self.MAX_ENCODER_LENGTH
+        test_df = full_df[
+            (full_df["time_idx"] >= test_context_start) &
+            (full_df["time_idx"] <= full_df["time_idx"].max())
+        ].copy()
+    
+        test_dataset = TimeSeriesDataSet.from_dataset(
+            self.train_processed, test_df, predict=True, stop_randomization=True
+        )
+        test_dataloader = test_dataset.to_dataloader(
+            train=False, batch_size=self.batch_size, num_workers=self.num_workers
+        )
+    
+        best_tft = TemporalFusionTransformer.load_from_checkpoint(checkpoint_path)
+        best_tft.eval()
+    
+        predictions = best_tft.predict(
+            test_dataloader, mode="raw", return_x=True, return_index=True
+        )
+    
+        pred_tensor = predictions.output["prediction"].detach().cpu().numpy()
+        index = predictions.index
+        reverse_map = {v: k for k, v in id_map.items()}
+        q_cols = [f"q{q}" for q in self.QUANTILES]
+    
+        rows = []
+        for i in range(pred_tensor.shape[0]):
+            masked_id = index.iloc[i]["series_id"]
+            original_id = reverse_map.get(masked_id, masked_id)
+            for t in range(self.PRED_LENGTH):
+                row = {"id": original_id, "day_ahead": t + 1}
+                for j, q in enumerate(self.QUANTILES):
+                    row[f"q{q}"] = float(pred_tensor[i, t, j])
+                rows.append(row)
+    
+        preds_df = pd.DataFrame(rows)
+        preds_df[q_cols] = (
+            preds_df[q_cols]
+            .clip(lower=0)
+            .apply(lambda row: np.maximum.accumulate(row.values), axis=1, result_type="expand")
+            .set_axis(q_cols, axis=1)
+        )
+        preds_df = preds_df[["id", "day_ahead"] + q_cols].sort_values(["id", "day_ahead"]).reset_index(drop=True)
+    
+        self.test_raw = original_test_raw
+    
+        out_path = os.path.join(self.output_dir, f"{self.model_name}_ood_unseen_predictions.csv")
+        preds_df.to_csv(out_path, index=False)
+        print(f"OOD unseen predictions saved to {out_path}")
+    
+        return preds_df
     
     def predict_ood(self, target_store: str) -> pd.DataFrame:
         """

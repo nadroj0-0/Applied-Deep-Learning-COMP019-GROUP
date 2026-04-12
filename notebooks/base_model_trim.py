@@ -162,6 +162,37 @@ class BaseModel(ABC):
         self.test_raw     = d["test_raw"]
         self.item_weights = d["item_weights"]
 
+        # print(f"Before sampling: train={len(self.train_raw)}, val={len(self.val_raw)}, test={len(self.test_raw)}")
+        # print(f"Before sampling: {self.train_raw['id'].nunique()} series")
+        
+        # # undersample for faster training
+        # ca3_ids = self.train_raw["id"].unique()
+        # weights = self.item_weights.reindex(ca3_ids).fillna(0)
+        
+        # id_to_dept = self.train_raw.drop_duplicates("id").set_index("id")["dept_id"]
+        
+        # sampled_ids = []
+        # # stratified sampling by dept id
+        # for dept, group_ids in id_to_dept.groupby(id_to_dept).groups.items():
+        #     group_weights = weights.reindex(group_ids).fillna(0)
+        #     threshold = group_weights.quantile(0.5)
+        #     high_revenue = group_weights[group_weights >= threshold].index
+        #     low_revenue = group_weights[group_weights < threshold].index
+        #     # drop 70% of low-revenue (below median)
+        #     sampled_low = np.random.choice(low_revenue, size=int(len(low_revenue) * 0.3), replace=False)
+        #     sampled_ids.extend(high_revenue.tolist())
+        #     sampled_ids.extend(sampled_low.tolist())
+        
+        # sampled_ids = np.array(sampled_ids)
+        
+        # self.train_raw    = self.train_raw[self.train_raw["id"].isin(sampled_ids)].reset_index(drop=True)
+        # self.val_raw      = self.val_raw[self.val_raw["id"].isin(sampled_ids)].reset_index(drop=True)
+        # self.test_raw     = self.test_raw[self.test_raw["id"].isin(sampled_ids)].reset_index(drop=True)
+        # self.item_weights = self.item_weights.reindex(sampled_ids).dropna()
+
+        # print(f"After sampling: train={len(self.train_raw)}, val={len(self.val_raw)}, test={len(self.test_raw)}")
+        # print(f"After sampling: {self.train_raw['id'].nunique()} series")
+
         return self.train_raw, self.val_raw, self.test_raw, self.item_weights
 
     # Evaluation
