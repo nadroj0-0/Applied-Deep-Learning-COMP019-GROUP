@@ -1,0 +1,9 @@
+{
+  "model": "tft",
+  "wspl": 0.461444,
+  "crps": 1.090291,
+  "coverage_error_50pct": -0.299822,
+  "coverage_error_80pct": -0.463803,
+  "coverage_error_90pct": -0.502979,
+  "coverage_error_95pct": -0.523311
+}

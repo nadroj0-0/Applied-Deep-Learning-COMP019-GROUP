@@ -1,0 +1,24 @@
+{
+  "model_name": "tft",
+  "quantiles": [
+    0.025,
+    0.05,
+    0.1,
+    0.25,
+    0.5,
+    0.75,
+    0.9,
+    0.95,
+    0.975
+  ],
+  "batch_size": 128,
+  "num_workers": 2,
+  "max_epochs": 4,
+  "learning_rate": 0.001,
+  "hidden_size": 32,
+  "attention_head_size": 4,
+  "dropout": 0.1,
+  "hidden_continuous_size": 16,
+  "max_encoder_length": 28,
+  "max_prediction_length": 28
+}
