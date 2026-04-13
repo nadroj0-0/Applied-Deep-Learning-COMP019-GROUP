@@ -14,7 +14,7 @@ run_name: baseline_ablation_sales_yen_hierarchy_embedded_seq2seq_search
 # Set enabled: false for submission (models train with configs already in ymls)
 # =============================================================================
 search:
-  enabled: true
+  enabled: false
   sampling: stratified      # top/middle/bottom thirds of volume distribution
   top_k_series: 1500        # per stratum — 1500+1500+1500 = 4500 total
   init_models: 8
