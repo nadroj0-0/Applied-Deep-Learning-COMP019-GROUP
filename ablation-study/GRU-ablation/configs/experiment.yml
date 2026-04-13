@@ -44,7 +44,7 @@ train:
   early_stopping_patience: 8
   early_stopping_min_delta: 0.0005
   batch_size: 2048
-  num_workers: 8
+  num_workers: 0
   seed: 42
 
 # =============================================================================
