@@ -33,8 +33,6 @@ for script in scripts:
 total_end = time.time()
 total_duration = total_end - total_start
 
-print("\n" + "🏆" * 20)
-print(f"FULL M5 PIPELINE COMPLETE!")
+print(f"FULL M5 PIPELINE COMPLETE")
 print(f"Total Execution Time: {format_time(total_duration)}")
 print("Check outputs/model_comparison.csv for final results.")
-print("🏆" * 20)

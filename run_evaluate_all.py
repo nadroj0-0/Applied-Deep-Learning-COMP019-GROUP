@@ -105,7 +105,7 @@ def main():
         weight_path_pth = os.path.join(m.output_dir, f"{m.model_name}.pth")
 
         if os.path.exists(pred_path):
-            print(f"📂 Loading existing predictions from {pred_path}")
+            print(f"Loading existing predictions from {pred_path}")
             preds_df = pd.read_csv(pred_path)
         else:
             # 1. Check if we need to train
@@ -121,7 +121,7 @@ def main():
             
             # 2. Safety Setup for Inference
             # This ensures cat_mappings and test_processed are built for the GRU/LSTMs
-            print(f"⚙️ Setting up inference environment for {name}...")
+            print(f"Setting up inference environment for {name}...")
             if name == "tft":
                 if hasattr(m, 'setup'): m.setup("test")
             else:

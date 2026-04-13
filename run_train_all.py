@@ -34,7 +34,7 @@ def main():
             print(f"⏭️  Weights found at {weights_path}. Skipping training phase.")
             continue
         
-        print(f"🚀 No weights found. Starting training for {name}...")
+        print(f"No weights found. Starting training for {name}...")
         
         # 1. Load the 815MB raw data cache
         m.load_and_split_data() 
