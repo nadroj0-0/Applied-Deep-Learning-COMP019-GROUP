@@ -1,0 +1,9 @@
+{
+  "model": "hierarchical_lstm",
+  "wspl": 0.398068,
+  "crps": 1.001548,
+  "coverage_error_50pct": 0.217042,
+  "coverage_error_80pct": 0.081527,
+  "coverage_error_90pct": 0.045434,
+  "coverage_error_95pct": 0.024039
+}

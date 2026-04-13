@@ -1,0 +1,41 @@
+PROJECT EXECUTION GUIDE
+~~~~~~~~~~~~~~~~~~~~~~~
+
+INSTALLATION AND SETUP
+~~~~~~~~~~~~~~~~~~~~~~
+Ensure your environment meets the dependencies listed in the requirements file. 
+Installation is performed via the command:
+    pip install -r requirements.txt. 
+Once dependencies are resolved, the system is executed by running: 
+    python run_pipeline.py.
+
+
+SYSTEM REQUIREMENTS AND PERFORMANCE
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The pipeline is optimized for computational throughput rather than memory conservation. Please ensure your 
+environment meets the following specifications for stable execution. A minimum of 16GB System RAM is 
+required alongside sufficient disk space for raw data and cached .pkl objects.
+
+Initial data processing typically requires 4 to 5 minutes. Inference and pre-processing tasks require 
+approximately 3 to 4 minutes per model, leading to a total end-to-end execution time of over 30 minutes. 
+Note: 30 minute estimate is assuming CUDA is available.
+To comply with submission size limits of under 500MB, pre-computed prediction CSVs have been removed. 
+For a faster evaluation of approximately 10 minutes, please refer to the GitHub repository to download the
+prediction assets.
+
+
+MODEL EVALUATION FRAMEWORK
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+All models are evaluated using the Weighted Scaled Pinball Loss (WSPL) to assess the quality of the 
+probabilistic uncertainty distribution. Key metrics include the Coverage Error, which provides validation 
+of the 95 percent confidence interval capture rate, and the R2 Score, which assesses variance capture with 
+a success benchmark of greater than 0.65. Quantile Fan Plots are automatically generated and saved in the 
+specific model subdirectories within the outputs directory. The consolidated performance table is output 
+to model_comparison.csv.
+
+
+REPOSITORY ARCHITECTURE
+~~~~~~~~~~~~~~~~~~~~~~~
+The root directory contains the main pipeline, including core models and evaluation logic. Comparative 
+research code for the TFT and GRU architectures is located within the ablation-study directory.

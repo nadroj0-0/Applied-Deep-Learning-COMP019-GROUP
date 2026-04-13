@@ -1,0 +1,9 @@
+{
+  "model": "LightGBM_NN_Hybrid",
+  "wspl": 0.46674,
+  "crps": 1.648881,
+  "coverage_error_50pct": 0.244066,
+  "coverage_error_80pct": 0.105836,
+  "coverage_error_90pct": 0.053416,
+  "coverage_error_95pct": 0.0284
+}

@@ -1,0 +1,9 @@
+{
+  "model": "regular_gru",
+  "wspl": 0.404784,
+  "crps": 1.024855,
+  "coverage_error_50pct": 0.158313,
+  "coverage_error_80pct": 0.05127,
+  "coverage_error_90pct": 0.024487,
+  "coverage_error_95pct": 0.021159
+}
