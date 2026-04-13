@@ -24,7 +24,7 @@ EXPERIMENT_PATH = PROJECT_DIR / "configs" / "experiment.yml"
 REGISTRY_PATH   = PROJECT_DIR / "configs" / "registry.yml"
 
 # Default run name for quick local use. CLI can override it.
-RUN_NAME = "baseline_ablation_sales_only"
+RUN_NAME = "baseline_ablation_sales_yen_hierarchy_embedded_seq2seq_search"
 
 
 print("Using wrapper-based evaluation runner")
