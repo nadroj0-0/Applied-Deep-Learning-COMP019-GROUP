@@ -195,7 +195,7 @@ class LightGBM_NN(BaseModel):
         n_items = joblib.load(os.path.join(self.output_dir, "n_items.pkl"))
 
         model_nn = FeatureNN(n_items, len(features_list))
-        model_nn.load_state_dict(torch.load(os.path.join(self.output_dir, "LightGBM_NN_Hybrid.pth"), map_location=self.device))
+        model_nn.load_state_dict(torch.load(os.path.join(self.output_dir, "nn_embedding.pth"), map_location=self.device))
         model_nn.eval().to(self.device)
 
         lgb_models = {
